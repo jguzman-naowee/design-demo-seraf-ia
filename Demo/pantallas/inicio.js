@@ -384,7 +384,7 @@ window.PANTALLAS['inicio'] = (function () {
             '<footer><div><span>Código</span><b>' + E.codigo + '</b></div><div><span>Estado</span><b>' + 'Vigente · 2026-2' + '</b></div></footer></article>' +
             '</div>' +
           '<aside class="nws-glass nws-block nws-cg__qr" aria-label="Código para validar tu carnet"><h2 class="nws-h2">Muestra este código</h2><div class="nws-qr"><div style="width:220px;height:220px">' + QR + '</div></div>' +
-            '<div class="nws-sec" style="width:100%;justify-content:space-between"><span class="nws-txt">Se renueva en 0:24</span>' + S.badge({ label: 'Vigente', theme: 'positive', variant: 'quiet', size: 'small' }) + '</div>' + S.progress({ value: 80, theme: 'secondary' }) +
+            '<div class="nws-sec" style="width:100%;justify-content:space-between"><span class="nws-txt">Se renueva en <b class="nws-cdown">0:24</b></span>' + S.badge({ label: 'Vigente', theme: 'positive', variant: 'quiet', size: 'small' }) + '</div>' + S.progress({ value: 80, theme: 'secondary' }) +
             '<p class="nws-txt">Sube el brillo de tu pantalla. Funciona sin conexión con tu último estado válido.</p></aside>' +
           '</div></div>' + fabMini() + '</div>';
       }
@@ -396,7 +396,7 @@ window.PANTALLAS['inicio'] = (function () {
           '<div class="nws-carnet__id">' + S.avatar({ text: E.iniciales, size: 'large', theme: 'secondary', variant: 'loud' }) +
           '<div class="nws-grow"><p class="nws-h1">' + E.nombre + '</p><p class="nws-txt">' + E.programa + '</p><p class="nws-txt" style="font-feature-settings:\'tnum\'">Código ' + E.codigo + '</p></div></div></div>' +
           '<div class="nws-carnet__qr"><div class="nws-qr"><div style="width:196px;height:196px">' + QR + '</div></div>' +
-          '<div style="width:100%" class="nws-stack"><div class="nws-sec"><span class="nws-txt">El código se renueva en 0:24</span>' + S.badge({ label: E.matricula, theme: 'positive', variant: 'quiet', size: 'small' }) + '</div>' + S.progress({ value: 80, theme: 'secondary' }) + '</div></div></div>' +
+          '<div style="width:100%" class="nws-stack"><div class="nws-sec"><span class="nws-txt">El código se renueva en <b class="nws-cdown">0:24</b></span>' + S.badge({ label: E.matricula, theme: 'positive', variant: 'quiet', size: 'small' }) + '</div>' + S.progress({ value: 80, theme: 'secondary' }) + '</div></div></div>' +
           '<p class="nws-txt" style="text-align:center">Sube el brillo de tu pantalla. Funciona sin conexión con tu último estado válido.</p></div>' + fabMini() + '</div>';
       }
       /* ---------- calendario mensual del horario (tablet y tablet grande) ---------- */
@@ -568,6 +568,19 @@ window.PANTALLAS['inicio'] = (function () {
           });
         });
       }
+      /* código del carnet: la barra se vacía en 24 s y el código «se renueva» (la barra vuelve a llenarse) */
+      var cdT = null, cdT0 = 0;
+      function cuentaCarnet() {
+        clearInterval(cdT); cdT = null;
+        if (st.ov !== 'carnet') { return; }
+        cdT0 = Date.now();
+        cdT = setInterval(function () {
+          var host = $('ov'), el = host && host.querySelector('.nws-cdown');
+          if (!el || st.ov !== 'carnet') { clearInterval(cdT); cdT = null; return; }
+          var s = 24 - Math.floor(((Date.now() - cdT0) / 1000) % 24);
+          el.textContent = '0:' + (s < 10 ? '0' : '') + s;
+        }, 250);
+      }
       function pintarOv() {
         var h = '';
         if (st.ov === 'carnet') { h = ovCarnet(); }
@@ -581,6 +594,7 @@ window.PANTALLAS['inicio'] = (function () {
         host.innerHTML = h;
         animarFa(host, prevFa);
         st.enter = false;
+        if (st.ov === 'carnet' && !cdT) { cuentaCarnet(); }
         mob.classList.toggle('nws-demo--dark', st.ov === 'cartas' && st.dstage === 'shuffle');
         var nb = host.querySelector('.nws-ov__body'); if (nb && top) { nb.scrollTop = top; }
       }
@@ -862,7 +876,7 @@ window.PANTALLAS['inicio'] = (function () {
         }, 380);
       }
       function irOv(o) { st.ov = o; st.enter = true; pintarDock(); pintarOv(); }
-      function cerrarOv() { clearT(); st.ov = null; st.dstage = 'shuffle'; st.dsel = null; $('ov').innerHTML = ''; pintar(); }
+      function cerrarOv() { clearInterval(cdT); cdT = null; clearT(); st.ov = null; st.dstage = 'shuffle'; st.dsel = null; $('ov').innerHTML = ''; pintar(); }
       function abrirMazo() {
         clearT(); st.dstage = 'shuffle'; st.dsel = null; irOv('cartas');
         later(function () { st.dstage = 'pick'; st.enter = true; pintarOv(); }, 3600);

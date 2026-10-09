@@ -2768,3 +2768,10 @@ section.nws-ib__r { display: flex; flex-direction: column; min-width: 0; min-hei
 .nws-cred__orb, .nws-carnet .nws-carnet__orb { animation: nws-carnet-orbe 9s ease-in-out infinite; }
 @keyframes nws-carnet-orbe { 0%, 100% { transform: translate(0, 0) scale(1); } 50% { transform: translate(-14px, 12px) scale(1.08); } }
 @media (prefers-reduced-motion: reduce) { .nws-cred, .nws-carnet .nws-carnet__top, .nws-cred__orb, .nws-carnet .nws-carnet__orb { animation: none; } }
+
+/* barra del código del carnet: se vacía en 24 s y se renueva */
+.nws-carnet .nwt-progress-bar__fill, .nws-cg__qr .nwt-progress-bar__fill, .nws-carnet [class*='progress-bar'] > *:last-child { transform-origin: left center; }
+.nws-carnet .nwt-progress-bar__fill, .nws-cg__qr .nwt-progress-bar__fill { width: 100% !important; animation: nws-codigo-barra 24s linear infinite; }
+@keyframes nws-codigo-barra { 0% { transform: scaleX(1); } 96% { transform: scaleX(0); } 100% { transform: scaleX(1); } }
+.nws-cdown { font-feature-settings: 'tnum'; font-weight: var(--naotech-font-weight-semibold); }
+@media (prefers-reduced-motion: reduce) { .nws-carnet .nwt-progress-bar__fill, .nws-cg__qr .nwt-progress-bar__fill { animation: none; } }
