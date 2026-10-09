@@ -2758,3 +2758,13 @@ section.nws-ib__r { display: flex; flex-direction: column; min-width: 0; min-hei
 .nws-demo--movil .nws-carnet { background: none; border: 0; box-shadow: none; overflow: visible; gap: var(--naotech-sizing-16); }
 .nws-demo--movil .nws-carnet__top { border-radius: 28px; padding: var(--naotech-sizing-24); box-shadow: var(--naotech-shadow-16); }
 .nws-demo--movil .nws-carnet__qr { border-top: 0; border-radius: var(--nws-r-card); background: var(--nws-glass); border: 1px solid var(--nws-glass-edge); box-shadow: var(--nws-shadow-card); }
+
+/* fondo animado del carnet: el degradado fluye lento y el orbe deriva suavemente */
+.nws-cred, .nws-carnet .nws-carnet__top {
+  background: linear-gradient(120deg, var(--naotech-color-indigo-700), var(--naotech-color-indigo-500) 30%, var(--naotech-color-blue-400) 55%, var(--naotech-color-indigo-500) 80%, var(--naotech-color-indigo-700));
+  background-size: 300% 300%; animation: nws-carnet-fluye 14s ease-in-out infinite;
+}
+@keyframes nws-carnet-fluye { 0%, 100% { background-position: 0% 30%; } 50% { background-position: 100% 70%; } }
+.nws-cred__orb, .nws-carnet .nws-carnet__orb { animation: nws-carnet-orbe 9s ease-in-out infinite; }
+@keyframes nws-carnet-orbe { 0%, 100% { transform: translate(0, 0) scale(1); } 50% { transform: translate(-14px, 12px) scale(1.08); } }
+@media (prefers-reduced-motion: reduce) { .nws-cred, .nws-carnet .nws-carnet__top, .nws-cred__orb, .nws-carnet .nws-carnet__orb { animation: none; } }
