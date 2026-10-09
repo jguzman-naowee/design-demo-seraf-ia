@@ -2282,3 +2282,15 @@ section.nws-ib__r { display: flex; flex-direction: column; min-width: 0; min-hei
 .nws-demo--tablet .nws-sheet--full .nwt-bottom-sheet__header, .nws-demo--tablet .nws-sheet--full .nwt-bottom-sheet__body, .nws-demo--tablet .nws-sheet--full .nwt-bottom-sheet__footer,
 .nws-demo--tablet-xl .nws-sheet--full .nwt-bottom-sheet__header, .nws-demo--tablet-xl .nws-sheet--full .nwt-bottom-sheet__body, .nws-demo--tablet-xl .nws-sheet--full .nwt-bottom-sheet__footer { padding-inline: max(var(--nws-gutter), calc((100% - 720px) / 2)); }
 .nws-demo--tablet .nws-dock--x .nws-chatbar, .nws-demo--tablet-xl .nws-dock--x .nws-chatbar { margin-right: calc(56px + var(--naotech-sizing-16)); }
+
+/* Hoy en tablet: hero, accesos en una sola línea, y debajo clase | eventos */
+.nws-demo--tablet #scroll, .nws-demo--tablet-xl #scroll { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.nws-demo--tablet #scroll > :nth-child(2), .nws-demo--tablet-xl #scroll > :nth-child(2) { margin-top: 0; order: 3; grid-column: 1; }
+.nws-demo--tablet #scroll > :nth-child(3), .nws-demo--tablet-xl #scroll > :nth-child(3) { order: 2; grid-column: 1 / -1; }
+.nws-demo--tablet #scroll > :nth-child(4), .nws-demo--tablet-xl #scroll > :nth-child(4) { order: 4; grid-column: 2; grid-row: auto; }
+.nws-demo--tablet #scroll > :last-child, .nws-demo--tablet-xl #scroll > :last-child { grid-column: 2; }
+.nws-demo--tablet #scroll .nws-tiles, .nws-demo--tablet-xl #scroll .nws-tiles { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--naotech-sizing-16); }
+.nws-demo--tablet #scroll .nws-tile, .nws-demo--tablet-xl #scroll .nws-tile { flex-direction: column; justify-content: center; align-items: center; text-align: center; gap: var(--naotech-sizing-8); padding: var(--naotech-sizing-16) var(--naotech-sizing-8); min-width: 0; }
+.nws-demo--tablet #scroll .nws-tile *, .nws-demo--tablet-xl #scroll .nws-tile * { text-align: center; }
+.nws-demo--tablet .nws-dock--x .nws-chatbar, .nws-demo--tablet-xl .nws-dock--x .nws-chatbar { left: var(--nws-gutter); margin: 0; width: calc(100% - 2 * var(--nws-gutter) - 56px - var(--naotech-sizing-12)); }
+.nws-demo--tablet .nws-dock--x.nws-dock--open .nws-chatbar, .nws-demo--tablet-xl .nws-dock--x.nws-dock--open .nws-chatbar { width: 56px; }
