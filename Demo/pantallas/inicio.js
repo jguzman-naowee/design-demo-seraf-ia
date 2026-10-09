@@ -21,6 +21,9 @@ window.PANTALLAS = window.PANTALLAS || {};
 window.PANTALLAS['inicio'] = (function () {
 
   var ANCHO = 428, ALTO = 926, BORDE = 12;
+  /* tamaños de dispositivo de la demo: móvil (el de siempre), tablet y tablet grande (vertical) */
+  var DISPS = { movil: { w: 428, h: 926, n: 'Móvil' }, tablet: { w: 820, h: 1180, n: 'Tablet' }, 'tablet-xl': { w: 1024, h: 1366, n: 'Tablet grande' } };
+  var DISP = 'movil';
 
   /* ilustraciones de las cartas y tokens de color: arte.js (compartido con ../Estilos/estilos.html) */
   var ARTE = window.SERAFIA_ARTE.defs, F = window.SERAFIA_ARTE.F, K = window.SERAFIA_ARTE.K;
@@ -49,7 +52,7 @@ window.PANTALLAS['inicio'] = (function () {
     render: function (ctx) {
       var S = ctx.S, rol = ctx.rol, D = ctx.D.demo;
       return S.h('div', { class: 'nws-col', style: 'height:100%;background:var(--naotech-app-color-100)' },
-        window.CASO.toolbar(S, 'estudiante'),
+        window.CASO.toolbar(S, 'estudiante', S.tagGroup({ items: Object.keys(DISPS).map(function (k) { return { label: DISPS[k].n, value: k }; }), value: DISP, size: 'medium', cls: 'nws-dispsw' })),
         S.h('div', { class: 'nws-phone-stage', id: 'stage' },
           S.h('div', { class: 'nws-dpanel', id: 'dpanel' }),
           S.h('div', { class: 'nws-phone-zoom' },
@@ -57,8 +60,8 @@ window.PANTALLAS['inicio'] = (function () {
             S.iconButton({ icon: 'refresh', size: 'small', variant: 'mute', theme: 'neutral', label: 'Ajustar al espacio disponible', attrs: { 'data-zoom': 'fit' } }),
             S.iconButton({ icon: 'zoom-in', size: 'small', variant: 'mute', theme: 'neutral', label: 'Acercar', attrs: { 'data-zoom': 'in' } }),
             S.iconButton({ icon: 'return', size: 'small', variant: 'mute', theme: 'neutral', label: 'Reiniciar el demo', attrs: { 'data-reset': true } })),
-          S.h('div', { class: 'nws-phone nws-phone--demo', id: 'phone', 'nwt-theme': rol.theme },
-            S.h('div', { class: 'nws-phone__screen nws-demo', id: 'mob' },
+          S.h('div', { class: 'nws-phone nws-phone--demo', id: 'phone', 'data-disp': DISP, style: 'width:' + DISPS[DISP].w + 'px;height:' + DISPS[DISP].h + 'px', 'nwt-theme': rol.theme },
+            S.h('div', { class: 'nws-phone__screen nws-demo nws-demo--' + DISP, id: 'mob' },
               ARTE,
               barraEstado(S, D.hora),
               S.h('div', { id: 'hd' }),
@@ -76,7 +79,7 @@ window.PANTALLAS['inicio'] = (function () {
       var stage = root.querySelector('#stage'), phone = root.querySelector('#phone');
       if (!stage || !phone) { return; }
       var r = stage.getBoundingClientRect();
-      var fit = Math.min((r.width - 48) / (ANCHO + BORDE * 2), (r.height - 48) / (ALTO + BORDE * 2), 1);
+      var dv = DISPS[DISP], fit = Math.min((r.width - 48) / (dv.w + BORDE * 2), (r.height - 48) / (dv.h + BORDE * 2), 1);
       phone.style.transform = 'scale(' + (fit * (mult || 1)).toFixed(3) + ')';
     },
 
@@ -660,6 +663,17 @@ window.PANTALLAS['inicio'] = (function () {
       /* ---------- zoom + reinicio ---------- */
       var zoom = { mult: 1 };
       function aplicarZoom() { self.ajustar(root, ctx, zoom.mult); }
+      /* selector de dispositivo (barra superior): cambia el marco y el contenido se reacomoda con CSS */
+      function onDisp(ev) {
+        var b = ev.target.closest && ev.target.closest('.nws-dispsw [data-seg]'); if (!b) { return; }
+        var k = b.getAttribute('data-seg'); if (!DISPS[k] || k === DISP) { return; }
+        DISP = k;
+        var ph = root.querySelector('#phone'); ph.setAttribute('data-disp', k); ph.style.width = DISPS[k].w + 'px'; ph.style.height = DISPS[k].h + 'px';
+        mob.className = mob.className.replace(/\bnws-demo--(movil|tablet|tablet-xl)\b/g, '').trim() + ' nws-demo--' + k;
+        [].forEach.call(root.querySelectorAll('.nws-dispsw .nwt-tag-group__tag'), function (x) { var on = x.getAttribute('data-seg') === k; x.classList.toggle('nwt-tag-group__tag--active', on); x.setAttribute('aria-selected', String(on)); });
+        zoom.mult = 1; aplicarZoom(); ctx.posicionarIndicadores(root);
+      }
+      root.addEventListener('click', onDisp);
       function onZoom(ev) {
         var z = ev.target.closest('[data-zoom]');
         if (z) {
@@ -688,7 +702,7 @@ window.PANTALLAS['inicio'] = (function () {
       aplicarZoom();
       return function () {
         clearT(); offCaso(); quitarPanel(); quitarRol();
-        mob.removeEventListener('click', onClick);
+        mob.removeEventListener('click', onClick); root.removeEventListener('click', onDisp);
         mob.removeEventListener('keydown', onKey);
         root.removeEventListener('click', onZoom);
         window.removeEventListener('resize', aplicarZoom);

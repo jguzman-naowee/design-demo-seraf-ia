@@ -2207,3 +2207,49 @@ section.nws-ib__r { display: flex; flex-direction: column; min-width: 0; min-hei
 /* encabezado del caso: «Ver conversación» junto a descargar */
 .nws-mcr__h { align-items: flex-start; }
 .nws-mcr__h > .nwt-button { margin-right: var(--naotech-sizing-4); }
+
+/* =====================================================================
+   Dispositivos de la demo: móvil (428), tablet (820) y tablet grande (1024).
+   El marco cambia con el selector de la barra superior; el contenido se
+   reacomoda con las clases .nws-demo--tablet / .nws-demo--tablet-xl.
+   ===================================================================== */
+.nws-dispsw { flex: none; margin-right: var(--naotech-sizing-16); }
+.nws-phone { transition: transform var(--naotech-duration-fast) var(--naotech-animation-standard); }
+/* marcos de tablet: esquinas más suaves, sin isla */
+.nws-phone[data-disp='tablet'], .nws-phone[data-disp='tablet-xl'] { border-radius: 30px; clip-path: inset(0 round 30px); }
+.nws-phone[data-disp='tablet'] .nws-phone__screen, .nws-phone[data-disp='tablet-xl'] .nws-phone__screen { border-radius: 20px; clip-path: inset(0 round 20px); }
+.nws-demo--tablet .nws-mob__status::after, .nws-demo--tablet-xl .nws-mob__status::after { display: none; }
+.nws-demo--tablet .nws-mob__status, .nws-demo--tablet-xl .nws-mob__status { padding: 0 var(--naotech-sizing-40); }
+.nws-demo--tablet .nws-demo__home::before, .nws-demo--tablet-xl .nws-demo__home::before { width: 160px; }
+
+/* medidas por dispositivo */
+.nws-demo--tablet { --nws-gutter: 40px; --nws-gap: 20px; }
+.nws-demo--tablet-xl { --nws-gutter: 56px; --nws-gap: 24px; }
+
+/* contenido de las pestañas en columnas */
+.nws-demo--tablet .nws-scroll, .nws-demo--tablet-xl .nws-scroll { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; padding-bottom: 160px; }
+.nws-demo--tablet .nws-scroll > :first-child, .nws-demo--tablet-xl .nws-scroll > :first-child { grid-column: 1 / -1; }
+.nws-demo--tablet-xl #scroll { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.nws-demo--tablet .nws-scroll > *, .nws-demo--tablet-xl .nws-scroll > * { min-width: 0; }
+.nws-demo--tablet .nws-hero, .nws-demo--tablet-xl .nws-hero { min-height: 164px; padding: var(--naotech-sizing-24); }
+
+/* encabezado y vistas completas */
+.nws-demo--tablet .nws-hd, .nws-demo--tablet-xl .nws-hd { padding-top: var(--naotech-sizing-12); }
+.nws-demo--tablet .nws-ov__body, .nws-demo--tablet-xl .nws-ov__body { padding-inline: max(var(--nws-gutter), calc((100% - 640px) / 2)); }
+.nws-demo--tablet .nws-ov__hd, .nws-demo--tablet-xl .nws-ov__hd { padding-inline: max(var(--nws-gutter), calc((100% - 640px) / 2)); }
+
+/* dock: el chat y el menú quedan en una columna centrada */
+.nws-demo--tablet .nws-dock, .nws-demo--tablet-xl .nws-dock { padding-inline: max(var(--naotech-sizing-24), calc((100% - 680px) / 2)); }
+.nws-demo--tablet .nws-navx, .nws-demo--tablet-xl .nws-navx { right: max(var(--naotech-sizing-24), calc((100% - 680px) / 2)); }
+
+/* chat: una columna centrada en lugar de pantalla completa */
+.nws-demo--tablet .nwt-bottom-sheet__container, .nws-demo--tablet-xl .nwt-bottom-sheet__container { left: 50%; right: auto; width: 640px; margin-left: -320px; border-radius: 28px 28px 0 0; box-shadow: 0 0 0 1px var(--naotech-color-gray-200), var(--naotech-shadow-large); }
+.nws-demo--tablet .nwt-bottom-sheet__container.nws-sheet--full, .nws-demo--tablet-xl .nwt-bottom-sheet__container.nws-sheet--full { border-radius: 0; }
+.nws-demo--tablet-xl .nwt-bottom-sheet__container, .nws-demo--tablet-xl .nwt-bottom-sheet__container.nws-sheet--full { width: 720px; margin-left: -360px; }
+
+.nws-demo--tablet .nws-scroll, .nws-demo--tablet-xl .nws-scroll { align-content: start; }
+.nws-demo--tablet #scroll > .nws-hero + *, .nws-demo--tablet #scroll > :last-child { }
+.nws-demo--tablet #scroll > :last-child { grid-column: 1 / -1; }
+.nws-demo--tablet .nws-dock--open .nws-navx, .nws-demo--tablet-xl .nws-dock--open .nws-navx { width: calc(min(100% - 48px, 680px) - 56px - 12px); }
+.nws-demo--tablet-xl #scroll .nws-tiles { grid-template-columns: minmax(0, 1fr); }
+.nws-demo--tablet .nwt-bottom-sheet__container.nws-sheet--full, .nws-demo--tablet-xl .nwt-bottom-sheet__container.nws-sheet--full { height: calc(100% - 28px); padding-top: 14px; border-radius: 28px 28px 0 0; }

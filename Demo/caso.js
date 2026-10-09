@@ -193,11 +193,11 @@ window.CASO = (function () {
   }
 
   /* barra superior común: marca + selector de rol (Estudiante / Bienestar) */
-  function toolbar(S, activo) {
+  function toolbar(S, activo, extra) {
     return S.toolbar({
       body: '<div class="nws-row nws-title-light"><div class="nws-title__naowee">' + window.NAOWEE.icono + '</div>' +
         S.title({ text: 'SerafIA', subtitle: activo === 'estudiante' ? 'Demo · App del estudiante' : 'Demo · Sala de bienestar' }) + '</div>',
-      actions: '<span class="nws-rolsw-lb">Ver como</span>' + S.tagGroup({ items: [{ label: 'Estudiante', value: 'estudiante' }, { label: 'Bienestar', value: 'bienestar' }], value: activo, size: 'medium', cls: 'nws-rolsw' })
+      actions: (extra || '') + '<span class="nws-rolsw-lb">Ver como</span>' + S.tagGroup({ items: [{ label: 'Estudiante', value: 'estudiante' }, { label: 'Bienestar', value: 'bienestar' }], value: activo, size: 'medium', cls: 'nws-rolsw' })
     });
   }
   function enlazarRol(raiz, ir) {

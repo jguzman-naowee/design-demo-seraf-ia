@@ -13061,6 +13061,52 @@ section.nws-ib__r { display: flex; flex-direction: column; min-width: 0; min-hei
 .nws-mcr__h { align-items: flex-start; }
 .nws-mcr__h > .nwt-button { margin-right: var(--naotech-sizing-4); }
 
+/* =====================================================================
+   Dispositivos de la demo: móvil (428), tablet (820) y tablet grande (1024).
+   El marco cambia con el selector de la barra superior; el contenido se
+   reacomoda con las clases .nws-demo--tablet / .nws-demo--tablet-xl.
+   ===================================================================== */
+.nws-dispsw { flex: none; margin-right: var(--naotech-sizing-16); }
+.nws-phone { transition: transform var(--naotech-duration-fast) var(--naotech-animation-standard); }
+/* marcos de tablet: esquinas más suaves, sin isla */
+.nws-phone[data-disp='tablet'], .nws-phone[data-disp='tablet-xl'] { border-radius: 30px; clip-path: inset(0 round 30px); }
+.nws-phone[data-disp='tablet'] .nws-phone__screen, .nws-phone[data-disp='tablet-xl'] .nws-phone__screen { border-radius: 20px; clip-path: inset(0 round 20px); }
+.nws-demo--tablet .nws-mob__status::after, .nws-demo--tablet-xl .nws-mob__status::after { display: none; }
+.nws-demo--tablet .nws-mob__status, .nws-demo--tablet-xl .nws-mob__status { padding: 0 var(--naotech-sizing-40); }
+.nws-demo--tablet .nws-demo__home::before, .nws-demo--tablet-xl .nws-demo__home::before { width: 160px; }
+
+/* medidas por dispositivo */
+.nws-demo--tablet { --nws-gutter: 40px; --nws-gap: 20px; }
+.nws-demo--tablet-xl { --nws-gutter: 56px; --nws-gap: 24px; }
+
+/* contenido de las pestañas en columnas */
+.nws-demo--tablet .nws-scroll, .nws-demo--tablet-xl .nws-scroll { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; padding-bottom: 160px; }
+.nws-demo--tablet .nws-scroll > :first-child, .nws-demo--tablet-xl .nws-scroll > :first-child { grid-column: 1 / -1; }
+.nws-demo--tablet-xl #scroll { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.nws-demo--tablet .nws-scroll > *, .nws-demo--tablet-xl .nws-scroll > * { min-width: 0; }
+.nws-demo--tablet .nws-hero, .nws-demo--tablet-xl .nws-hero { min-height: 164px; padding: var(--naotech-sizing-24); }
+
+/* encabezado y vistas completas */
+.nws-demo--tablet .nws-hd, .nws-demo--tablet-xl .nws-hd { padding-top: var(--naotech-sizing-12); }
+.nws-demo--tablet .nws-ov__body, .nws-demo--tablet-xl .nws-ov__body { padding-inline: max(var(--nws-gutter), calc((100% - 640px) / 2)); }
+.nws-demo--tablet .nws-ov__hd, .nws-demo--tablet-xl .nws-ov__hd { padding-inline: max(var(--nws-gutter), calc((100% - 640px) / 2)); }
+
+/* dock: el chat y el menú quedan en una columna centrada */
+.nws-demo--tablet .nws-dock, .nws-demo--tablet-xl .nws-dock { padding-inline: max(var(--naotech-sizing-24), calc((100% - 680px) / 2)); }
+.nws-demo--tablet .nws-navx, .nws-demo--tablet-xl .nws-navx { right: max(var(--naotech-sizing-24), calc((100% - 680px) / 2)); }
+
+/* chat: una columna centrada en lugar de pantalla completa */
+.nws-demo--tablet .nwt-bottom-sheet__container, .nws-demo--tablet-xl .nwt-bottom-sheet__container { left: 50%; right: auto; width: 640px; margin-left: -320px; border-radius: 28px 28px 0 0; box-shadow: 0 0 0 1px var(--naotech-color-gray-200), var(--naotech-shadow-large); }
+.nws-demo--tablet .nwt-bottom-sheet__container.nws-sheet--full, .nws-demo--tablet-xl .nwt-bottom-sheet__container.nws-sheet--full { border-radius: 0; }
+.nws-demo--tablet-xl .nwt-bottom-sheet__container, .nws-demo--tablet-xl .nwt-bottom-sheet__container.nws-sheet--full { width: 720px; margin-left: -360px; }
+
+.nws-demo--tablet .nws-scroll, .nws-demo--tablet-xl .nws-scroll { align-content: start; }
+.nws-demo--tablet #scroll > .nws-hero + *, .nws-demo--tablet #scroll > :last-child { }
+.nws-demo--tablet #scroll > :last-child { grid-column: 1 / -1; }
+.nws-demo--tablet .nws-dock--open .nws-navx, .nws-demo--tablet-xl .nws-dock--open .nws-navx { width: calc(min(100% - 48px, 680px) - 56px - 12px); }
+.nws-demo--tablet-xl #scroll .nws-tiles { grid-template-columns: minmax(0, 1fr); }
+.nws-demo--tablet .nwt-bottom-sheet__container.nws-sheet--full, .nws-demo--tablet-xl .nwt-bottom-sheet__container.nws-sheet--full { height: calc(100% - 28px); padding-top: 14px; border-radius: 28px 28px 0 0; }
+
 </style>
 <div id="app" style="height:100%"></div>
 <!-- pantallas: una línea por archivo, antes de app.js -->
@@ -14496,11 +14542,11 @@ window.CASO = (function () {
   }
 
   /* barra superior común: marca + selector de rol (Estudiante / Bienestar) */
-  function toolbar(S, activo) {
+  function toolbar(S, activo, extra) {
     return S.toolbar({
       body: '<div class="nws-row nws-title-light"><div class="nws-title__naowee">' + window.NAOWEE.icono + '</div>' +
         S.title({ text: 'SerafIA', subtitle: activo === 'estudiante' ? 'Demo · App del estudiante' : 'Demo · Sala de bienestar' }) + '</div>',
-      actions: '<span class="nws-rolsw-lb">Ver como</span>' + S.tagGroup({ items: [{ label: 'Estudiante', value: 'estudiante' }, { label: 'Bienestar', value: 'bienestar' }], value: activo, size: 'medium', cls: 'nws-rolsw' })
+      actions: (extra || '') + '<span class="nws-rolsw-lb">Ver como</span>' + S.tagGroup({ items: [{ label: 'Estudiante', value: 'estudiante' }, { label: 'Bienestar', value: 'bienestar' }], value: activo, size: 'medium', cls: 'nws-rolsw' })
     });
   }
   function enlazarRol(raiz, ir) {
@@ -14546,6 +14592,9 @@ window.PANTALLAS = window.PANTALLAS || {};
 window.PANTALLAS['inicio'] = (function () {
 
   var ANCHO = 428, ALTO = 926, BORDE = 12;
+  /* tamaños de dispositivo de la demo: móvil (el de siempre), tablet y tablet grande (vertical) */
+  var DISPS = { movil: { w: 428, h: 926, n: 'Móvil' }, tablet: { w: 820, h: 1180, n: 'Tablet' }, 'tablet-xl': { w: 1024, h: 1366, n: 'Tablet grande' } };
+  var DISP = 'movil';
 
   /* ilustraciones de las cartas y tokens de color: arte.js (compartido con ../Estilos/estilos.html) */
   var ARTE = window.SERAFIA_ARTE.defs, F = window.SERAFIA_ARTE.F, K = window.SERAFIA_ARTE.K;
@@ -14574,7 +14623,7 @@ window.PANTALLAS['inicio'] = (function () {
     render: function (ctx) {
       var S = ctx.S, rol = ctx.rol, D = ctx.D.demo;
       return S.h('div', { class: 'nws-col', style: 'height:100%;background:var(--naotech-app-color-100)' },
-        window.CASO.toolbar(S, 'estudiante'),
+        window.CASO.toolbar(S, 'estudiante', S.tagGroup({ items: Object.keys(DISPS).map(function (k) { return { label: DISPS[k].n, value: k }; }), value: DISP, size: 'medium', cls: 'nws-dispsw' })),
         S.h('div', { class: 'nws-phone-stage', id: 'stage' },
           S.h('div', { class: 'nws-dpanel', id: 'dpanel' }),
           S.h('div', { class: 'nws-phone-zoom' },
@@ -14582,8 +14631,8 @@ window.PANTALLAS['inicio'] = (function () {
             S.iconButton({ icon: 'refresh', size: 'small', variant: 'mute', theme: 'neutral', label: 'Ajustar al espacio disponible', attrs: { 'data-zoom': 'fit' } }),
             S.iconButton({ icon: 'zoom-in', size: 'small', variant: 'mute', theme: 'neutral', label: 'Acercar', attrs: { 'data-zoom': 'in' } }),
             S.iconButton({ icon: 'return', size: 'small', variant: 'mute', theme: 'neutral', label: 'Reiniciar el demo', attrs: { 'data-reset': true } })),
-          S.h('div', { class: 'nws-phone nws-phone--demo', id: 'phone', 'nwt-theme': rol.theme },
-            S.h('div', { class: 'nws-phone__screen nws-demo', id: 'mob' },
+          S.h('div', { class: 'nws-phone nws-phone--demo', id: 'phone', 'data-disp': DISP, style: 'width:' + DISPS[DISP].w + 'px;height:' + DISPS[DISP].h + 'px', 'nwt-theme': rol.theme },
+            S.h('div', { class: 'nws-phone__screen nws-demo nws-demo--' + DISP, id: 'mob' },
               ARTE,
               barraEstado(S, D.hora),
               S.h('div', { id: 'hd' }),
@@ -14601,7 +14650,7 @@ window.PANTALLAS['inicio'] = (function () {
       var stage = root.querySelector('#stage'), phone = root.querySelector('#phone');
       if (!stage || !phone) { return; }
       var r = stage.getBoundingClientRect();
-      var fit = Math.min((r.width - 48) / (ANCHO + BORDE * 2), (r.height - 48) / (ALTO + BORDE * 2), 1);
+      var dv = DISPS[DISP], fit = Math.min((r.width - 48) / (dv.w + BORDE * 2), (r.height - 48) / (dv.h + BORDE * 2), 1);
       phone.style.transform = 'scale(' + (fit * (mult || 1)).toFixed(3) + ')';
     },
 
@@ -15185,6 +15234,17 @@ window.PANTALLAS['inicio'] = (function () {
       /* ---------- zoom + reinicio ---------- */
       var zoom = { mult: 1 };
       function aplicarZoom() { self.ajustar(root, ctx, zoom.mult); }
+      /* selector de dispositivo (barra superior): cambia el marco y el contenido se reacomoda con CSS */
+      function onDisp(ev) {
+        var b = ev.target.closest && ev.target.closest('.nws-dispsw [data-seg]'); if (!b) { return; }
+        var k = b.getAttribute('data-seg'); if (!DISPS[k] || k === DISP) { return; }
+        DISP = k;
+        var ph = root.querySelector('#phone'); ph.setAttribute('data-disp', k); ph.style.width = DISPS[k].w + 'px'; ph.style.height = DISPS[k].h + 'px';
+        mob.className = mob.className.replace(/\bnws-demo--(movil|tablet|tablet-xl)\b/g, '').trim() + ' nws-demo--' + k;
+        [].forEach.call(root.querySelectorAll('.nws-dispsw .nwt-tag-group__tag'), function (x) { var on = x.getAttribute('data-seg') === k; x.classList.toggle('nwt-tag-group__tag--active', on); x.setAttribute('aria-selected', String(on)); });
+        zoom.mult = 1; aplicarZoom(); ctx.posicionarIndicadores(root);
+      }
+      root.addEventListener('click', onDisp);
       function onZoom(ev) {
         var z = ev.target.closest('[data-zoom]');
         if (z) {
@@ -15213,7 +15273,7 @@ window.PANTALLAS['inicio'] = (function () {
       aplicarZoom();
       return function () {
         clearT(); offCaso(); quitarPanel(); quitarRol();
-        mob.removeEventListener('click', onClick);
+        mob.removeEventListener('click', onClick); root.removeEventListener('click', onDisp);
         mob.removeEventListener('keydown', onKey);
         root.removeEventListener('click', onZoom);
         window.removeEventListener('resize', aplicarZoom);
