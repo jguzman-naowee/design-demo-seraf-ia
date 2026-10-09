@@ -2651,3 +2651,5 @@ section.nws-ib__r { display: flex; flex-direction: column; min-width: 0; min-hei
 .nws-tg:hover { background: var(--naotech-color-indigo-050); border-color: var(--naotech-color-indigo-200); }
 .nws-tg:focus-visible { outline: 2px solid var(--naotech-color-indigo-600); outline-offset: 2px; }
 .nws-tg--p { background: var(--nws-cta); border-color: var(--nws-cta); color: var(--naotech-color-white-alpha-100); } .nws-tg--p .nwt-icon { color: inherit; } .nws-tg--p:hover { background: var(--nws-cta); filter: brightness(1.08); }
+/* al iniciar la conversación las sugerencias de la bienvenida desaparecen */
+.nws-sheet--full.nws-chat--on .nws-sug { display: none !important; }

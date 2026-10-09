@@ -652,7 +652,7 @@ window.PANTALLAS['inicio'] = (function () {
           h += '<div class="nws-cierre"><b>Qué pasa ahora</b><p>' + CIERRE[ult.accion] + '</p>' + (crisis ? '' : (st.valora ? '<p>Gracias por contármelo. Lo tendremos en cuenta.</p>' :
             '<b style="margin-top:var(--naotech-sizing-8)">¿Te sirvió este espacio?</b><div class="nws-opts">' + ['No mucho', 'Un poco', 'Sí'].map(function (x) { return S.button({ label: x, theme: 'neutral', variant: 'quiet', size: 'small', attrs: { 'data-a': 'valora' } }); }).join('') + '</div>')) + '</div>';
         }
-        pintarCuerpo(b, h); sincronizarBienvenida();
+        pintarCuerpo(b, h); sincronizarBienvenida(); sugerencias(false);
         pintarPie(f, '<div class="nws-composer nws-composer--off"><input type="text" disabled aria-label="Escribe a SerafIA" placeholder="' + (crisis ? 'Aquí sigo contigo…' : 'Reproduciendo un guion de demo…') + '">' +
           '<span class="nws-fab" style="width:40px;height:40px;box-shadow:none"><button disabled aria-label="Enviar" class="nws-sendbtn" style="all:unset;display:flex;align-items:center;justify-content:center;width:100%;height:100%;line-height:0">' + S.icon('arrow-up') + '</button></span></div>');
       }
