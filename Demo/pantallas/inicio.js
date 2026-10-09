@@ -720,9 +720,9 @@ window.PANTALLAS['inicio'] = (function () {
           if (grande()) { var ic = (SUG[o.label] || ['answer'])[0]; return '<button type="button" class="nws-tg' + (o.primary ? ' nws-tg--p' : '') + (o.crisis ? ' nws-tg--c' : '') + '" data-a="opt:' + i + '">' + S.icon(ic) + '<span>' + o.label + '</span></button>'; }
           return S.button({ label: o.label, theme: o.crisis ? 'negative' : 'neutral', variant: o.primary ? 'loud' : 'quiet', size: 'medium', attrs: { 'data-a': 'opt:' + i } });
         }).join('') + '</div>' : '') +
-          '<div class="nws-composer"><input type="text" id="chat-in" aria-label="Escribe a SerafIA" placeholder="Pregúntale a SerafIA…" autocomplete="off">' +
-          S.iconButton({ icon: 'microphone', variant: 'mute', theme: 'neutral', size: 'medium', label: 'Dictar', attrs: { 'data-toast': 'Dictado por voz' } }) +
-          '<span class="nws-fab" style="width:40px;height:40px;box-shadow:none">' + '<button data-a="send" aria-label="Enviar" class="nws-sendbtn" style="all:unset;display:flex;align-items:center;justify-content:center;width:100%;height:100%;cursor:pointer;line-height:0">' + S.icon('arrow-up') + '</button></span></div>';
+          '<div class="nws-composer nws-composer--off"><input type="text" id="chat-in" aria-label="Escribe a SerafIA" placeholder="Elige una de las opciones de arriba…" autocomplete="off" disabled readonly tabindex="-1">' +
+          S.iconButton({ icon: 'microphone', variant: 'mute', theme: 'neutral', size: 'medium', label: 'Dictar', disabled: true }) +
+          '<span class="nws-fab" style="width:40px;height:40px;box-shadow:none">' + '<button disabled aria-label="Enviar" class="nws-sendbtn" style="all:unset;display:flex;align-items:center;justify-content:center;width:100%;height:100%;cursor:pointer;line-height:0">' + S.icon('arrow-up') + '</button></span></div>';
         if (!pintarPie(f, pie)) { return; }
         var inp = f.querySelector('#chat-in'); if (inp) { inp.value = st.tmp; inp.addEventListener('input', function () { st.tmp = inp.value; }); }
       }
@@ -907,13 +907,14 @@ window.PANTALLAS['inicio'] = (function () {
         else if (k === 'ayuda') { charlaAyuda(); }
         else if (k === 'bien') { var bo = bienOps()[+v]; if (bo) { bo.run(); } }
         else if (k === 'opt') { var o = st.opts[+v]; if (o) { o.run(); } }
-        else if (k === 'send') {
+        else if (k === 'send') { return; }
+        else if (k === 'send-off') {
           var t = (st.tmp || '').trim(); if (!t) { return; }
           st.tmp = ''; yo(t); say('Gracias por contármelo. Sigo aquí contigo.', [], 900);
         }
       }
       function onKey(ev) {
-        if (ev.key === 'Enter' && ev.target.id === 'chat-in') { var b = mob.querySelector('[data-a="send"]'); if (b) { b.click(); } return; }
+        if (ev.target.id === 'chat-in') { ev.preventDefault(); return; }
         if ((ev.key === 'Enter' || ev.key === ' ') && ev.target.matches && ev.target.matches('[role="switch"][data-a], .nwt-tag[data-a], .nws-clase2--click')) { ev.preventDefault(); ev.target.click(); }
       }
 
