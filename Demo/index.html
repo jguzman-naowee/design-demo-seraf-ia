@@ -13025,6 +13025,11 @@ section.nws-ib__r { display: flex; flex-direction: column; min-width: 0; min-hei
 @media (prefers-reduced-motion: reduce) { .nws-tab--in > * { animation: none; } }
 
 
+/* panel de guiones movible: se arrastra desde el encabezado */
+.nws-gpanel .nws-dp__hd { cursor: grab; touch-action: none; user-select: none; }
+.nws-gpanel--mov .nws-dp__hd { cursor: grabbing; }
+.nws-gpanel--mov { transition: none; }
+
 </style>
 <div id="app" style="height:100%"></div>
 <!-- pantallas: una línea por archivo, antes de app.js -->
@@ -15732,8 +15737,7 @@ window.PANTALLAS['bienestar'] = (function () {
           var hay = !!vv.ultimo;
           var crisis = vv.crisis ? '<div class="nws-crisis" role="alert"><span class="nws-crisis__ic">' + S.icon('attention') + '</span><div><b>Atención inmediata</b><p>“' + resaltar(vv.extractoCrisis, vv.spans) + '”</p></div>' +
             S.badge({ label: 'Escalamiento inmediato', theme: 'negative', variant: 'loud', size: 'medium' }) + '</div>' : '';
-          var idle = !live ? '<div class="nws-ib-idle">' + S.button({ label: 'Reproducir onboarding', icon: 'play-filled', variant: 'loud', theme: 'secondary', size: 'medium', attrs: { 'data-d': 'reproducir' } }) +
-            '<span class="nws-txt">Estado actual del caso. Repite la conversación turno a turno con ▶</span></div>' : '';
+          var idle = '';
           var cuerpo;
           var fijo = crisis + (hay ? panelDecision(vv, ss, true) : '');
           if (modo === 'resumen') { cuerpo = idle + '<div class="nws-ib-th">' + hilo(v, c, s, live) + '</div>'; }
@@ -15817,11 +15821,38 @@ window.PANTALLAS['bienestar'] = (function () {
       }
 
       var quitarRol = C.enlazarRol(root, ctx.ir), quitarPanel = C.enlazar(root), off = C.on(pintar);
+      /* el panel de guiones se puede mover para que no tape la información */
+      var arr = null;
+      function onDown(ev) {
+        var hd = ev.target.closest && ev.target.closest('.nws-dp__hd');
+        if (!hd || ev.target.closest('.nws-dp__estado') || (ev.button != null && ev.button !== 0)) { return; }
+        var gp = $('gpanel'); if (!gp || !gp.offsetParent) { return; }
+        var pr = gp.offsetParent.getBoundingClientRect(), r = gp.getBoundingClientRect();
+        arr = { gp: gp, x: ev.clientX, y: ev.clientY, dx: arr && arr.gp === gp ? arr.dx : (gp._dx || 0), dy: gp._dy || 0, pr: pr, r: r };
+        arr.dx = gp._dx || 0; arr.dy = gp._dy || 0;
+        gp.classList.add('nws-gpanel--mov'); ev.preventDefault();
+        document.addEventListener('pointermove', onMove); document.addEventListener('pointerup', onUp); document.addEventListener('pointercancel', onUp);
+      }
+      function onMove(ev) {
+        if (!arr) { return; }
+        var mx = ev.clientX - arr.x, my = ev.clientY - arr.y;
+        /* sin salirse del área de la sala */
+        mx = Math.max(arr.pr.left - arr.r.left, Math.min(arr.pr.right - arr.r.right, mx));
+        my = Math.max(arr.pr.top - arr.r.top, Math.min(arr.pr.bottom - arr.r.bottom, my));
+        arr.gp.style.transform = 'translate(' + (arr.dx + mx) + 'px,' + (arr.dy + my) + 'px)';
+        arr.mx = arr.dx + mx; arr.my = arr.dy + my;
+      }
+      function onUp() {
+        if (arr) { arr.gp._dx = arr.mx != null ? arr.mx : arr.dx; arr.gp._dy = arr.my != null ? arr.my : arr.dy; arr.gp.classList.remove('nws-gpanel--mov'); }
+        arr = null;
+        document.removeEventListener('pointermove', onMove); document.removeEventListener('pointerup', onUp); document.removeEventListener('pointercancel', onUp);
+      }
+      root.addEventListener('pointerdown', onDown);
       root.addEventListener('click', onClick);
       function onKey(ev) { var t = ev.target.closest && ev.target.closest('[data-fniv][role=button]'); if (t && (ev.key === 'Enter' || ev.key === ' ')) { ev.preventDefault(); var k0 = t.getAttribute('data-fniv'); fNiv[k0] = !fNiv[k0]; pintar(); } }
       root.addEventListener('keydown', onKey);
       pintar();
-      return function () { off(); quitarRol(); quitarPanel(); root.removeEventListener('click', onClick); root.removeEventListener('keydown', onKey); };
+      return function () { off(); quitarRol(); quitarPanel(); root.removeEventListener('click', onClick); root.removeEventListener('pointerdown', onDown); onUp(); root.removeEventListener('keydown', onKey); };
     }
   };
 })();

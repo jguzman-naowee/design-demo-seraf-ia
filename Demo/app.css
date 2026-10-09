@@ -2171,3 +2171,8 @@ section.nws-ib__r { display: flex; flex-direction: column; min-width: 0; min-hei
 .nws-tab--in > * { animation: nws-tab-in .38s var(--naotech-animation-deceleration) both; }
 @media (prefers-reduced-motion: reduce) { .nws-tab--in > * { animation: none; } }
 
+
+/* panel de guiones movible: se arrastra desde el encabezado */
+.nws-gpanel .nws-dp__hd { cursor: grab; touch-action: none; user-select: none; }
+.nws-gpanel--mov .nws-dp__hd { cursor: grabbing; }
+.nws-gpanel--mov { transition: none; }
