@@ -13565,6 +13565,14 @@ section.nws-ib__r { display: flex; flex-direction: column; min-width: 0; min-hei
 .nws-demo--tablet .nws-cred, .nws-demo--tablet-xl .nws-cred { aspect-ratio: auto; min-height: 500px; width: 100%; box-sizing: border-box; }
 .nws-demo--tablet .nws-cg__qr, .nws-demo--tablet-xl .nws-cg__qr { min-height: 500px; box-sizing: border-box; }
 
+/* carnet en móvil: el encabezado con el degradado y el orbe de la credencial */
+.nws-carnet .nws-carnet__top { background: linear-gradient(135deg, var(--naotech-color-indigo-700) 0%, var(--naotech-color-indigo-500) 55%, var(--naotech-color-blue-400) 100%); color: var(--naotech-color-white-alpha-100); }
+.nws-carnet .nws-carnet__top .nws-txt, .nws-carnet .nws-carnet__top .nws-mono-over, .nws-carnet .nws-carnet__top .nws-h1, .nws-carnet .nws-carnet__top .nws-h3 { color: var(--naotech-color-white-alpha-100); }
+.nws-carnet .nws-carnet__top .nws-mono-over { opacity: .85; }
+.nws-carnet .nws-carnet__orb { position: absolute; right: -40px; top: -40px; width: 150px; height: 150px; opacity: .95; box-shadow: none; }
+.nws-carnet .nws-carnet__id .nwt-avatar { box-shadow: 0 0 0 4px rgb(255 255 255 / .6); }
+.nws-carnet .nws-carnet__orb { width: 110px; height: 110px; right: -36px; top: -36px; }
+
 </style>
 <div id="app" style="height:100%"></div>
 <!-- pantallas: una línea por archivo, antes de app.js -->
@@ -15430,7 +15438,7 @@ window.PANTALLAS['inicio'] = (function () {
       function ovCarnet() {
         if (grande()) { return ovCarnetG(); }
         return '<div class="nws-ov">' + atras('Carnet') + '<div class="nws-ov__body">' +
-          '<div class="nws-carnet"><div class="nws-carnet__top">' +
+          '<div class="nws-carnet"><div class="nws-carnet__top"><span class="nws-orbe nws-carnet__orb"></span>' +
           '<div style="position:relative"><span class="nws-mono-over">Carnet estudiantil</span><p class="nws-h3" style="font-size:var(--naotech-body-font-size)">' + E.universidad + '</p></div>' +
           '<div class="nws-carnet__id">' + S.avatar({ text: E.iniciales, size: 'large', theme: 'secondary', variant: 'loud' }) +
           '<div class="nws-grow"><p class="nws-h1">' + E.nombre + '</p><p class="nws-txt">' + E.programa + '</p><p class="nws-txt" style="font-feature-settings:\'tnum\'">Código ' + E.codigo + '</p></div></div></div>' +

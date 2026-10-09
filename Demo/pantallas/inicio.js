@@ -391,7 +391,7 @@ window.PANTALLAS['inicio'] = (function () {
       function ovCarnet() {
         if (grande()) { return ovCarnetG(); }
         return '<div class="nws-ov">' + atras('Carnet') + '<div class="nws-ov__body">' +
-          '<div class="nws-carnet"><div class="nws-carnet__top">' +
+          '<div class="nws-carnet"><div class="nws-carnet__top"><span class="nws-orbe nws-carnet__orb"></span>' +
           '<div style="position:relative"><span class="nws-mono-over">Carnet estudiantil</span><p class="nws-h3" style="font-size:var(--naotech-body-font-size)">' + E.universidad + '</p></div>' +
           '<div class="nws-carnet__id">' + S.avatar({ text: E.iniciales, size: 'large', theme: 'secondary', variant: 'loud' }) +
           '<div class="nws-grow"><p class="nws-h1">' + E.nombre + '</p><p class="nws-txt">' + E.programa + '</p><p class="nws-txt" style="font-feature-settings:\'tnum\'">Código ' + E.codigo + '</p></div></div></div>' +
