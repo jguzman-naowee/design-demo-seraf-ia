@@ -2696,3 +2696,18 @@ section.nws-ib__r { display: flex; flex-direction: column; min-width: 0; min-hei
 .nws-demo--tablet .nws-cg { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .nws-demo--tablet .nws-cred { grid-column: 1 / -1; }
 .nws-demo--tablet .nws-cg__qr { grid-column: 1; align-self: stretch; } .nws-demo--tablet .nws-cg__usos { grid-column: 2; align-self: stretch; }
+
+/* carnet para pantallas grandes: credencial angosta (tipo card vertical) y código, en dos columnas también en tablet */
+.nws-demo--tablet .nws-cg__l, .nws-demo--tablet-xl .nws-cg__l { display: flex; }
+.nws-demo--tablet .nws-cg, .nws-demo--tablet-xl .nws-cg { grid-template-columns: minmax(0, 340px) minmax(0, 1fr); justify-content: center; gap: var(--naotech-sizing-32); align-items: stretch; }
+.nws-demo--tablet .nws-cred, .nws-demo--tablet-xl .nws-cred { aspect-ratio: 0.66; max-width: none; width: 100%; margin: 0; grid-column: auto; order: 0; padding: var(--naotech-sizing-24); }
+.nws-demo--tablet .nws-cg__qr, .nws-demo--tablet-xl .nws-cg__qr { grid-column: auto; order: 0; align-self: stretch; justify-content: center; }
+.nws-demo--tablet .nws-cred__orb, .nws-demo--tablet-xl .nws-cred__orb { width: 160px; height: 160px; right: -40px; top: -40px; }
+.nws-demo--tablet .nws-cred__id, .nws-demo--tablet-xl .nws-cred__id { flex-direction: column; align-items: flex-start; gap: var(--naotech-sizing-12); }
+.nws-demo--tablet .nws-cred > footer, .nws-demo--tablet-xl .nws-cred > footer { flex-direction: column; gap: var(--naotech-sizing-12); }
+.nws-demo--tablet .nws-cg, .nws-demo--tablet-xl .nws-cg { align-items: start; }
+.nws-demo--tablet .nws-cg__l, .nws-demo--tablet-xl .nws-cg__l { width: 100%; min-width: 0; }
+.nws-demo--tablet .nws-cred, .nws-demo--tablet-xl .nws-cred { align-self: start; min-width: 0; }
+.nws-demo--tablet .nws-cg__qr, .nws-demo--tablet-xl .nws-cg__qr { align-self: start; min-height: 100%; }
+.nws-demo--tablet .nws-cred, .nws-demo--tablet-xl .nws-cred { aspect-ratio: auto; min-height: 500px; width: 100%; box-sizing: border-box; }
+.nws-demo--tablet .nws-cg__qr, .nws-demo--tablet-xl .nws-cg__qr { min-height: 500px; box-sizing: border-box; }

@@ -382,7 +382,7 @@ window.PANTALLAS['inicio'] = (function () {
             '<header><span class="nws-cred__u">' + E.universidad + '</span><span class="nws-cred__t">Carnet estudiantil</span></header>' +
             '<div class="nws-cred__id">' + S.avatar({ text: E.iniciales, size: 'large', theme: 'secondary', variant: 'loud' }) + '<div><p class="nws-cred__n">' + E.nombre + '</p><p>' + E.programa + '</p></div></div>' +
             '<footer><div><span>Código</span><b>' + E.codigo + '</b></div><div><span>Estado</span><b>' + 'Vigente · 2026-2' + '</b></div></footer></article>' +
-            '<div class="nws-cg__usos nws-glass nws-block"><h2 class="nws-h2">Con tu carnet puedes</h2><ul>' + lista + '</ul></div></div>' +
+            '</div>' +
           '<aside class="nws-glass nws-block nws-cg__qr" aria-label="Código para validar tu carnet"><h2 class="nws-h2">Muestra este código</h2><div class="nws-qr"><div style="width:220px;height:220px">' + QR + '</div></div>' +
             '<div class="nws-sec" style="width:100%;justify-content:space-between"><span class="nws-txt">Se renueva en 0:24</span>' + S.badge({ label: 'Vigente', theme: 'positive', variant: 'quiet', size: 'small' }) + '</div>' + S.progress({ value: 80, theme: 'secondary' }) +
             '<p class="nws-txt">Sube el brillo de tu pantalla. Funciona sin conexión con tu último estado válido.</p></aside>' +
