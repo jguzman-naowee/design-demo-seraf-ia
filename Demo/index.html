@@ -14899,12 +14899,9 @@ window.PANTALLAS['inicio'] = (function () {
         var ty = b.querySelector('.nws-typing');
         if (ty && st.tyOn) { ty.classList.add('nws-old'); }
         st.tyOn = !!ty;
-        /* la tarjeta de cuidado aparece en su sitio con un fundido; el chat baja con calma después, sin saltar */
-        var ultimo = kids[kids.length - 1];
-        if (ultimo && ultimo.classList.contains('nws-care') && !ultimo.classList.contains('nws-old')) {
-          clearTimeout(st.tScroll);
-          st.tScroll = setTimeout(function () { if (b.scrollTo) { b.scrollTo({ top: b.scrollHeight, behavior: 'smooth' }); } else { b.scrollTop = b.scrollHeight; } }, 420);
-        } else { b.scrollTop = b.scrollHeight; }
+        /* todo queda ya en su posición final; lo nuevo solo aparece con un fundido */
+        clearTimeout(st.tScroll);
+        b.scrollTop = b.scrollHeight;
       }
       function pintarPie(f, html) {
         if (st.pie === html) { return false; }
