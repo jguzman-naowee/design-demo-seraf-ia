@@ -391,8 +391,8 @@ window.PANTALLAS['inicio'] = (function () {
       function parrafos(t) { return t.split(/\\n|\n/).filter(function (x) { return x.trim(); }).map(function (x) { return '<p class="nws-msg">' + S.esc(x) + '</p>'; }).join(''); }
       /* Tarjeta de cuidado: UN solo componente (crisis en el guion y «Ayuda ahora» desde cualquier vista),
          con la misma información y composición de la demo de referencia */
-      function tarjetaCuidado() {
-        return '<div class="nws-care nws-care--ref"><div class="nws-care__hd"><span class="nws-care__ic">' + S.icon('favorite') + '</span><h3 class="nws-care__t">No tienes que pasar por esto a solas.</h3></div>' +
+      function tarjetaCuidado(fade) {
+        return '<div class="nws-care nws-care--ref' + (fade ? ' nws-care--fade' : '') + '"><div class="nws-care__hd"><span class="nws-care__ic">' + S.icon('favorite') + '</span><h3 class="nws-care__t">No tienes que pasar por esto a solas.</h3></div>' +
           '<p>Lo que escribes es importante. Ya avisé a una persona del equipo de bienestar para que te contacte.</p>' +
           '<p>Si estás en peligro ahora, llama al 123 o al 192, opción 4. Aquí sigo, sin irme.</p>' +
           '<div class="nws-care__aviso"><span class="nws-care__ok">' + S.icon('positive') + '</span><div><b>Aviso prioritario enviado al equipo de bienestar</b><span>Hace un momento · una persona te va a contactar</span></div></div>' +
@@ -574,12 +574,11 @@ window.PANTALLAS['inicio'] = (function () {
         if (C.estado().modo) { C.salirDelModo(); }
         if (st.sheet) {
           if (st.msgs.some(function (m) { return m.html; })) { return; }
-          st.typing = true; st.opts = []; pintarChat();
-          later(function () { st.typing = false; st.msgs.push({ f: 's', html: tarjetaCuidado() }); pintarChat(); }, 900);
+          st.opts = []; st.msgs.push({ f: 's', html: tarjetaCuidado(true) }); pintarChat();
           return;
         }
         /* chat cerrado: se abre ya con la conversación en curso, así no aparece la bienvenida ni el viaje del orbe */
-        abrirSheet(function () {}, true, function () { st.msgs.push({ f: 's', html: tarjetaCuidado() }); });
+        abrirSheet(function () {}, true, function () { st.msgs.push({ f: 's', html: tarjetaCuidado(true) }); });
       }
 
       /* ---------- navegación ---------- */

@@ -2018,8 +2018,8 @@ section.nws-ib__r { display: flex; flex-direction: column; min-width: 0; min-hei
 
 /* La tarjeta de cuidado aparece de una vez, sin deslizarse como un mensaje */
 .nws-care * { animation: none !important; transition: none; }
-/* la tarjeta de cuidado aparece de una, solo con fundido (sin deslizarse desde abajo) */
-.nws-care { animation: nws-fade .35s ease-out both !important; transform: none; }
+/* «Ayuda ahora» desde el encabezado: la tarjeta aparece ya fijada, solo con fundido */
+.nws-care.nws-care--fade { animation: nws-fade .35s ease-out both !important; }
 #chat-body > .nws-care.nws-old { animation: none !important; }
 
 /* Selector «¿Qué acción corresponde?»: jerarquía clara, una opción por fila con su explicación */
@@ -2161,6 +2161,3 @@ section.nws-ib__r { display: flex; flex-direction: column; min-width: 0; min-hei
 .nws-pd__b .nws-pd__f { border-top: 0; padding-top: 0; }
 .nws-pd__b .nws-adj__o { background: var(--naotech-color-white-alpha-100); }
 
-/* tarjeta de cuidado y cierre: aparecen solo con fundido, sin deslizarse desde abajo */
-.nws-cierre { animation: nws-fade .35s ease-out both !important; transform: none; }
-#chat-body > .nws-cierre.nws-old { animation: none !important; }
