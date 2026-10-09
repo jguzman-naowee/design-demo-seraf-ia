@@ -2622,7 +2622,6 @@ section.nws-ib__r { display: flex; flex-direction: column; min-width: 0; min-hei
 .nws-evcar__h .nws-h2, .nws-evcar__h .nws-txt { line-height: 32px; margin: 0; }
 .nws-evcar__h .nws-txt { font-size: var(--naotech-smalltext-font-size); }
 /* DC-081: cuatro herramientas de bienestar, en dos columnas (móvil) */
-.nws-herr { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .nws-demo--tablet-xl .nws-herr, .nws-demo--tablet .nws-herr { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 /* DC-082: menú lateral más largo y con el hover separado de los bordes */
 .nws-demo--tablet-xl .nws-dock--x .nws-navx, .nws-demo--tablet-xl .nws-dock--x.nws-dock--open .nws-navx { width: 96px; padding: var(--naotech-sizing-28) 0; left: calc((var(--nws-rail) + var(--nws-gutter) - 96px) / 2); }
@@ -2638,6 +2637,6 @@ section.nws-ib__r { display: flex; flex-direction: column; min-width: 0; min-hei
 .nws-demo--tablet-xl .nwt-bottom-sheet__container.nws-sheet--full { left: 0; }
 .nws-demo--tablet-xl .nws-mob__toast { left: var(--nws-gutter); }
 /* DC-085: sin tarjetas de sugerencia; las sugerencias van como tags sobre el campo de texto */
-.nws-sug { display: none !important; }
+
 .nws-gv { width: 100%; max-width: none; }
 .nws-line--btn .nwt-avatar-icon { --pvt-avatar-icon-size: 40px; width: 40px; height: 40px; flex: none; }

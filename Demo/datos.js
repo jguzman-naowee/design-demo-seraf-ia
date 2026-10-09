@@ -114,6 +114,11 @@ window.DATOS = {
     "herramientas": [
       { "nombre": "Respirar conmigo", "tiempo": "1 min", "icono": "leaf" },
       { "nombre": "Grounding 5-4-3-2-1", "tiempo": "3 min", "icono": "sun" },
+      { "nombre": "Audio para dormir", "tiempo": "10 min", "icono": "moon" }
+    ],
+    "herramientasGrande": [
+      { "nombre": "Respirar conmigo", "tiempo": "1 min", "icono": "leaf" },
+      { "nombre": "Grounding 5-4-3-2-1", "tiempo": "3 min", "icono": "sun" },
       { "nombre": "Modo foco · Pomodoro", "tiempo": "25 + 5 min", "icono": "dispatch-time" },
       { "nombre": "Cronómetro de estudio", "tiempo": "A tu ritmo", "icono": "refresh" }
     ],

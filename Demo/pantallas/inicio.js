@@ -325,7 +325,7 @@ window.PANTALLAS['inicio'] = (function () {
 
       /* ---------- YO ---------- */
       function vistaYo() {
-        var h = D.herramientas.map(function (x) {
+        var h = (grande() ? D.herramientasGrande : D.herramientas).map(function (x) {
           return '<button data-toast="' + x.nombre + '">' + S.avatarIcon({ icon: x.icono, theme: 'secondary' }) + '<b>' + x.nombre + '</b><span>' + x.tiempo + '</span></button>';
         }).join('');
         var n = D.notificaciones.map(function (x) {
@@ -588,10 +588,11 @@ window.PANTALLAS['inicio'] = (function () {
           (dosPaneles ? '<div class="nws-chat-main">' + cab + '</div><aside class="nws-chat-side" id="chat-side" aria-label="Opciones y ayuda"></aside>' : cab) + '</div></div></div>';
       }
       /* NUEVO · Sugerencias como tarjetas (pantallas grandes): icono, título y una línea de apoyo, centradas bajo el saludo */
-      var SUG = { 'Hablar con alguien': ['user', 'secondary', 'Cuéntame cómo te sientes, a tu ritmo'], 'Mi horario de hoy': ['calendar', 'informative', 'Tus clases y pausas de hoy'], 'Mi carnet': ['qr-code', 'positive', 'Ábrelo en un toque'] };
+      var SUG = { 'Respirar conmigo': ['leaf', 'positive', 'Un minuto para bajar el ritmo'], 'Modo foco · Pomodoro': ['dispatch-time', 'secondary', '25 min de estudio y 5 de pausa'], 'Cronómetro de estudio': ['refresh', 'informative', 'Mide tu tiempo y haz pausas'], 'Hablar con alguien': ['user', 'secondary', 'Cuéntame cómo te sientes, a tu ritmo'], 'Mi horario de hoy': ['calendar', 'informative', 'Tus clases y pausas de hoy'], 'Mi carnet': ['qr-code', 'positive', 'Ábrelo en un toque'] };
       function sugerencias(on) {
         var host = mob.querySelector('#chat-sug'); if (!host) { return; }
         var h = !on || !st.opts.length || st.typing ? '' : st.opts.map(function (o, i) {
+          if (!o.grande) { return ''; }
           var s = SUG[o.label] || ['answer', 'primary', ''];
           return '<button type="button" class="nws-sug__c" data-a="opt:' + i + '">' + S.avatarIcon({ icon: s[0], theme: s[1] }) + '<b>' + o.label + '</b>' + (s[2] ? '<span>' + s[2] + '</span>' : '') + '</button>';
         }).join('');
@@ -703,8 +704,9 @@ window.PANTALLAS['inicio'] = (function () {
         pintarCuerpo(b, st.msgs.map(function (m) { if (m.html) { return m.html; } return '<p class="nws-msg' + (m.f === 'u' ? ' nws-msg--yo' : '') + '">' + S.esc(m.t) + '</p>'; }).join('') +
           (st.typing ? '<div class="nws-typing" aria-label="SerafIA está escribiendo"><i></i><i></i><i></i></div>' : ''));
         sincronizarBienvenida();
-        var sug = false;
-        var pie = (!sug && st.opts.length && !st.typing ? '<div class="nws-opts">' + st.opts.map(function (o, i) {
+        var sug = grande() && st.full && !empezo(); sugerencias(sug);
+        var pie = (st.opts.length && !st.typing ? '<div class="nws-opts">' + st.opts.map(function (o, i) {
+          if (sug && o.grande) { return ''; }
           return S.button({ label: o.label, theme: o.crisis ? 'negative' : 'neutral', variant: o.primary ? 'loud' : 'quiet', size: 'medium', attrs: { 'data-a': 'opt:' + i } });
         }).join('') + '</div>' : '') +
           '<div class="nws-composer"><input type="text" id="chat-in" aria-label="Escribe a SerafIA" placeholder="Pregúntale a SerafIA…" autocomplete="off">' +
