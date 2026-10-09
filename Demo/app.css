@@ -2563,3 +2563,33 @@ section.nws-ib__r { display: flex; flex-direction: column; min-width: 0; min-hei
 .nws-demo--tablet-xl .nws-dock--x .nws-navx, .nws-demo--tablet-xl .nws-dock--x.nws-dock--open .nws-navx { top: 64px; transform: none; left: calc((var(--nws-rail) + var(--nws-gutter) - 84px) / 2); padding: var(--naotech-sizing-20) 0; }
 .nws-demo--tablet-xl .nws-dock--x .nws-navx__items { gap: var(--naotech-sizing-24); }
 .nws-demo--tablet-xl .nws-dock--x .nws-navx__it { height: 72px; }
+
+/* ---------- Carrusel de eventos con foto (componente nuevo) ---------- */
+.nws-evcar { display: flex; flex-direction: column; gap: var(--naotech-sizing-12); min-width: 0; }
+.nws-evcar__h { align-items: center !important; gap: var(--naotech-sizing-8) !important; }
+.nws-evcar__h .nws-grow { flex: 1; }
+.nws-evcar__t { display: flex; gap: var(--naotech-sizing-16); overflow-x: auto; scroll-snap-type: x proximity; scrollbar-width: none; padding: var(--naotech-sizing-4) var(--naotech-sizing-4) var(--naotech-sizing-12); margin: 0 calc(var(--naotech-sizing-4) * -1); }
+.nws-evcar__t::-webkit-scrollbar { display: none; }
+.nws-evcar__t:focus-visible { outline: 2px solid var(--naotech-color-indigo-600); outline-offset: 2px; border-radius: var(--nws-r-card); }
+.nws-evc { flex: 0 0 calc((100% - 2 * var(--naotech-sizing-16)) / 3.2); min-width: 0; scroll-snap-align: start; display: flex; flex-direction: column; gap: var(--naotech-sizing-12); padding: var(--naotech-sizing-8) var(--naotech-sizing-8) var(--naotech-sizing-16); border-radius: var(--nws-r-card); background: var(--naotech-color-white-alpha-100); border: 1px solid var(--naotech-color-gray-200); box-shadow: var(--nws-shadow-card); box-sizing: border-box; }
+.nws-demo--tablet .nws-evc { flex-basis: calc((100% - var(--naotech-sizing-16)) / 2.25); }
+.nws-evc__img { position: relative; aspect-ratio: 16 / 10; border-radius: calc(var(--nws-r-card) - 6px); background-color: var(--naotech-color-gray-100); background-size: cover; background-position: center; overflow: hidden; }
+.nws-evc__tag { position: absolute; left: var(--naotech-sizing-12); bottom: var(--naotech-sizing-12); }
+.nws-evc__b { display: flex; flex-direction: column; gap: var(--naotech-sizing-8); padding: 0 var(--naotech-sizing-8); flex: 1; }
+.nws-evc__t { margin: 0; font-size: var(--naotech-subtitle-font-size); line-height: var(--naotech-sizing-24); font-weight: var(--naotech-font-weight-semibold); min-height: calc(2 * var(--naotech-sizing-24)); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.nws-evc__f { margin: 0; display: flex; align-items: center; gap: var(--naotech-sizing-8); font-size: var(--naotech-smalltext-font-size); color: var(--nws-ink-2); }
+.nws-evc__f .nwt-icon { font-size: 16px; flex: none; }
+.nws-evc__bar { height: 4px; border-radius: 4px; background: var(--naotech-color-gray-200); overflow: hidden; margin-top: var(--naotech-sizing-4); }
+.nws-evc__bar > i { display: block; height: 100%; border-radius: 4px; background: var(--naotech-color-indigo-600); }
+.nws-evc__bar--libre > i { width: 100%; background: var(--naotech-color-green-600); }
+.nws-evc__ft { display: flex; align-items: center; gap: var(--naotech-sizing-8); margin-top: auto; padding-top: var(--naotech-sizing-8); }
+.nws-evc__ft .nws-grow { display: flex; flex-direction: column; line-height: 1.25; min-width: 0; }
+.nws-evc__ft b { font-size: var(--naotech-smalltext-font-size); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } .nws-evc__ft span { font-size: var(--naotech-caption-font-size); color: var(--nws-ink-2); }
+.nws-ov .nws-evcar { margin-bottom: var(--naotech-sizing-4); }
+/* en Hoy (tablet) el carrusel ocupa todo el ancho, debajo de la agenda */
+.nws-demo--tablet .nws-gv--hoy { grid-template-areas: "hero hero" "acc acc" "agenda agenda" "ev ev"; }
+.nws-demo--tablet .nws-gv--hoy .nws-ga-agenda > .nws-ag { width: 100%; }
+
+.nws-evc__f { display: flex; flex-direction: row; align-items: center; gap: var(--naotech-sizing-8); font-size: var(--naotech-smalltext-font-size); line-height: var(--naotech-sizing-20); color: var(--nws-ink-2); }
+.nws-evc__f > span { min-width: 0; }
+.nws-evc__ft b { white-space: normal; overflow: visible; }

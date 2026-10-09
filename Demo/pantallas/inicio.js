@@ -207,6 +207,39 @@ window.PANTALLAS['inicio'] = (function () {
         return '<section class="nws-glass nws-block nws-ag" aria-label="Tu día"><div class="nws-sec"><h2 class="nws-h2">Tu día</h2><span class="nws-txt">Martes 6</span></div><div class="nws-ag__l">' + items + '</div>' +
           '<div class="nws-block-btn">' + btn('Ver mi horario', 'ov:horario', { variant: 'quiet', iconEnd: 'arrow-right' }) + '</div></section>';
       }
+      /* NUEVO · Carrusel de eventos con foto: tarjeta con imagen, etiqueta, fecha, lugar, cupos y organizador */
+      var EV_IMG = { f1: 'assets/ev-semana.jpg', f2: 'assets/ev-empleo.jpg', f3: 'assets/ev-deporte.jpg', e1: 'assets/ev-semana.jpg', e4: 'assets/ev-biblioteca.jpg', e5: 'assets/ev-semana.jpg', e6: 'assets/ev-biblioteca.jpg' };
+      var EV_CUPOS = { f1: [180, 250], f2: [92, 120], f3: [34, 60], e1: [18, 25], e5: [9, 12] };
+      var EV_ORG = { Bienestar: 'Bienestar Universitario', Universidad: 'Vida Universitaria', Deporte: 'Deportes' };
+      var EV_TEMA = { Bienestar: 'secondary', Universidad: 'informative', Deporte: 'positive' };
+      function listaEventos() {
+        var vistos = {}, out = [];
+        D.destacados.forEach(function (d) {
+          var pr = d.meta.split(' · '); vistos[d.titulo] = 1;
+          out.push({ id: d.id, tag: d.tag, titulo: d.titulo, fecha: pr.slice(0, -1).join(' · '), lugar: pr[pr.length - 1] });
+        });
+        D.eventos.forEach(function (e) {
+          if (vistos[e.titulo]) { return; }
+          var pr = e.meta.split(' · ');
+          out.push({ id: e.id, tag: e.cat === 'bienestar' ? 'Bienestar' : 'Universidad', titulo: e.titulo, fecha: e.dow + ' ' + e.dia + ' · ' + pr[0], lugar: pr[1] || '' });
+        });
+        return out;
+      }
+      function eventoFoto(e) {
+        var c = EV_CUPOS[e.id], org = EV_ORG[e.tag] || 'Seraf';
+        var cupos = c ? '<div class="nws-evc__bar" role="progressbar" aria-valuemin="0" aria-valuemax="' + c[1] + '" aria-valuenow="' + c[0] + '" aria-label="Cupos ocupados"><i style="width:' + Math.round(c[0] / c[1] * 100) + '%"></i></div><p class="nws-txt">' + c[0] + ' de ' + c[1] + ' cupos ocupados</p>' : '<div class="nws-evc__bar nws-evc__bar--libre" aria-hidden="true"><i></i></div><p class="nws-txt">Entrada libre</p>';
+        return '<article class="nws-evc"><div class="nws-evc__img" style="background-image:url(\'' + EV_IMG[e.id] + '\')" role="img" aria-label="' + e.titulo + '"><span class="nws-evc__tag">' + S.badge({ label: e.tag, theme: EV_TEMA[e.tag] || 'neutral', variant: 'loud', size: 'small' }) + '</span></div>' +
+          '<div class="nws-evc__b"><h3 class="nws-evc__t">' + e.titulo + '</h3>' +
+          '<div class="nws-evc__f">' + S.icon('calendar') + '<span>' + e.fecha + '</span></div><div class="nws-evc__f">' + S.icon('gps-pin') + '<span>' + e.lugar + '</span></div>' + cupos +
+          '<div class="nws-evc__ft">' + S.avatar({ text: org.split(' ').map(function (w) { return w.charAt(0); }).join('').slice(0, 2), size: 'small', theme: 'secondary', variant: 'quiet' }) + '<div class="nws-grow"><b>' + org + '</b><span>Organiza</span></div>' +
+          btn('Ver detalle', null, { variant: 'quiet', size: 'small', toast: 'Detalle del evento' }) + '</div></div></article>';
+      }
+      function eventosCarrusel(titulo, sub) {
+        return '<section class="nws-evcar" data-evc aria-label="Eventos Seraf"><div class="nws-sec nws-evcar__h"><h2 class="nws-h2">' + (titulo || 'Eventos Seraf') + '</h2>' + (sub ? '<span class="nws-txt">' + sub + '</span>' : '') + '<span class="nws-grow"></span>' +
+          S.iconButton({ icon: 'arrow-left', variant: 'quiet', theme: 'neutral', size: 'medium', label: 'Eventos anteriores', attrs: { 'data-a': 'evcar:-1' } }) +
+          S.iconButton({ icon: 'arrow-right', variant: 'loud', theme: 'secondary', size: 'medium', label: 'Más eventos', attrs: { 'data-a': 'evcar:1' } }) + '</div>' +
+          '<div class="nws-evcar__t" tabindex="0">' + listaEventos().map(eventoFoto).join('') + '</div></section>';
+      }
       /* NUEVO · Rejilla de eventos: los destacados se ven todos a la vez, sin carrusel */
       function eventoCard(d) {
         return '<article class="nws-ev nws-ev--g" data-c="' + d.color + '"><span class="nws-ev__orb" style="width:130px;height:130px;right:-40px;top:-50px"></span><div class="nws-ev__body">' +
@@ -224,8 +257,7 @@ window.PANTALLAS['inicio'] = (function () {
       function vistaHoy() {
         if (grande()) {
           return vistaG('nws-gv--hoy', [['hero', st.mood ? cartaHecha() : heroCarta()], ['acc', accesos()], ['agenda', agendaDia()],
-            ['ev', '<div class="nws-sec" style="margin-bottom:var(--naotech-sizing-12)"><h2 class="nws-h2">Eventos Seraf</h2><span class="nws-txt">Esta semana</span></div>' + eventosRejilla() +
-              '<div class="nws-block-btn" style="margin-top:var(--naotech-sizing-12)">' + btn('Ver más eventos', 'ov:eventos', { variant: 'quiet', iconEnd: 'arrow-right' }) + '</div>']]);
+            ['ev', eventosCarrusel('Eventos Seraf', 'Esta semana') + '<div class="nws-block-btn" style="margin-top:var(--naotech-sizing-12)">' + btn('Ver más eventos', 'ov:eventos', { variant: 'quiet', iconEnd: 'arrow-right' }) + '</div>']]);
         }
         return vistaHoyMovil();
       }
@@ -447,7 +479,7 @@ window.PANTALLAS['inicio'] = (function () {
         var keep = D.eventos.filter(function (e) { return st.evFil === 'todos' || (st.evFil === 'para' ? e.para : e.cat === st.evFil); });
         var sem = keep.filter(function (e) { return e.semana; }), mas = keep.filter(function (e) { return !e.semana; });
         return '<div class="nws-ov">' + atras('Eventos Seraf') + '<div class="nws-ov__body">' +
-          (grande() ? eventosRejilla() : '<div class="nws-stack" style="gap:0">' + destacado() + '</div>') +
+          (grande() ? eventosCarrusel('Destacados', 'Con inscripción y entrada libre') : '<div class="nws-stack" style="gap:0">' + destacado() + '</div>') +
           '<div class="nws-fltabs" role="tablist" aria-label="Filtrar eventos">' + fl + '</div>' +
           (st.evFil === 'para' ? '<p class="nws-txt">Elegidos según actividades que te ayudan, con tu permiso. Puedes cambiarlo en Yo.</p>' : '') +
           '<div class="nws-evcols">' +
@@ -835,6 +867,7 @@ window.PANTALLAS['inicio'] = (function () {
         else if (k === 'save') { st.saved[v] = !st.saved[v]; pintarOv(); }
         else if (k === 'evfil') { st.evFil = v; pintarOv(); }
         else if (k === 'dia') { st.dia = v; pintarOv(); }
+        else if (k === 'evcar') { var tr = el.closest('[data-evc]').querySelector('.nws-evcar__t'), cd = tr.querySelector('.nws-evc'); tr.scrollBy({ left: (+v) * (cd ? cd.offsetWidth + 16 : tr.clientWidth * 0.8), behavior: 'smooth' }); }
         else if (k === 'hvista') { st.vistaH = v; pintarOv(); }
         else if (k === 'hdia') { st.diaSel = v; pintarOv(); }
         else if (k === 'hmes') { st.mesOff = v === '0' ? 0 : Math.max(-1, Math.min(2, (st.mesOff || 0) + (+v))); pintarOv(); }
