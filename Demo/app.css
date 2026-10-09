@@ -2559,3 +2559,7 @@ section.nws-ib__r { display: flex; flex-direction: column; min-width: 0; min-hei
 .nws-demo--tablet .nws-opciones { grid-template-columns: repeat(6, minmax(0, 1fr)); }
 .nws-demo--tablet .nws-opcion { grid-column: span 2; }
 .nws-demo--tablet .nws-opcion:nth-child(4) { grid-column: 2 / span 2; } .nws-demo--tablet .nws-opcion:nth-child(5) { grid-column: 4 / span 2; }
+/* menú lateral de la tablet grande: arriba, con más aire y centrado entre el borde y el contenido */
+.nws-demo--tablet-xl .nws-dock--x .nws-navx, .nws-demo--tablet-xl .nws-dock--x.nws-dock--open .nws-navx { top: 64px; transform: none; left: calc((var(--nws-rail) + var(--nws-gutter) - 84px) / 2); padding: var(--naotech-sizing-20) 0; }
+.nws-demo--tablet-xl .nws-dock--x .nws-navx__items { gap: var(--naotech-sizing-24); }
+.nws-demo--tablet-xl .nws-dock--x .nws-navx__it { height: 72px; }
