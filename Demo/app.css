@@ -2195,3 +2195,11 @@ section.nws-ib__r { display: flex; flex-direction: column; min-width: 0; min-hei
 @media (prefers-reduced-motion: reduce) { .nws-chd { animation: none; } }
 @media (min-width: 1280px) { .nws-fijo--2 .nws-crisis { padding: var(--naotech-sizing-12) var(--naotech-sizing-16); } .nws-fijo--2 .nws-crisis .nwt-badge { display: none; } .nws-fijo--2 .nws-crisis p { font-size: var(--naotech-smalltext-font-size); } }
 .nws-chd { width: min(400px, 100%); top: 0; }
+
+/* Detalle con la conversación abierta: el contenido se acomoda a un lado, sin quedar tapado */
+.nws-mcr--chd { display: grid; grid-template-columns: minmax(0, 1fr) 400px; grid-template-rows: auto minmax(0, 1fr); column-gap: var(--naotech-sizing-16); }
+.nws-mcr--chd > .nws-mcr__h { grid-column: 1; grid-row: 1; }
+.nws-mcr--chd > .nws-mcr__main { grid-column: 1; grid-row: 2; min-height: 0; }
+.nws-mcr--chd > .nws-chd { position: static; grid-column: 2; grid-row: 1 / span 2; width: auto; border: 1px solid var(--naotech-color-gray-200); border-radius: var(--nws-r-card); box-shadow: none; overflow: hidden; }
+.nws-mcr--chd .nws-sala__cols { grid-template-columns: minmax(0, 1fr); }
+.nws-mcr--chd .nws-sala__c3 { order: 2; }
