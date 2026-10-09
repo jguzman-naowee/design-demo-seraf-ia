@@ -2017,7 +2017,10 @@ section.nws-ib__r { display: flex; flex-direction: column; min-width: 0; min-hei
 @media (max-width: 1180px) { .nws-kpis--4 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 
 /* La tarjeta de cuidado aparece de una vez, sin deslizarse como un mensaje */
-.nws-care, .nws-care * { animation: none !important; transition: none; }
+.nws-care * { animation: none !important; transition: none; }
+/* la tarjeta de cuidado aparece de una, solo con fundido (sin deslizarse desde abajo) */
+.nws-care { animation: nws-fade .35s ease-out both !important; transform: none; }
+#chat-body > .nws-care.nws-old { animation: none !important; }
 
 /* Selector «¿Qué acción corresponde?»: jerarquía clara, una opción por fila con su explicación */
 .nws-adj { flex: 1 1 100%; display: flex; flex-direction: column; gap: var(--naotech-sizing-12); padding-top: var(--naotech-sizing-12); border-top: 1px solid var(--naotech-color-gray-200); }
