@@ -588,7 +588,7 @@ window.PANTALLAS['inicio'] = (function () {
           (dosPaneles ? '<div class="nws-chat-main">' + cab + '</div><aside class="nws-chat-side" id="chat-side" aria-label="Opciones y ayuda"></aside>' : cab) + '</div></div></div>';
       }
       /* NUEVO · Sugerencias como tarjetas (pantallas grandes): icono, título y una línea de apoyo, centradas bajo el saludo */
-      var SUG = { 'Respirar conmigo': ['leaf', 'positive', 'Un minuto para bajar el ritmo'], 'Modo foco · Pomodoro': ['dispatch-time', 'secondary', '25 min de estudio y 5 de pausa'], 'Cronómetro de estudio': ['refresh', 'informative', 'Mide tu tiempo y haz pausas'], 'Hablar con alguien': ['user', 'secondary', 'Cuéntame cómo te sientes, a tu ritmo'], 'Mi horario de hoy': ['calendar', 'informative', 'Tus clases y pausas de hoy'], 'Mi carnet': ['qr-code', 'positive', 'Ábrelo en un toque'] };
+      var SUG = { 'Respirar conmigo': ['leaf', 'positive', 'Un minuto para bajar el ritmo'], 'Modo foco · Pomodoro': ['dispatch-time', 'secondary', '25 min de estudio y 5 de pausa'], 'Cronómetro de estudio': ['refresh', 'informative', 'Mide tu tiempo y haz pausas'], 'Hablar con alguien': ['user', 'secondary', 'Cuéntame cómo te sientes, a tu ritmo'], 'Mi horario de hoy': ['calendar', 'informative', 'Tus clases y pausas de hoy'], 'Mi carnet': ['qr-code', 'positive', 'Ábrelo en un toque'], 'Ver horario completo': ['calendar'], 'Ahora no': ['close'] };
       function sugerencias(on) {
         var host = mob.querySelector('#chat-sug'); if (!host) { return; }
         var h = !on || !st.opts.length || st.typing ? '' : st.opts.map(function (o, i) {
@@ -707,6 +707,7 @@ window.PANTALLAS['inicio'] = (function () {
         var sug = grande() && st.full && !empezo(); sugerencias(sug);
         var pie = (st.opts.length && !st.typing ? '<div class="nws-opts">' + st.opts.map(function (o, i) {
           if (sug && o.grande) { return ''; }
+          if (grande()) { var ic = (SUG[o.label] || ['answer'])[0]; return '<button type="button" class="nws-tg' + (o.primary ? ' nws-tg--p' : '') + (o.crisis ? ' nws-tg--c' : '') + '" data-a="opt:' + i + '">' + S.icon(ic) + '<span>' + o.label + '</span></button>'; }
           return S.button({ label: o.label, theme: o.crisis ? 'negative' : 'neutral', variant: o.primary ? 'loud' : 'quiet', size: 'medium', attrs: { 'data-a': 'opt:' + i } });
         }).join('') + '</div>' : '') +
           '<div class="nws-composer"><input type="text" id="chat-in" aria-label="Escribe a SerafIA" placeholder="Pregúntale a SerafIA…" autocomplete="off">' +
