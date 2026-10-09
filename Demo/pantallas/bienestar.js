@@ -256,7 +256,7 @@ window.PANTALLAS['bienestar'] = (function () {
               '<div class="nws-adj__m"><span class="nws-adj__k">Motivo (obligatorio)</span><div class="nws-adj__mm" role="radiogroup" aria-label="Motivo del cambio">' + MOTIVOS.map(function (m, ix) { return '<button type="button" class="nws-mot' + (motivoSel === m ? ' nws-mot--on' : '') + '" role="radio" aria-checked="' + (motivoSel === m) + '" data-d="motivo:' + ix + '">' + m + '</button>'; }).join('') + '</div></div>';
           }
           var alcance = !abiertas.length ? '' : (todasM ? (N === 1 ? ' la alerta' : (N === 2 ? ' ambas' : ' las ' + N + ' alertas')) : (N === 1 ? ' la alerta marcada' : ' las ' + N + ' marcadas'));
-          var etiqueta = ajusteSel ? 'Guardar cambio a ' + A.label + (abiertas.length ? ' · ' + N + (N === 1 ? ' alerta' : ' alertas') : '') : VERBO[accionFin] + (abiertas.length ? alcance : '');
+          var etiqueta = ajusteSel ? 'Guardar cambio a ' + A.label + (abiertas.length ? ' · ' + N + (N === 1 ? ' alerta' : ' alertas') : '') : A.label;
           var faltaMotivo = ajusteSel && !motivoSel;
           barra = '<div class="nws-pd__b"><div class="nws-pd__bi"><div class="nws-st__t"><span class="nws-st__k">' + (abiertas.length ? (N === 1 ? '1 alerta marcada' : N + ' alertas marcadas') + ' · ' : '') + 'Acción' + (ajusteSel ? ' (cambiada)' : '') + '</span><b>' + A.label + (ajusteSel ? '' : ' ' + S.badge({ label: 'Propuesta', theme: 'neutral', variant: 'quiet', size: 'small' })) + '</b></div>' +
             '<button type="button" class="nws-pd__tg" data-d="ajustar">' + (ajusteSel || s.ajustando ? 'Elegir otra' : 'Cambiar acción') + '</button></div>' + opciones +
