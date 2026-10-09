@@ -367,6 +367,31 @@ window.PANTALLAS['inicio'] = (function () {
           '<div class="nws-opciones">' + ops + '</div></div>' +
           '<div class="nws-confirma nws-block-btn">' + btn('Coleccionar carta', 'deck-ok', { size: 'large', disabled: !st.dsel }) + '</div></div>';
       }
+      /* selectores que cambian de contenido (días, filtros, indicador del carrusel): el marcador activo se desliza
+         de su sitio anterior al nuevo y el contenido asociado entra con un fundido hacia el mismo lado */
+      var FA = [['.nws-dia--on', 'dias', null], ['.nws-fltab--on', 'fltab', '::after'], ['.nwt-view-indicator__dot--active', 'dots', null]];
+      var FC = { dias: '.nws-ov__body > .nws-stack', fltab: '.nws-ov__body > .nws-glass, .nws-ov__body > p.nws-txt', dots: '.nws-ev' };
+      function marcarFa(host) {
+        FA.forEach(function (f) { [].forEach.call(host.querySelectorAll(f[0]), function (e) { e.setAttribute('data-fa', f[1]); if (f[2]) { e.setAttribute('data-fp', f[2]); } }); });
+      }
+      function claveFa(e) { return e.getAttribute('data-a') || String([].indexOf.call(e.parentNode.children, e)); }
+      function capturarFa(host) {
+        var o = {}; marcarFa(host);
+        [].forEach.call(host.querySelectorAll('[data-fa]'), function (e) { var r = e.getBoundingClientRect(); o[e.getAttribute('data-fa')] = { k: claveFa(e), l: r.left, w: r.width }; });
+        return o;
+      }
+      function animarFa(host, prev) {
+        if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) { return; }
+        marcarFa(host);
+        [].forEach.call(host.querySelectorAll('[data-fa]'), function (e) {
+          var g = e.getAttribute('data-fa'), p = prev[g]; if (!p || !e.animate || p.k === claveFa(e)) { return; }
+          var r = e.getBoundingClientRect(), dx = p.l - r.left, op = { duration: 340, easing: 'cubic-bezier(.2,.8,.2,1)' }, ps = e.getAttribute('data-fp');
+          e.animate([{ transform: 'translateX(' + dx + 'px) scaleX(' + (p.w / r.width) + ')' }, { transform: 'none' }], ps ? Object.assign({ pseudoElement: ps }, op) : op);
+          [].forEach.call(host.querySelectorAll(FC[g] || '.nws-none'), function (c) {
+            c.animate([{ opacity: 0, transform: 'translateX(' + (dx > 0 ? -18 : 18) + 'px)' }, { opacity: 1, transform: 'none' }], { duration: 340, easing: 'cubic-bezier(.2,.8,.2,1)' });
+          });
+        });
+      }
       function pintarOv() {
         var h = '';
         if (st.ov === 'carnet') { h = ovCarnet(); }
@@ -376,7 +401,9 @@ window.PANTALLAS['inicio'] = (function () {
         else if (st.ov === 'cartas') { h = ovCartas(); }
         var host = $('ov'), sc = host.querySelector('.nws-ov__body'), top = sc ? sc.scrollTop : 0;
         if (st.enter) { h = h.replace('class="nws-ov', 'class="nws-ov nws-ov--in'); }
+        var prevFa = capturarFa(host);
         host.innerHTML = h;
+        animarFa(host, prevFa);
         st.enter = false;
         mob.classList.toggle('nws-demo--dark', st.ov === 'cartas' && st.dstage === 'shuffle');
         var nb = host.querySelector('.nws-ov__body'); if (nb && top) { nb.scrollTop = top; }
@@ -597,7 +624,9 @@ window.PANTALLAS['inicio'] = (function () {
       function pintarTab() {
         var prev = $('tab').querySelector('.nws-scroll'), top = prev ? prev.scrollTop : 0;
         var v = { hoy: vistaHoy, servicios: vistaServicios, campus: vistaCampus, yo: vistaYo }[st.tab]();
+        var prevFa = capturarFa($('tab'));
         $('tab').innerHTML = v;
+        animarFa($('tab'), prevFa);
         if (st.tabAnim) {
           var te = $('tab'), he = $('hd');
           [te, he].forEach(function (e) { e.classList.remove('nws-tab--out'); e.style.setProperty('--dx', (st.tabDir * 28) + 'px'); e.classList.remove('nws-tab--in'); });
