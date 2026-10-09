@@ -208,7 +208,7 @@ window.PANTALLAS['inicio'] = (function () {
           '<div class="nws-block-btn">' + btn('Ver mi horario', 'ov:horario', { variant: 'quiet', iconEnd: 'arrow-right' }) + '</div></section>';
       }
       /* NUEVO · Carrusel de eventos con foto: tarjeta con imagen, etiqueta, fecha, lugar, cupos y organizador */
-      var EV_IMG = { f1: 'assets/ev-semana.jpg', f2: 'assets/ev-empleo.jpg', f3: 'assets/ev-deporte.jpg', e1: 'assets/ev-semana.jpg', e4: 'assets/ev-biblioteca.jpg', e5: 'assets/ev-semana.jpg', e6: 'assets/ev-biblioteca.jpg' };
+      var EV_COL = { Bienestar: 'indigo', Universidad: 'blue', Deporte: 'green' };
       var EV_CUPOS = { f1: [180, 250], f2: [92, 120], f3: [34, 60], e1: [18, 25], e5: [9, 12] };
       var EV_ORG = { Bienestar: 'Bienestar Universitario', Universidad: 'Vida Universitaria', Deporte: 'Deportes' };
       var EV_TEMA = { Bienestar: 'secondary', Universidad: 'informative', Deporte: 'positive' };
@@ -228,7 +228,7 @@ window.PANTALLAS['inicio'] = (function () {
       function eventoFoto(e) {
         var c = EV_CUPOS[e.id], org = EV_ORG[e.tag] || 'Seraf';
         var cupos = c ? '<div class="nws-evc__bar" role="progressbar" aria-valuemin="0" aria-valuemax="' + c[1] + '" aria-valuenow="' + c[0] + '" aria-label="Cupos ocupados"><i style="width:' + Math.round(c[0] / c[1] * 100) + '%"></i></div><p class="nws-txt">' + c[0] + ' de ' + c[1] + ' cupos ocupados</p>' : '<div class="nws-evc__bar nws-evc__bar--libre" aria-hidden="true"><i></i></div><p class="nws-txt">Entrada libre</p>';
-        return '<article class="nws-evc"><div class="nws-evc__img" style="background-image:url(\'' + EV_IMG[e.id] + '\')" role="img" aria-label="' + e.titulo + '"><span class="nws-evc__tag">' + S.badge({ label: e.tag, theme: EV_TEMA[e.tag] || 'neutral', variant: 'loud', size: 'small' }) + '</span></div>' +
+        return '<article class="nws-evc"><div class="nws-evc__img nws-ev" data-c="' + (EV_COL[e.id] || EV_COL[e.tag] || 'indigo') + '" aria-hidden="true"><span class="nws-ev__orb" style="width:150px;height:150px;right:-40px;top:-50px"></span><span class="nws-ev__orb" style="width:80px;height:80px;right:60px;bottom:-26px;opacity:.7"></span><span class="nws-evc__tag">' + S.badge({ label: e.tag, theme: EV_TEMA[e.tag] || 'neutral', variant: 'loud', size: 'small' }) + '</span></div>' +
           '<div class="nws-evc__b"><h3 class="nws-evc__t">' + e.titulo + '</h3>' +
           '<div class="nws-evc__f">' + S.icon('calendar') + '<span>' + e.fecha + '</span></div><div class="nws-evc__f">' + S.icon('gps-pin') + '<span>' + e.lugar + '</span></div>' + cupos +
           '<div class="nws-evc__ft">' + S.avatar({ text: org.split(' ').map(function (w) { return w.charAt(0); }).join('').slice(0, 2), size: 'small', theme: 'secondary', variant: 'quiet' }) + '<div class="nws-grow"><b>' + org + '</b><span>Organiza</span></div>' +
