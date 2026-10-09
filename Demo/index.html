@@ -13154,6 +13154,9 @@ section.nws-ib__r { display: flex; flex-direction: column; min-width: 0; min-hei
 /* avisos (toast) en tablet: dentro de los márgenes y con un ancho razonable */
 .nws-demo--tablet .nws-mob__toast, .nws-demo--tablet-xl .nws-mob__toast { left: var(--nws-gutter); right: var(--nws-gutter); }
 .nws-demo--tablet .nws-mob__toast .nwt-toast__content, .nws-demo--tablet-xl .nws-mob__toast .nwt-toast__content { width: min(100%, 520px); }
+/* vistas completas (carnet, horario, eventos): mismo margen que el resto en tablet y título alineado con los botones */
+.nws-demo--tablet .nws-ov__body, .nws-demo--tablet-xl .nws-ov__body, .nws-demo--tablet .nws-ov__hd, .nws-demo--tablet-xl .nws-ov__hd { padding-inline: var(--nws-gutter); }
+.nws-ov__hd > h1 { display: flex; align-items: center; justify-content: center; align-self: center; min-height: 44px; line-height: 1.2; }
 
 </style>
 <div id="app" style="height:100%"></div>
