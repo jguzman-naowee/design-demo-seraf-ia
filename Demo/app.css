@@ -2640,3 +2640,6 @@ section.nws-ib__r { display: flex; flex-direction: column; min-width: 0; min-hei
 
 .nws-gv { width: 100%; max-width: none; }
 .nws-line--btn .nwt-avatar-icon { --pvt-avatar-icon-size: 40px; width: 40px; height: 40px; flex: none; }
+/* DC-086: el color de selección queda separado de los bordes del menú */
+.nws-demo--tablet-xl .nws-dock--x .nws-navx__items { align-items: center; padding: 0; }
+.nws-demo--tablet-xl .nws-dock--x .nws-navx__it { width: calc(100% - 24px); margin: 0 auto; border-radius: 22px; }
