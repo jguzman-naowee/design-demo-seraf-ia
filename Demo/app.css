@@ -2728,3 +2728,5 @@ section.nws-ib__r { display: flex; flex-direction: column; min-width: 0; min-hei
 @keyframes nws-dsw-pulso { 0%, 100% { transform: scale(.94); } 50% { transform: scale(1.06); } }
 .nws-phone { transition: transform .45s var(--naotech-animation-standard), width .45s var(--naotech-animation-standard), height .45s var(--naotech-animation-standard); }
 @media (prefers-reduced-motion: reduce) { .nws-dsw-ld, .nws-phone { transition: none; } .nws-dsw-ld .nws-orbe { animation: none; } }
+
+.nws-dsw-ld--g { position: fixed; z-index: 9999; background: rgb(from var(--naotech-color-white-alpha-100) r g b / .96); }

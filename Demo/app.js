@@ -14,7 +14,25 @@
   var sesion = { rol: D.roles[0].id, ultimoRol: D.roles[0].id };
   function rolPorId(id) { return D.roles.filter(function (r) { return r.id === id; })[0] || null; }
   function salir() { ir('#/'); }
-  function ir(hash) { if (location.hash === hash) { navegar(); } else { location.hash = hash; } }
+  /* cambio de vista (Estudiante ↔ Bienestar): un velo con la marca de SerafIA cubre el cambio y se retira al terminar */
+  var velo = null, veloT1 = 0, veloT2 = 0;
+  function mostrarVelo(alTapar) {
+    var sinMov = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!velo) {
+      velo = document.createElement('div'); velo.className = 'nws-dsw-ld nws-dsw-ld--g'; velo.setAttribute('role', 'status'); velo.setAttribute('aria-label', 'Cambiando de vista');
+      velo.innerHTML = '<span class="nws-orbe nws-orbe--xl"></span><span class="nws-dsw-ld__t">SerafIA</span>'; document.body.appendChild(velo);
+    }
+    clearTimeout(veloT1); clearTimeout(veloT2);
+    velo.classList.add('nws-dsw-ld--on');
+    veloT1 = setTimeout(function () {
+      alTapar();
+      veloT2 = setTimeout(function () { velo.classList.remove('nws-dsw-ld--on'); }, sinMov ? 0 : 700);
+    }, sinMov ? 0 : 380);
+  }
+  function ir(hash) {
+    if (location.hash === hash) { navegar(); return; }
+    mostrarVelo(function () { location.hash = hash; });
+  }
 
   /* ---------- rutas ---------- */
   /* Una línea por pantalla. Para sumar un rol: agregarlo en datos.js
