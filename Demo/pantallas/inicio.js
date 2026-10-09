@@ -598,11 +598,28 @@ window.PANTALLAS['inicio'] = (function () {
         var prev = $('tab').querySelector('.nws-scroll'), top = prev ? prev.scrollTop : 0;
         var v = { hoy: vistaHoy, servicios: vistaServicios, campus: vistaCampus, yo: vistaYo }[st.tab]();
         $('tab').innerHTML = v;
-        if (st.tabAnim) { var te = $('tab'); te.classList.remove('nws-tab--in'); void te.offsetWidth; te.classList.add('nws-tab--in'); st.tabAnim = false; }
+        if (st.tabAnim) {
+          var te = $('tab'), he = $('hd');
+          [te, he].forEach(function (e) { e.classList.remove('nws-tab--out'); e.style.setProperty('--dx', (st.tabDir * 28) + 'px'); e.classList.remove('nws-tab--in'); });
+          void te.offsetWidth; te.classList.add('nws-tab--in'); he.classList.add('nws-tab--in'); st.tabAnim = false;
+        }
         var sc = $('tab').querySelector('.nws-scroll'); if (sc && top && !st._reset) { sc.scrollTop = top; } st._reset = false;
       }
       function pintar() { mob.classList.add('nws-demo--lav'); pintarHd(); pintarTab(); pintarDock(); pintarOv(); }
-      function cambiarTab(t) { st.tab = t; st._reset = true; st.tabAnim = true; pintar(); }
+      /* cambio de pestaña: lo que sale se desvanece hacia un lado y lo nuevo entra desde el otro */
+      var ORDEN_TABS = ['hoy', 'servicios', 'campus', 'yo'];
+      function cambiarTab(t) {
+        if (st.tabBusy) { return; }
+        if (t === st.tab) { pintar(); return; }
+        var dir = ORDEN_TABS.indexOf(t) > ORDEN_TABS.indexOf(st.tab) ? 1 : -1, tb = $('tab'), hd = $('hd');
+        var sinMov = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        function cambiar() { st.tab = t; st._reset = true; st.tabAnim = true; st.tabDir = dir; st.tabBusy = false; pintar(); }
+        if (sinMov || !tb) { cambiar(); return; }
+        st.tabBusy = true;
+        tb.style.setProperty('--dx', (-dir * 18) + 'px'); hd.style.setProperty('--dx', (-dir * 18) + 'px');
+        tb.classList.remove('nws-tab--in'); hd.classList.remove('nws-tab--in'); tb.classList.add('nws-tab--out'); hd.classList.add('nws-tab--out');
+        later(cambiar, 150);
+      }
       /* salir del chat hacia otra vista: el chat se cierra, la vista nueva entra con suavidad y el menú se abre
          y queda abierto para que se vea en qué sección quedó la persona */
       function irDesdeChat(tab, ov) {

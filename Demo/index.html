@@ -13019,10 +13019,11 @@ section.nws-ib__r { display: flex; flex-direction: column; min-width: 0; min-hei
 .nws-demo .nwt-bottom-sheet__container.nws-sheet--full.nws-sheet--fade { transform: none; transition: opacity .3s ease-out; }
 .nws-demo .nwt-bottom-sheet__container.nws-sheet--full.nws-sheet--fade .nws-care { animation: none !important; }
 
-/* cambio de vista: la nueva entra con un fundido suave */
-@keyframes nws-tab-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
-.nws-tab--in > * { animation: nws-tab-in .38s var(--naotech-animation-deceleration) both; }
-@media (prefers-reduced-motion: reduce) { .nws-tab--in > * { animation: none; } }
+/* cambio de pestaña: sale con un fundido corto hacia un lado y entra desde el otro */
+@keyframes nws-tab-in { from { opacity: 0; transform: translateX(var(--dx, 0px)); } to { opacity: 1; transform: none; } }
+#tab.nws-tab--in > *, #hd.nws-tab--in .nws-hd__sub { animation: nws-tab-in .38s var(--naotech-animation-deceleration) both; }
+#tab.nws-tab--out > *, #hd.nws-tab--out .nws-hd__sub { opacity: 0; transform: translateX(var(--dx, 0px)); transition: opacity .15s ease-in, transform .15s ease-in; }
+@media (prefers-reduced-motion: reduce) { #tab.nws-tab--in > *, #hd.nws-tab--in .nws-hd__sub { animation: none; } }
 
 
 /* panel de guiones movible: se arrastra desde el encabezado */
@@ -15227,11 +15228,28 @@ window.PANTALLAS['inicio'] = (function () {
         var prev = $('tab').querySelector('.nws-scroll'), top = prev ? prev.scrollTop : 0;
         var v = { hoy: vistaHoy, servicios: vistaServicios, campus: vistaCampus, yo: vistaYo }[st.tab]();
         $('tab').innerHTML = v;
-        if (st.tabAnim) { var te = $('tab'); te.classList.remove('nws-tab--in'); void te.offsetWidth; te.classList.add('nws-tab--in'); st.tabAnim = false; }
+        if (st.tabAnim) {
+          var te = $('tab'), he = $('hd');
+          [te, he].forEach(function (e) { e.classList.remove('nws-tab--out'); e.style.setProperty('--dx', (st.tabDir * 28) + 'px'); e.classList.remove('nws-tab--in'); });
+          void te.offsetWidth; te.classList.add('nws-tab--in'); he.classList.add('nws-tab--in'); st.tabAnim = false;
+        }
         var sc = $('tab').querySelector('.nws-scroll'); if (sc && top && !st._reset) { sc.scrollTop = top; } st._reset = false;
       }
       function pintar() { mob.classList.add('nws-demo--lav'); pintarHd(); pintarTab(); pintarDock(); pintarOv(); }
-      function cambiarTab(t) { st.tab = t; st._reset = true; st.tabAnim = true; pintar(); }
+      /* cambio de pestaña: lo que sale se desvanece hacia un lado y lo nuevo entra desde el otro */
+      var ORDEN_TABS = ['hoy', 'servicios', 'campus', 'yo'];
+      function cambiarTab(t) {
+        if (st.tabBusy) { return; }
+        if (t === st.tab) { pintar(); return; }
+        var dir = ORDEN_TABS.indexOf(t) > ORDEN_TABS.indexOf(st.tab) ? 1 : -1, tb = $('tab'), hd = $('hd');
+        var sinMov = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        function cambiar() { st.tab = t; st._reset = true; st.tabAnim = true; st.tabDir = dir; st.tabBusy = false; pintar(); }
+        if (sinMov || !tb) { cambiar(); return; }
+        st.tabBusy = true;
+        tb.style.setProperty('--dx', (-dir * 18) + 'px'); hd.style.setProperty('--dx', (-dir * 18) + 'px');
+        tb.classList.remove('nws-tab--in'); hd.classList.remove('nws-tab--in'); tb.classList.add('nws-tab--out'); hd.classList.add('nws-tab--out');
+        later(cambiar, 150);
+      }
       /* salir del chat hacia otra vista: el chat se cierra, la vista nueva entra con suavidad y el menú se abre
          y queda abierto para que se vea en qué sección quedó la persona */
       function irDesdeChat(tab, ov) {
