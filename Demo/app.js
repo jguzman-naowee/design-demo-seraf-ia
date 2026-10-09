@@ -14,6 +14,23 @@
   var sesion = { rol: D.roles[0].id, ultimoRol: D.roles[0].id };
   function rolPorId(id) { return D.roles.filter(function (r) { return r.id === id; })[0] || null; }
   function salir() { ir('#/'); }
+  /* esqueleto de carga: siluetas con brillo que cubren la vista un instante mientras «llegan» los datos */
+  var SK = {
+    app: '<i class="sk b" style="height:130px"></i><i class="sk b" style="width:42%;height:18px"></i><div class="sk-g sk-g4"><i class="sk b" style="height:88px"></i><i class="sk b" style="height:88px"></i><i class="sk b" style="height:88px"></i><i class="sk b" style="height:88px"></i></div><i class="sk b" style="height:150px"></i><i class="sk b" style="height:110px"></i>',
+    lista: '<i class="sk b" style="width:46%;height:22px"></i><i class="sk b" style="height:72px"></i><i class="sk b" style="height:72px"></i><i class="sk b" style="height:72px"></i><i class="sk b" style="height:72px"></i>',
+    sala: '<div class="sk-g sk-g4"><i class="sk b" style="height:96px"></i><i class="sk b" style="height:96px"></i><i class="sk b" style="height:96px"></i><i class="sk b" style="height:96px"></i></div><div class="sk-g sk-g2"><i class="sk b" style="height:300px"></i><i class="sk b" style="height:300px"></i></div>',
+    caso: '<i class="sk b" style="width:38%;height:26px"></i><div class="sk-g sk-g4"><i class="sk b" style="height:80px"></i><i class="sk b" style="height:80px"></i><i class="sk b" style="height:80px"></i><i class="sk b" style="height:80px"></i></div><i class="sk b" style="height:150px"></i><i class="sk b" style="height:220px"></i>'
+  };
+  window.NWS_SK = function (host, tipo, top) {
+    if (!host) { return; }
+    var viejo = host.querySelector(':scope > .nws-sk'); if (viejo) { clearTimeout(viejo._t); viejo.remove(); }
+    var cs = getComputedStyle(host); if (cs.position === 'static') { host.style.position = 'relative'; }
+    var d = document.createElement('div'); d.className = 'nws-sk'; d.setAttribute('aria-hidden', 'true'); if (top) { d.style.top = top + 'px'; }
+    d.innerHTML = SK[tipo] || SK.lista; host.appendChild(d);
+    var sinMov = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    d._t = setTimeout(function () { d.classList.add('nws-sk--out'); setTimeout(function () { d.remove(); }, sinMov ? 0 : 320); }, sinMov ? 0 : 650);
+  };
+
   /* cambio de vista (Estudiante ↔ Bienestar): un velo con la marca de SerafIA cubre el cambio y se retira al terminar */
   var velo = null, veloT1 = 0, veloT2 = 0;
   function mostrarVelo(alTapar) {

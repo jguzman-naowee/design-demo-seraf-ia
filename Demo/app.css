@@ -2732,3 +2732,12 @@ section.nws-ib__r { display: flex; flex-direction: column; min-width: 0; min-hei
 .nws-dsw-ld--g { position: fixed; z-index: 9999; background: rgb(from var(--naotech-color-white-alpha-100) r g b / .96); }
 /* cambio de dispositivo directo: el marco no anima su tamaño */
 .nws-phone { transition: transform var(--naotech-duration-fast) var(--naotech-animation-standard); }
+
+/* ---------- esqueleto de carga ---------- */
+.nws-sk { position: absolute; inset: 0; z-index: 25; display: flex; flex-direction: column; gap: var(--naotech-sizing-16); padding: var(--nws-gutter, 20px); background: var(--nws-canvas, var(--naotech-color-gray-050)); overflow: hidden; pointer-events: none; opacity: 1; transition: opacity .3s var(--naotech-animation-standard); }
+.nws-sk--out { opacity: 0; }
+.nws-sk .sk { display: block; border-radius: var(--nws-r-card, 20px); background: linear-gradient(90deg, var(--naotech-color-gray-100) 0%, var(--naotech-color-gray-050) 50%, var(--naotech-color-gray-100) 100%); background-size: 220% 100%; animation: nws-sk-brillo 1.4s ease-in-out infinite; }
+.nws-sk .sk-g { display: grid; gap: var(--naotech-sizing-12); } .nws-sk .sk-g4 { grid-template-columns: repeat(4, minmax(0, 1fr)); } .nws-sk .sk-g2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+@keyframes nws-sk-brillo { 0% { background-position: 120% 0; } 100% { background-position: -120% 0; } }
+.nws-demo .nws-sk { padding: 8px var(--nws-gutter) 0; }
+@media (prefers-reduced-motion: reduce) { .nws-sk .sk { animation: none; } .nws-sk { transition: none; } }

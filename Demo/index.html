@@ -13586,6 +13586,15 @@ section.nws-ib__r { display: flex; flex-direction: column; min-width: 0; min-hei
 /* cambio de dispositivo directo: el marco no anima su tamaño */
 .nws-phone { transition: transform var(--naotech-duration-fast) var(--naotech-animation-standard); }
 
+/* ---------- esqueleto de carga ---------- */
+.nws-sk { position: absolute; inset: 0; z-index: 25; display: flex; flex-direction: column; gap: var(--naotech-sizing-16); padding: var(--nws-gutter, 20px); background: var(--nws-canvas, var(--naotech-color-gray-050)); overflow: hidden; pointer-events: none; opacity: 1; transition: opacity .3s var(--naotech-animation-standard); }
+.nws-sk--out { opacity: 0; }
+.nws-sk .sk { display: block; border-radius: var(--nws-r-card, 20px); background: linear-gradient(90deg, var(--naotech-color-gray-100) 0%, var(--naotech-color-gray-050) 50%, var(--naotech-color-gray-100) 100%); background-size: 220% 100%; animation: nws-sk-brillo 1.4s ease-in-out infinite; }
+.nws-sk .sk-g { display: grid; gap: var(--naotech-sizing-12); } .nws-sk .sk-g4 { grid-template-columns: repeat(4, minmax(0, 1fr)); } .nws-sk .sk-g2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+@keyframes nws-sk-brillo { 0% { background-position: 120% 0; } 100% { background-position: -120% 0; } }
+.nws-demo .nws-sk { padding: 8px var(--nws-gutter) 0; }
+@media (prefers-reduced-motion: reduce) { .nws-sk .sk { animation: none; } .nws-sk { transition: none; } }
+
 </style>
 <div id="app" style="height:100%"></div>
 <!-- pantallas: una línea por archivo, antes de app.js -->
@@ -15023,7 +15032,7 @@ window.CASO = (function () {
       else if (k === 'reset') { reiniciar(true); }
       else if (k === 'toggle') { s.abierto = !s.abierto; avisar(); }
       else if (k === 'detalle') { s.detalle = !s.detalle; avisar(); }
-      else if (k.indexOf('g:') === 0) { seleccionar(k.slice(2)); }
+      else if (k.indexOf('g:') === 0) { seleccionar(k.slice(2)); reproducir(); }
     }
     raiz.addEventListener('click', accion);
     raiz.addEventListener('keydown', function (ev) { if ((ev.key === 'Enter' || ev.key === ' ') && ev.target.matches('[role=switch][data-p]')) { ev.preventDefault(); accion(ev); } });
@@ -15887,6 +15896,7 @@ window.PANTALLAS['inicio'] = (function () {
         var prevFa = capturarFa($('tab'));
         $('tab').innerHTML = v;
         animarFa($('tab'), prevFa);
+        if (st.tabAnim && window.NWS_SK) { window.NWS_SK($('tab'), st.tab === 'hoy' ? 'app' : 'lista'); }
         if (st.tabAnim) {
           var te = $('tab'), he = $('hd');
           [te, he].forEach(function (e) { e.classList.remove('nws-tab--out'); e.style.setProperty('--dx', (st.tabDir * 28) + 'px'); e.classList.remove('nws-tab--in'); });
@@ -15921,7 +15931,7 @@ window.PANTALLAS['inicio'] = (function () {
           }, ov ? 520 : 380);
         }, 380);
       }
-      function irOv(o) { st.ov = o; st.enter = true; pintarDock(); pintarOv(); }
+      function irOv(o) { st.ov = o; st.enter = true; pintarDock(); pintarOv(); if (window.NWS_SK && o !== 'cartas') { window.NWS_SK($('ov'), 'lista', 100); } }
       function cerrarOv() { clearT(); st.ov = null; st.dstage = 'shuffle'; st.dsel = null; $('ov').innerHTML = ''; pintar(); }
       function abrirMazo() {
         clearT(); st.dstage = 'shuffle'; st.dsel = null; irOv('cartas');
@@ -16554,7 +16564,7 @@ window.PANTALLAS['bienestar'] = (function () {
             '<label class="nws-dp__sw"><span>Ver cómo razona el sistema<small>Solo para explicar la demo</small></span><div class="nwt-switch' + (s.detalle ? ' nwt-switch--checked' : '') + '" role="switch" aria-checked="' + s.detalle + '" tabindex="0" data-p="detalle" nwt-theme="secondary"><div class="nwt-switch__component"><div class="nwt-switch__component__element"></div></div></div></label></div>' +
           '<div class="nws-dp__ft">' + ctl + '<div class="nws-dp__turno"><span class="nws-mono">Turno ' + s.hechos + '/' + t + '</span><span class="nws-dp__dots" aria-hidden="true">' + dots + '</span></div></div></div>';
       }
-      var jugando = false, llavePrev = '', chatAbierto = false;
+      var jugando = false, llavePrev = '', chatAbierto = false, skPrev = '';
 
       function pintar() {
         var s = C.estado(), v = C.vista();
@@ -16612,6 +16622,8 @@ window.PANTALLAS['bienestar'] = (function () {
           $('gpanel').innerHTML = panelGuiones();
         }
         if (vista === 'resumen') { sala.scrollTop = top; }
+        var llaveSk = vista + '|' + (vista === 'caso' ? sel + '|' + modo : '');
+        if (window.NWS_SK && llaveSk !== skPrev) { skPrev = llaveSk; window.NWS_SK(sala.parentNode, vista === 'caso' ? 'caso' : 'sala', sala.offsetTop); }
         sala.classList.toggle('nws-sala__body--ib', vista === 'caso');
         [].slice.call(root.querySelectorAll('.nws-side__it[data-nav]')).forEach(function (bt) { var on = bt.getAttribute('data-nav') === (vista === 'caso' ? 'casos' : 'resumen'); bt.classList.toggle('nws-side__it--on', on); if (on) { bt.setAttribute('aria-current', 'page'); } else { bt.removeAttribute('aria-current'); } });
         ctx.posicionarIndicadores(root);
@@ -16631,7 +16643,7 @@ window.PANTALLAS['bienestar'] = (function () {
         var nav = ev.target.closest('[data-nav]');
         if (nav) { if (nav.getAttribute('data-nav') === 'casos') { abrir(sel || CASOS.slice().sort(function (x, y) { return C.NIVELES.indexOf(y.nivel) - C.NIVELES.indexOf(x.nivel); })[0].id); } else { volver(); } return; }
         var gu = ev.target.closest('[data-guion]');
-        if (gu) { var bid = gu.getAttribute('data-guion'), actual = casoPorId(sel); if (actual && actual.base === bid) { return; } var cand = CASOS.filter(function (c) { return c.base === bid; }).sort(function (x, y) { return C.NIVELES.indexOf(y.nivel) - C.NIVELES.indexOf(x.nivel); })[0]; if (cand) { abrir(cand.id); } return; }
+        if (gu) { var bid = gu.getAttribute('data-guion'), actual = casoPorId(sel); if (actual && actual.base === bid) { return; } var cand = CASOS.filter(function (c) { return c.base === bid; }).sort(function (x, y) { return C.NIVELES.indexOf(y.nivel) - C.NIVELES.indexOf(x.nivel); })[0]; if (cand) { abrir(cand.id); C.reproducir(); } return; }
         var md = ev.target.closest('[data-modo]');
         if (md) { modo = md.getAttribute('data-modo'); chatAbierto = modo === 'detalle'; colapsada = modo === 'detalle'; animarDerecha = true; pintar(); return; }
         var tb = ev.target.closest('[data-tab]');
@@ -16718,6 +16730,23 @@ window.PANTALLAS['bienestar'] = (function () {
   var sesion = { rol: D.roles[0].id, ultimoRol: D.roles[0].id };
   function rolPorId(id) { return D.roles.filter(function (r) { return r.id === id; })[0] || null; }
   function salir() { ir('#/'); }
+  /* esqueleto de carga: siluetas con brillo que cubren la vista un instante mientras «llegan» los datos */
+  var SK = {
+    app: '<i class="sk b" style="height:130px"></i><i class="sk b" style="width:42%;height:18px"></i><div class="sk-g sk-g4"><i class="sk b" style="height:88px"></i><i class="sk b" style="height:88px"></i><i class="sk b" style="height:88px"></i><i class="sk b" style="height:88px"></i></div><i class="sk b" style="height:150px"></i><i class="sk b" style="height:110px"></i>',
+    lista: '<i class="sk b" style="width:46%;height:22px"></i><i class="sk b" style="height:72px"></i><i class="sk b" style="height:72px"></i><i class="sk b" style="height:72px"></i><i class="sk b" style="height:72px"></i>',
+    sala: '<div class="sk-g sk-g4"><i class="sk b" style="height:96px"></i><i class="sk b" style="height:96px"></i><i class="sk b" style="height:96px"></i><i class="sk b" style="height:96px"></i></div><div class="sk-g sk-g2"><i class="sk b" style="height:300px"></i><i class="sk b" style="height:300px"></i></div>',
+    caso: '<i class="sk b" style="width:38%;height:26px"></i><div class="sk-g sk-g4"><i class="sk b" style="height:80px"></i><i class="sk b" style="height:80px"></i><i class="sk b" style="height:80px"></i><i class="sk b" style="height:80px"></i></div><i class="sk b" style="height:150px"></i><i class="sk b" style="height:220px"></i>'
+  };
+  window.NWS_SK = function (host, tipo, top) {
+    if (!host) { return; }
+    var viejo = host.querySelector(':scope > .nws-sk'); if (viejo) { clearTimeout(viejo._t); viejo.remove(); }
+    var cs = getComputedStyle(host); if (cs.position === 'static') { host.style.position = 'relative'; }
+    var d = document.createElement('div'); d.className = 'nws-sk'; d.setAttribute('aria-hidden', 'true'); if (top) { d.style.top = top + 'px'; }
+    d.innerHTML = SK[tipo] || SK.lista; host.appendChild(d);
+    var sinMov = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    d._t = setTimeout(function () { d.classList.add('nws-sk--out'); setTimeout(function () { d.remove(); }, sinMov ? 0 : 320); }, sinMov ? 0 : 650);
+  };
+
   /* cambio de vista (Estudiante ↔ Bienestar): un velo con la marca de SerafIA cubre el cambio y se retira al terminar */
   var velo = null, veloT1 = 0, veloT2 = 0;
   function mostrarVelo(alTapar) {

@@ -185,7 +185,7 @@ window.CASO = (function () {
       else if (k === 'reset') { reiniciar(true); }
       else if (k === 'toggle') { s.abierto = !s.abierto; avisar(); }
       else if (k === 'detalle') { s.detalle = !s.detalle; avisar(); }
-      else if (k.indexOf('g:') === 0) { seleccionar(k.slice(2)); }
+      else if (k.indexOf('g:') === 0) { seleccionar(k.slice(2)); reproducir(); }
     }
     raiz.addEventListener('click', accion);
     raiz.addEventListener('keydown', function (ev) { if ((ev.key === 'Enter' || ev.key === ' ') && ev.target.matches('[role=switch][data-p]')) { ev.preventDefault(); accion(ev); } });
