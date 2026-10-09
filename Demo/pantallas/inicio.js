@@ -530,14 +530,14 @@ window.PANTALLAS['inicio'] = (function () {
           { label: 'Mi horario de hoy', run: function () {
             yo('Mi horario de hoy');
             say('Hoy tienes ' + c1.nombre + ' a las ' + c1.ini + ' en ' + c1.aula + ', y luego ' + c2.nombre + ' a las ' + c2.ini + '. ¿Quieres ver tu horario completo?', [
-              { label: 'Ver horario completo', primary: true, run: function () { yo('Ver horario completo'); cerrarSheet(); later(function () { irOv('horario'); }, 320); } },
+              { label: 'Ver horario completo', primary: true, run: function () { yo('Ver horario completo'); irDesdeChat('hoy', 'horario'); } },
               { label: 'Ahora no', run: ahoraNo }
             ], 1100);
           } },
           /* el carnet es el único que abre sin preguntar */
           { label: 'Mi carnet', run: function () {
             yo('Mi carnet'); say('Te lo muestro.', [], 800);
-            later(function () { cerrarSheet(); later(function () { irOv('carnet'); }, 320); }, 1900);
+            later(function () { irDesdeChat('hoy', 'carnet'); }, 1900);
           } }
         ];
         abrirSheet(function () { st.opts = ops; pintarChat(); }, true);
@@ -545,7 +545,7 @@ window.PANTALLAS['inicio'] = (function () {
       function charlaApoyo() {
         say('Me alegra que lo pidas. Puedes contarme con tus palabras, o te muestro las opciones del equipo de Bienestar.', [
           { label: 'Contarte a ti', primary: true, run: function () { yo('Contarte a ti'); say('Te escucho. ¿Qué es lo que más te pesa hoy?', [], 900); } },
-          { label: 'Ver opciones de Bienestar', run: function () { yo('Ver opciones de Bienestar'); cerrarSheet(); cambiarTab('campus'); } }
+          { label: 'Ver opciones de Bienestar', run: function () { yo('Ver opciones de Bienestar'); irDesdeChat('campus'); } }
         ], 900);
       }
       function charlaCarta(n) {
@@ -588,10 +588,25 @@ window.PANTALLAS['inicio'] = (function () {
         var prev = $('tab').querySelector('.nws-scroll'), top = prev ? prev.scrollTop : 0;
         var v = { hoy: vistaHoy, servicios: vistaServicios, campus: vistaCampus, yo: vistaYo }[st.tab]();
         $('tab').innerHTML = v;
+        if (st.tabAnim) { var te = $('tab'); te.classList.remove('nws-tab--in'); void te.offsetWidth; te.classList.add('nws-tab--in'); st.tabAnim = false; }
         var sc = $('tab').querySelector('.nws-scroll'); if (sc && top && !st._reset) { sc.scrollTop = top; } st._reset = false;
       }
       function pintar() { mob.classList.add('nws-demo--lav'); pintarHd(); pintarTab(); pintarDock(); pintarOv(); }
-      function cambiarTab(t) { st.tab = t; st._reset = true; pintar(); }
+      function cambiarTab(t) { st.tab = t; st._reset = true; st.tabAnim = true; pintar(); }
+      /* salir del chat hacia otra vista: el chat se cierra, la vista nueva entra con suavidad y el menú se abre
+         un momento para que se vea en qué sección quedó la persona */
+      function irDesdeChat(tab, ov) {
+        cerrarSheet();
+        later(function () {
+          if (st.tab !== tab || st.ov) { st.ov = null; $('ov').innerHTML = ''; cambiarTab(tab); }
+          if (ov) { later(function () { irOv(ov); }, 120); }
+          later(function () {
+            alternarNav(true);
+            var tk = st.navTk = (st.navTk || 0) + 1;
+            later(function () { if (st.navTk === tk && st.nav) { alternarNav(false); } }, 2800);
+          }, ov ? 520 : 380);
+        }, 300);
+      }
       function irOv(o) { st.ov = o; st.enter = true; pintarDock(); pintarOv(); }
       function cerrarOv() { clearT(); st.ov = null; st.dstage = 'shuffle'; st.dsel = null; $('ov').innerHTML = ''; pintar(); }
       function abrirMazo() {
@@ -608,7 +623,7 @@ window.PANTALLAS['inicio'] = (function () {
         if (!el || !mob.contains(el)) { return; }
         var a = el.getAttribute('data-a'), p = a.split(':'), k = p[0], v = p.slice(1).join(':');
         if (k === 'tab') { if (st.ov) { st.nav = false; cerrarOv(); cambiarTab(v); return; } if (st.nav) { alternarNav(false); later(function () { cambiarTab(v); }, 240); } else { cambiarTab(v); } }
-        else if (k === 'nav-toggle') { alternarNav(); }
+        else if (k === 'nav-toggle') { st.navTk = (st.navTk || 0) + 1; alternarNav(); }
         else if (k === 'ov') { irOv(v); }
         else if (k === 'ov-close') { cerrarOv(); }
         else if (k === 'deck-open') { abrirMazo(); }

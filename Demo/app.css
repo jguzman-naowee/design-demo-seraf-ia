@@ -2165,3 +2165,8 @@ section.nws-ib__r { display: flex; flex-direction: column; min-width: 0; min-hei
 /* «Ayuda ahora»: el chat aparece de una vez con fundido, sin subir desde abajo */
 .nws-demo .nwt-bottom-sheet__container.nws-sheet--full.nws-sheet--fade { transform: none; transition: opacity .3s ease-out; }
 .nws-demo .nwt-bottom-sheet__container.nws-sheet--full.nws-sheet--fade .nws-care { animation: none !important; }
+
+/* cambio de vista: la nueva entra con un fundido suave */
+@keyframes nws-tab-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+.nws-tab--in > * { animation: nws-tab-in .38s var(--naotech-animation-deceleration) both; }
+@media (prefers-reduced-motion: reduce) { .nws-tab--in > * { animation: none; } }
