@@ -2532,3 +2532,30 @@ section.nws-ib__r { display: flex; flex-direction: column; min-width: 0; min-hei
 .nws-cal__ley span { display: inline-flex; align-items: center; gap: var(--naotech-sizing-6); }
 .nws-cal__ag { display: flex; flex-direction: column; gap: var(--naotech-sizing-12); min-width: 0; }
 .nws-cal__sl { gap: var(--naotech-sizing-12); }
+
+/* DC-075: menú lateral (tablet grande) con más aire y centrado en el espacio */
+.nws-demo--tablet-xl .nws-dock--x .nws-navx, .nws-demo--tablet-xl .nws-dock--x.nws-dock--open .nws-navx { top: 50%; transform: translateY(-50%); width: 84px; padding: var(--naotech-sizing-16) 0; border-radius: 36px; left: calc((var(--nws-rail) - 84px) / 2); }
+.nws-demo--tablet-xl .nws-dock--x .nws-navx__items { gap: var(--naotech-sizing-12); padding: 0 var(--naotech-sizing-8); }
+.nws-demo--tablet-xl .nws-dock--x .nws-navx__it { height: 68px; gap: var(--naotech-sizing-4); border-radius: 20px; }
+
+/* DC-076: las cartas para elegir quedan alineadas (misma altura y el botón siempre abajo) */
+.nws-opciones { align-items: stretch; }
+.nws-opcion { justify-content: flex-start; }
+.nws-opcion > .nwt-button, .nws-opcion > .nws-block-btn { margin-top: auto; }
+.nws-opcion > div:not(.nws-carta) { text-align: center; }
+
+/* DC-077: el abanico de cartas del banner, más grande en tablet y tablet grande */
+.nws-demo--tablet .nws-gv--hoy .nws-hero, .nws-demo--tablet-xl .nws-gv--hoy .nws-hero { min-height: 220px; }
+.nws-demo--tablet-xl .nws-gv--hoy .nws-hero { min-height: 250px; }
+.nws-demo--tablet .nws-gv--hoy .nws-hero__fan, .nws-demo--tablet-xl .nws-gv--hoy .nws-hero__fan { top: 50%; right: 40px; transform: translateY(-50%) scale(2); transform-origin: right center; }
+.nws-demo--tablet-xl .nws-gv--hoy .nws-hero__fan { right: 56px; transform: translateY(-50%) scale(2.4); }
+.nws-demo--tablet .nws-gv--hoy .nws-hero__txt, .nws-demo--tablet-xl .nws-gv--hoy .nws-hero__txt { max-width: 50%; }
+.nws-demo--tablet .nws-gv--hoy .nws-hero .nws-h2, .nws-demo--tablet-xl .nws-gv--hoy .nws-hero .nws-h2 { font-size: var(--naotech-heading5-font-size); line-height: var(--naotech-heading5-line-height); }
+.nws-demo--tablet .nws-gv--hoy .nws-hero__fan { transform: translateY(-50%) scale(1.7); }
+.nws-demo--tablet-xl .nws-gv--hoy .nws-hero__fan { transform: translateY(-50%) scale(2); }
+/* las cartas en tablet no usan el truco de «la última centrada» del móvil */
+.nws-demo--tablet .nws-opcion:last-child, .nws-demo--tablet-xl .nws-opcion:last-child { grid-column: auto; justify-self: stretch; width: auto; }
+/* tablet (3 columnas): la segunda fila, de dos cartas, queda centrada */
+.nws-demo--tablet .nws-opciones { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+.nws-demo--tablet .nws-opcion { grid-column: span 2; }
+.nws-demo--tablet .nws-opcion:nth-child(4) { grid-column: 2 / span 2; } .nws-demo--tablet .nws-opcion:nth-child(5) { grid-column: 4 / span 2; }
