@@ -13607,6 +13607,10 @@ section.nws-ib__r { display: flex; flex-direction: column; min-width: 0; min-hei
 
 /* hilo del caso: lo ya pintado no se anima otra vez */
 .nws-th > .nws-old, .nws-th > .nws-old * { animation: none !important; }
+/* DC-090: carnet móvil en dos tarjetas separadas (credencial y código), como en tablet y desktop */
+.nws-demo--movil .nws-carnet { background: none; border: 0; box-shadow: none; overflow: visible; gap: var(--naotech-sizing-16); }
+.nws-demo--movil .nws-carnet__top { border-radius: 28px; padding: var(--naotech-sizing-24); box-shadow: var(--naotech-shadow-16); }
+.nws-demo--movil .nws-carnet__qr { border-top: 0; border-radius: var(--nws-r-card); background: var(--nws-glass); border: 1px solid var(--nws-glass-edge); box-shadow: var(--nws-shadow-card); }
 
 </style>
 <div id="app" style="height:100%"></div>
