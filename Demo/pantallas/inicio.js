@@ -595,7 +595,7 @@ window.PANTALLAS['inicio'] = (function () {
       function pintar() { mob.classList.add('nws-demo--lav'); pintarHd(); pintarTab(); pintarDock(); pintarOv(); }
       function cambiarTab(t) { st.tab = t; st._reset = true; st.tabAnim = true; pintar(); }
       /* salir del chat hacia otra vista: el chat se cierra, la vista nueva entra con suavidad y el menú se abre
-         un momento para que se vea en qué sección quedó la persona */
+         y queda abierto para que se vea en qué sección quedó la persona */
       function irDesdeChat(tab, ov) {
         cerrarSheet();
         later(function () {
@@ -603,8 +603,6 @@ window.PANTALLAS['inicio'] = (function () {
           if (ov) { later(function () { irOv(ov); }, 120); }
           later(function () {
             alternarNav(true);
-            var tk = st.navTk = (st.navTk || 0) + 1;
-            later(function () { if (st.navTk === tk && st.nav) { alternarNav(false); } }, 2800);
           }, ov ? 520 : 380);
         }, 300);
       }
@@ -624,7 +622,7 @@ window.PANTALLAS['inicio'] = (function () {
         if (!el || !mob.contains(el)) { return; }
         var a = el.getAttribute('data-a'), p = a.split(':'), k = p[0], v = p.slice(1).join(':');
         if (k === 'tab') { if (st.ov) { st.nav = false; cerrarOv(); cambiarTab(v); return; } if (st.nav) { alternarNav(false); later(function () { cambiarTab(v); }, 240); } else { cambiarTab(v); } }
-        else if (k === 'nav-toggle') { st.navTk = (st.navTk || 0) + 1; alternarNav(); }
+        else if (k === 'nav-toggle') { alternarNav(); }
         else if (k === 'ov') { irOv(v); }
         else if (k === 'ov-close') { cerrarOv(); }
         else if (k === 'deck-open') { abrirMazo(); }
