@@ -52,7 +52,10 @@ window.PANTALLAS['inicio'] = (function () {
     render: function (ctx) {
       var S = ctx.S, rol = ctx.rol, D = ctx.D.demo;
       return S.h('div', { class: 'nws-col', style: 'height:100%;background:var(--naotech-app-color-100)' },
-        window.CASO.toolbar(S, 'estudiante', S.tagGroup({ items: Object.keys(DISPS).map(function (k) { return { label: DISPS[k].n, value: k }; }), value: DISP, size: 'medium', cls: 'nws-dispsw' })),
+        window.CASO.toolbar(S, 'estudiante', '<div class="nws-dispsw" role="radiogroup" aria-label="Dispositivo">' + Object.keys(DISPS).map(function (k) {
+          var d = DISPS[k];
+          return '<button type="button" role="radio" aria-checked="' + (k === DISP) + '" class="nws-dsp' + (k === DISP ? ' on' : '') + '" data-seg="' + k + '"><span class="nws-dsp__g nws-dsp__g--' + k + '" aria-hidden="true"></span><span class="nws-dsp__t"><b>' + d.n + '</b><small>' + d.w + ' px</small></span></button>';
+        }).join('') + '</div>'),
         S.h('div', { class: 'nws-phone-stage', id: 'stage' },
           S.h('div', { class: 'nws-dpanel', id: 'dpanel' }),
           S.h('div', { class: 'nws-phone-zoom' },
@@ -670,7 +673,7 @@ window.PANTALLAS['inicio'] = (function () {
         DISP = k;
         var ph = root.querySelector('#phone'); ph.setAttribute('data-disp', k); ph.style.width = DISPS[k].w + 'px'; ph.style.height = DISPS[k].h + 'px';
         mob.className = mob.className.replace(/\bnws-demo--(movil|tablet|tablet-xl)\b/g, '').trim() + ' nws-demo--' + k;
-        [].forEach.call(root.querySelectorAll('.nws-dispsw .nwt-tag-group__tag'), function (x) { var on = x.getAttribute('data-seg') === k; x.classList.toggle('nwt-tag-group__tag--active', on); x.setAttribute('aria-selected', String(on)); });
+        [].forEach.call(root.querySelectorAll('.nws-dispsw .nws-dsp'), function (x) { var on = x.getAttribute('data-seg') === k; x.classList.toggle('on', on); x.setAttribute('aria-checked', String(on)); });
         zoom.mult = 1; aplicarZoom(); ctx.posicionarIndicadores(root);
       }
       root.addEventListener('click', onDisp);
