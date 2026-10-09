@@ -510,7 +510,7 @@ window.PANTALLAS['bienestar'] = (function () {
         var ocupado = s.fase === 'estudiante' || s.fase === 'escribiendo', t = C.total(), dots = '';
         for (var i = 0; i < t; i++) { dots += '<i class="' + (i < s.hechos ? 'on' : '') + '"></i>'; }
         var ctl = '<div class="nws-dp__ctl">' +
-          S.iconButton({ icon: s.playing ? 'pause-filled' : 'play-filled', variant: 'loud', theme: 'secondary', size: 'large', label: s.playing ? 'Pausar' : (C.terminado() ? 'Repetir' : 'Reproducir'), attrs: { 'data-p': 'play' } }) +
+          (s.playing ? S.iconButton({ icon: 'pause-filled', variant: 'loud', theme: 'secondary', size: 'large', label: 'Pausar', attrs: { 'data-p': 'play' } }) : '') +
           S.iconButton({ icon: 'arrow-right', variant: 'mute', theme: 'neutral', size: 'large', label: 'Siguiente turno', disabled: ocupado || s.playing, attrs: { 'data-p': 'next' } }) +
           S.iconButton({ icon: 'refresh', variant: 'mute', theme: 'neutral', size: 'large', label: 'Reiniciar el guion', attrs: { 'data-p': 'reset' } }) + '</div>';
         return '<div class="nws-dp' + (s.abierto ? '' : ' nws-dp--cerrado') + '">' +
@@ -584,7 +584,7 @@ window.PANTALLAS['bienestar'] = (function () {
         [].slice.call(root.querySelectorAll('.nws-side__it[data-nav]')).forEach(function (bt) { var on = bt.getAttribute('data-nav') === (vista === 'caso' ? 'casos' : 'resumen'); bt.classList.toggle('nws-side__it--on', on); if (on) { bt.setAttribute('aria-current', 'page'); } else { bt.removeAttribute('aria-current'); } });
         ctx.posicionarIndicadores(root);
       }
-      function abrir(id) { var c = casoPorId(id); if (!c) { return; } sel = id; vista = 'caso'; tab = 'evidencia'; modo = decidido[id] ? 'detalle' : 'resumen'; chatAbierto = modo === 'detalle'; colapsada = modo === 'detalle'; C.seleccionar(c.gid); C.estado().abierto = true; jugando = false; $('sala').scrollTop = 0; pintar(); }
+      function abrir(id) { var c = casoPorId(id); if (!c) { return; } sel = id; vista = 'caso'; tab = 'evidencia'; modo = decidido[id] ? 'detalle' : 'resumen'; chatAbierto = modo === 'detalle'; colapsada = modo === 'detalle'; C.seleccionar(c.gid); C.estado().abierto = true; jugando = false; $('sala').scrollTop = 0; pintar(); C.reproducir(); }
       function volver() { vista = 'resumen'; sel = null; chatAbierto = false; $('sala').innerHTML = ''; C.salirDelModo(); pintar(); }
 
       function onClick(ev) {
@@ -599,7 +599,7 @@ window.PANTALLAS['bienestar'] = (function () {
         var nav = ev.target.closest('[data-nav]');
         if (nav) { if (nav.getAttribute('data-nav') === 'casos') { abrir(sel || CASOS.slice().sort(function (x, y) { return C.NIVELES.indexOf(y.nivel) - C.NIVELES.indexOf(x.nivel); })[0].id); } else { volver(); } return; }
         var gu = ev.target.closest('[data-guion]');
-        if (gu) { var bid = gu.getAttribute('data-guion'), actual = casoPorId(sel); if (actual && actual.base === bid) { return; } var cand = CASOS.filter(function (c) { return c.base === bid; }).sort(function (x, y) { return C.NIVELES.indexOf(y.nivel) - C.NIVELES.indexOf(x.nivel); })[0]; if (cand) { abrir(cand.id); C.reproducir(); } return; }
+        if (gu) { var bid = gu.getAttribute('data-guion'), actual = casoPorId(sel); if (actual && actual.base === bid) { return; } var cand = CASOS.filter(function (c) { return c.base === bid; }).sort(function (x, y) { return C.NIVELES.indexOf(y.nivel) - C.NIVELES.indexOf(x.nivel); })[0]; if (cand) { abrir(cand.id); } return; }
         var md = ev.target.closest('[data-modo]');
         if (md) { modo = md.getAttribute('data-modo'); chatAbierto = modo === 'detalle'; colapsada = modo === 'detalle'; animarDerecha = true; pintar(); return; }
         var tb = ev.target.closest('[data-tab]');

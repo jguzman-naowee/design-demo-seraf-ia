@@ -134,7 +134,7 @@ window.CASO = (function () {
   function controles(S) {
     var ocupado = s.fase === 'estudiante' || s.fase === 'escribiendo';
     return '<div class="nws-dp__ctl">' +
-      S.iconButton({ icon: s.playing ? 'pause-filled' : 'play-filled', variant: 'loud', theme: 'secondary', size: 'large', label: s.playing ? 'Pausar' : (terminado() ? 'Repetir' : 'Reproducir'), attrs: { 'data-p': 'play' } }) +
+      (s.playing ? S.iconButton({ icon: 'pause-filled', variant: 'loud', theme: 'secondary', size: 'large', label: 'Pausar', attrs: { 'data-p': 'play' } }) : '') +
       S.iconButton({ icon: 'arrow-right', variant: 'mute', theme: 'neutral', size: 'large', label: 'Siguiente turno', disabled: ocupado || s.playing, attrs: { 'data-p': 'next' } }) +
       S.iconButton({ icon: 'refresh', variant: 'mute', theme: 'neutral', size: 'large', label: 'Reiniciar el guion', attrs: { 'data-p': 'reset' } }) + '</div>';
   }
@@ -182,7 +182,7 @@ window.CASO = (function () {
       var k = b.getAttribute('data-p');
       if (k === 'play') { reproducir(); }
       else if (k === 'next') { siguiente(false); }
-      else if (k === 'reset') { reiniciar(true); }
+      else if (k === 'reset') { reiniciar(true); reproducir(); }
       else if (k === 'toggle') { s.abierto = !s.abierto; avisar(); }
       else if (k === 'detalle') { s.detalle = !s.detalle; avisar(); }
       else if (k.indexOf('g:') === 0) { seleccionar(k.slice(2)); reproducir(); }
