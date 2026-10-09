@@ -2653,3 +2653,15 @@ section.nws-ib__r { display: flex; flex-direction: column; min-width: 0; min-hei
 .nws-tg--p { background: var(--nws-cta); border-color: var(--nws-cta); color: var(--naotech-color-white-alpha-100); } .nws-tg--p .nwt-icon { color: inherit; } .nws-tg--p:hover { background: var(--nws-cta); filter: brightness(1.08); }
 /* al iniciar la conversación las sugerencias de la bienvenida desaparecen */
 .nws-sheet--full.nws-chat--on .nws-sug { display: none !important; }
+
+/* DC-087: la tarjeta del evento termina en un botón de ancho completo, sin organizador */
+.nws-evc__ft { padding-top: var(--naotech-sizing-8); margin-top: auto; display: block; }
+.nws-evc__ft .nwt-button { width: 100%; }
+/* DC-088: Servicios: certificados y solicitudes en columna; «Notas» como el acceso de Eventos en Campus */
+.nws-demo--tablet .nws-gv--serv, .nws-demo--tablet-xl .nws-gv--serv { grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); grid-template-areas: "docs tiles" "sol tiles"; }
+.nws-demo--tablet-xl .nws-gv--serv { grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); }
+.nws-gv--serv .nws-ga-tiles { align-self: start; }
+/* DC-089: el acceso a Eventos Seraf va arriba en Campus */
+.nws-demo--tablet .nws-gv--campus { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-areas: "ev ev" "map map" "cont cont"; }
+.nws-demo--tablet-xl .nws-gv--campus { grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); grid-template-areas: "map ev" "map cont"; }
+.nws-demo--tablet-xl .nws-gv--campus { grid-template-rows: auto 1fr; }

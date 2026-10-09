@@ -231,8 +231,7 @@ window.PANTALLAS['inicio'] = (function () {
         return '<article class="nws-evc"><div class="nws-evc__img nws-ev" data-c="' + (EV_COL[e.id] || EV_COL[e.tag] || 'indigo') + '" aria-hidden="true"><span class="nws-ev__orb" style="width:150px;height:150px;right:-40px;top:-50px"></span><span class="nws-ev__orb" style="width:80px;height:80px;right:60px;bottom:-26px;opacity:.7"></span><span class="nws-evc__tag">' + S.badge({ label: e.tag, theme: EV_TEMA[e.tag] || 'neutral', variant: 'loud', size: 'small' }) + '</span></div>' +
           '<div class="nws-evc__b"><h3 class="nws-evc__t">' + e.titulo + '</h3>' +
           '<div class="nws-evc__f">' + S.icon('calendar') + '<span>' + e.fecha + '</span></div><div class="nws-evc__f">' + S.icon('gps-pin') + '<span>' + e.lugar + '</span></div>' + cupos +
-          '<div class="nws-evc__ft">' + S.avatar({ text: org.split(' ').map(function (w) { return w.charAt(0); }).join('').slice(0, 2), size: 'small', theme: 'secondary', variant: 'quiet' }) + '<div class="nws-grow"><b>' + org + '</b><span>Organiza</span></div>' +
-          btn('Ver detalle', null, { variant: 'quiet', size: 'small', toast: 'Detalle del evento' }) + '</div></div></article>';
+          '<div class="nws-evc__ft">' + btn('Ver detalle', null, { variant: 'quiet', theme: 'secondary', size: 'medium', cls: 'nws-block-btn', iconEnd: 'arrow-right', toast: 'Detalle del evento' }) + '</div></div></article>';
       }
       function eventosCarrusel(titulo, sub) {
         return '<section class="nws-evcar" data-evc aria-label="Eventos Seraf"><div class="nws-sec nws-evcar__h"><h2 class="nws-h2">' + (titulo || 'Eventos Seraf') + '</h2>' + (sub ? '<span class="nws-txt">' + sub + '</span>' : '') + '<span class="nws-grow"></span>' +
@@ -276,14 +275,11 @@ window.PANTALLAS['inicio'] = (function () {
             S.badge({ label: t.estado, theme: t.tema, variant: 'quiet', size: 'small' }) + '</div>';
         }).join('');
         if (grande()) {
-          var accL = '<div class="nws-glass nws-block"><h2 class="nws-h2">Accesos</h2><div class="nws-stack" style="gap:0">' +
-            [['bill', 'informative', 'Notas del periodo', 'Abrir calculadora', 'Notas'], ['file', 'positive', 'Mis solicitudes', '1 en revisión', 'Mis solicitudes']].map(function (x) {
-              return '<button type="button" class="nws-line nws-line--btn" data-toast="' + x[4] + '">' + S.avatarIcon({ icon: x[0], theme: x[1] }) + '<div class="nws-grow"><p class="nws-h3" style="font-size:var(--naotech-body-font-size)">' + x[2] + '</p><p class="nws-txt">' + x[3] + '</p></div>' + S.icon('chevron-right') + '</button>';
-            }).join('') + '</div></div>';
+          var notasT = '<button class="nws-glass nws-tile" data-toast="Notas" style="flex-direction:row;align-items:center;width:100%">' + S.avatarIcon({ icon: 'bill', theme: 'informative' }) + '<div class="nws-grow"><p class="nws-tile__t">Notas del periodo</p><p class="nws-txt">Abrir calculadora</p></div>' + S.icon('chevron-right') + '</button>';
           return vistaG('nws-gv--serv', [
             ['docs', '<div class="nws-glass nws-block"><h2 class="nws-h2">Certificados y documentos</h2><div class="nws-stack" style="gap:0">' + docs + '</div></div>'],
-            ['tiles', accL],
-            ['sol', '<div class="nws-glass nws-block"><h2 class="nws-h2">Mis solicitudes</h2><div class="nws-stack" style="gap:0">' + tr + '</div></div>']]);
+            ['sol', '<div class="nws-glass nws-block"><h2 class="nws-h2">Mis solicitudes</h2><div class="nws-stack" style="gap:0">' + tr + '</div></div>'],
+            ['tiles', notasT]]);
         }
         return '<div class="nws-scroll">' +
           '<div class="nws-glass nws-block"><h2 class="nws-h2">Certificados y documentos</h2><div class="nws-stack" style="gap:0">' + docs + '</div></div>' +
