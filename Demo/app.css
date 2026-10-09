@@ -2203,3 +2203,7 @@ section.nws-ib__r { display: flex; flex-direction: column; min-width: 0; min-hei
 .nws-mcr--chd > .nws-chd { position: static; grid-column: 2; grid-row: 1 / span 2; width: auto; border: 1px solid var(--naotech-color-gray-200); border-radius: var(--nws-r-card); box-shadow: none; overflow: hidden; }
 .nws-mcr--chd .nws-sala__cols { grid-template-columns: minmax(0, 1fr); }
 .nws-mcr--chd .nws-sala__c3 { order: 2; }
+
+/* encabezado del caso: «Ver conversación» junto a descargar */
+.nws-mcr__h { align-items: flex-start; }
+.nws-mcr__h > .nwt-button { margin-right: var(--naotech-sizing-4); }

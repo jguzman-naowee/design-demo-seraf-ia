@@ -13057,6 +13057,10 @@ section.nws-ib__r { display: flex; flex-direction: column; min-width: 0; min-hei
 .nws-mcr--chd .nws-sala__cols { grid-template-columns: minmax(0, 1fr); }
 .nws-mcr--chd .nws-sala__c3 { order: 2; }
 
+/* encabezado del caso: «Ver conversación» junto a descargar */
+.nws-mcr__h { align-items: flex-start; }
+.nws-mcr__h > .nwt-button { margin-right: var(--naotech-sizing-4); }
+
 </style>
 <div id="app" style="height:100%"></div>
 <!-- pantallas: una línea por archivo, antes de app.js -->
@@ -15407,7 +15411,7 @@ window.PANTALLAS['bienestar'] = (function () {
       }
 
       /* ---------- caso (columna central) ---------- */
-      var bit = {}, estatico = false, decidido = {};
+      var bit = {}, estatico = false, decidido = {}, visto = {};
       function estadoDe(c) { return decidido[c.id] && c.estado === 'Sin atender' ? 'En revisión' : c.estado; }
       var MOTIVOS = ['Ya hablé con el estudiante', 'Tengo más información del caso', 'Ya está en atención con otro servicio', 'Otro motivo'];
       var ORDEN_ACC = ['acompanar', 'monitorear', 'alerta', 'alerta_prioritaria', 'escalamiento_inmediato'];
@@ -15417,7 +15421,7 @@ window.PANTALLAS['bienestar'] = (function () {
         ab.forEach(function (al) { alertasOk[sel + ':' + al.turno] = hh; delete marc[sel + ':' + al.turno]; });
         if (!bit[sel]) { bit[sel] = { ev: [], contacto: false, proto: false }; } else { bit[sel].contacto = false; bit[sel].proto = false; }
         registrar((tipo === 'Confirmada' ? 'Acción confirmada: ' : 'Acción ajustada a ') + ACCION[accion].label + (motivo ? ' · Motivo: ' + motivo : '') + (ab.length ? ' · ' + ab.length + (ab.length === 1 ? ' alerta atendida' : ' alertas atendidas') : ''));
-        ajusteSel = null; motivoSel = null; decidido[sel] = true;
+        ajusteSel = null; motivoSel = null; decidido[sel] = true; visto[sel] = s.hechos > 0 ? s.hechos : C.total();
         C.decidir(tipo, tipo === 'Ajustada' ? accion : null);
       }
       function ahora() { return new Date().toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit' }); }
@@ -15437,7 +15441,7 @@ window.PANTALLAS['bienestar'] = (function () {
       /* ---------- decisión y alertas en un solo panel: por defecto en conjunto, o eligiendo cuáles ---------- */
       function panelDecision(v, s, resumido) {
         var c = casoPorId(sel), a = ACCION[v.accion], n = v.nivel, dec = s.decision;
-        var al = (v.alertas || []).map(function (x) { return { n: x.turno, accion: x.accion, nivel: x.nivel, cita: x.cita, ok: alertasOk[sel + ':' + x.turno] || null }; }).sort(function (p, q) { return q.n - p.n; });
+        var al = (v.alertas || []).map(function (x) { return { n: x.turno, accion: x.accion, nivel: x.nivel, cita: x.cita, ok: alertasOk[sel + ':' + x.turno] || null, nueva: !!decidido[sel] && (s.finForzado ? x.turno > (visto[sel] || 0) : true) }; }).sort(function (p, q) { return q.n - p.n; });
         var abiertas = al.filter(function (x) { return !x.ok; }), cerradas = al.filter(function (x) { return x.ok; });
         if (resumido) {
           return '<section class="nws-pd nws-pd--res nws-lv--' + n + '" aria-label="Acción recomendada"><div class="nws-pd__i"><span class="nws-pd__k">Acción recomendada · ' + NIVEL[n].label + '</span><b>' + a.label + '</b><small>' + a.detalle + '</small></div>' +
@@ -15459,7 +15463,7 @@ window.PANTALLAS['bienestar'] = (function () {
             abiertas.map(function (x) {
               var on = !!marc[sel + ':' + x.n];
               return '<li><button type="button" class="nws-pd__r' + (on ? ' nws-pd__r--on' : '') + '" role="checkbox" aria-checked="' + on + '" data-d="selal:' + x.n + '"><span class="nws-pd__cb"></span>' +
-                '<span class="nws-pd__q"><span class="nws-pd__m">' + S.badge({ label: ACCION[x.accion].label, icon: NIVEL[x.nivel].icon, theme: NIVEL[x.nivel].tema, variant: 'quiet', size: 'small' }) + '<small>Mensaje ' + x.n + '</small></span><i>“' + esc(x.cita) + '”</i></span></button></li>';
+                '<span class="nws-pd__q"><span class="nws-pd__m">' + S.badge({ label: ACCION[x.accion].label, icon: NIVEL[x.nivel].icon, theme: NIVEL[x.nivel].tema, variant: 'quiet', size: 'small' }) + '<small>Mensaje ' + x.n + '</small>' + (x.nueva ? S.badge({ label: 'Nueva', theme: 'informative', variant: 'loud', size: 'small' }) : '') + '</span><i>“' + esc(x.cita) + '”</i></span></button></li>';
             }).join('') + '</ul>' + (!N && pendiente ? '<p class="nws-pd__h">Marca las alertas sobre las que quieres decidir.</p>' : '') + '</div>';
         }
 
@@ -15688,7 +15692,7 @@ window.PANTALLAS['bienestar'] = (function () {
         return '<header class="nws-mcr__h">' +
           '<div class="nws-mcr__t"><h1>' + c.nombre + '</h1><span class="nws-mcr__sub">' + c.programa + ' · ' + c.sem + '</span>' +
           '<div class="nws-mcr__m"><span class="nws-txt">Caso ' + c.id + ' · código ' + c.est + ' · ' + c.hace + '</span></div></div>' +
-          '<span class="nws-grow"></span>' + S.iconButton({ icon: 'download', variant: 'mute', theme: 'neutral', size: 'large', label: 'Descargar informe', attrs: { 'data-d': 'informe' } }) +
+          '<span class="nws-grow"></span>' + (modo === 'detalle' ? S.button({ label: 'Ver conversación', icon: 'answer', variant: 'quiet', theme: 'neutral', size: 'medium', attrs: { 'data-d': 'chat-abrir', 'aria-expanded': String(chatAbierto), 'aria-controls': 'chd' } }) : '') + S.iconButton({ icon: 'download', variant: 'mute', theme: 'neutral', size: 'large', label: 'Descargar informe', attrs: { 'data-d': 'informe' } }) +
           '</header>';
       }
       /* el chat tal como se ve en la app del estudiante; las alertas cuelgan del mensaje que las causó */
@@ -15770,12 +15774,10 @@ window.PANTALLAS['bienestar'] = (function () {
           if (modo === 'resumen') { cuerpo = idle + '<div class="nws-ib-th">' + hilo(v, c, s, live) + '</div>'; }
           else { cuerpo = crisis + idle + (hay ? '<div class="nws-sala__cols"><div class="nws-sala__c2">' + (s.detalle ? pasos(vv, ss) : '') + caso(vv, ss) + '</div><div class="nws-sala__c3">' + senales(vv, ss) + garantias(vv, ss) + (s.detalle ? modelo() : '') + '</div></div>' : vacioEs('answer', 'Esperando el primer mensaje del estudiante')); }
           var secChat = '';
-          var barraDet = '<div class="nws-dtb">' + S.button({ label: 'Resumen', icon: 'arrow-left', variant: 'quiet', theme: 'neutral', size: 'medium', attrs: { 'data-modo': 'resumen' } }) + '<span class="nws-grow"></span>' +
-            S.button({ label: 'Ver conversación', icon: 'answer', variant: 'quiet', theme: 'neutral', size: 'medium', attrs: { 'data-d': 'chat-abrir', 'aria-expanded': String(chatAbierto), 'aria-controls': 'chd' } }) + '</div>';
           var drawer = '<aside class="nws-chd" id="chd" role="dialog" aria-label="Conversación con SerafIA"><header class="nws-chd__h"><b>Conversación</b><span class="nws-txt">' + c.nombre + ' · ' + c.id + '</span><span class="nws-grow"></span>' +
             S.iconButton({ icon: 'close', variant: 'mute', theme: 'neutral', size: 'medium', label: 'Cerrar la conversación', attrs: { 'data-d': 'chat-cerrar' } }) + '</header><div class="nws-chd__b nws-scroll"><div class="nws-ib-th">' + hilo(v, c, s, live) + '</div></div></aside>';
           var derecha = '<section class="nws-mcr' + (modo === 'detalle' && chatAbierto ? ' nws-mcr--chd' : '') + '">' + cabCaso(c, started) + '<div class="nws-mcr__main nws-scroll" id="ibmain">' + resumenFilas(v, c, live) +
-            (modo === 'resumen' ? '<div class="nws-fijo">' + fijo + '</div>' : barraDet + cuerpo) + '</div>' +
+            (modo === 'resumen' ? '<div class="nws-fijo">' + fijo + '</div>' : cuerpo) + '</div>' +
             (modo === 'detalle' && chatAbierto ? drawer : '') + '</section>';
           /* mismo caso y misma vista: conservar el scroll al repintar (marcar, elegir, cambiar acción) */
           var llave = sel + '|' + modo, mismo = llave === llavePrev;
@@ -15808,7 +15810,7 @@ window.PANTALLAS['bienestar'] = (function () {
         [].slice.call(root.querySelectorAll('.nws-side__it[data-nav]')).forEach(function (bt) { var on = bt.getAttribute('data-nav') === (vista === 'caso' ? 'casos' : 'resumen'); bt.classList.toggle('nws-side__it--on', on); if (on) { bt.setAttribute('aria-current', 'page'); } else { bt.removeAttribute('aria-current'); } });
         ctx.posicionarIndicadores(root);
       }
-      function abrir(id) { var c = casoPorId(id); if (!c) { return; } sel = id; vista = 'caso'; tab = 'evidencia'; modo = 'resumen'; chatAbierto = false; colapsada = false; C.seleccionar(c.gid); C.estado().abierto = true; jugando = false; $('sala').scrollTop = 0; pintar(); }
+      function abrir(id) { var c = casoPorId(id); if (!c) { return; } sel = id; vista = 'caso'; tab = 'evidencia'; modo = decidido[id] ? 'detalle' : 'resumen'; chatAbierto = modo === 'detalle'; colapsada = modo === 'detalle'; C.seleccionar(c.gid); C.estado().abierto = true; jugando = false; $('sala').scrollTop = 0; pintar(); }
       function volver() { vista = 'resumen'; sel = null; chatAbierto = false; $('sala').innerHTML = ''; C.salirDelModo(); pintar(); }
 
       function onClick(ev) {
