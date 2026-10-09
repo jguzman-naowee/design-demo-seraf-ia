@@ -536,8 +536,9 @@ window.PANTALLAS['inicio'] = (function () {
           } },
           /* el carnet es el único que abre sin preguntar */
           { label: 'Mi carnet', run: function () {
-            yo('Mi carnet'); say('Te lo muestro.', [], 800);
-            later(function () { irDesdeChat('hoy', 'carnet'); }, 1900);
+            yo('Mi carnet'); say('Claro, te llevo a tu carnet.', [], 900);
+            /* la respuesta se lee con calma antes de pasar a la vista */
+            later(function () { irDesdeChat('hoy', 'carnet'); }, 900 + 2800);
           } }
         ];
         abrirSheet(function () { st.opts = ops; pintarChat(); }, true);
