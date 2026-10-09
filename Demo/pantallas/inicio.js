@@ -518,8 +518,8 @@ window.PANTALLAS['inicio'] = (function () {
       function cerrarSheet() {
         clearT(); st.sheet = false; pintarPanel();
         var host = $('sheet'), c = host.querySelector('.nwt-bottom-sheet__container'), k = host.querySelector('.nwt-bottom-sheet__backdrop');
-        if (c) { c.classList.add('nws-sheet--cierra'); c.classList.remove('nwt-bottom-sheet__container--open'); } if (k) { k.classList.remove('nwt-bottom-sheet__backdrop--open'); }
-        later(function () { host.innerHTML = ''; }, 420);
+        if (c) { c.classList.remove('nwt-bottom-sheet__container--open'); } if (k) { k.classList.remove('nwt-bottom-sheet__backdrop--open'); }
+        later(function () { host.innerHTML = ''; }, 360);
       }
       function charlaSaludo() {
         if (C.estado().modo && C.estado().enviados) { abrirSheet(function () {}, true); return; }
@@ -604,7 +604,7 @@ window.PANTALLAS['inicio'] = (function () {
           later(function () {
             alternarNav(true);
           }, ov ? 520 : 380);
-        }, 420);
+        }, 380);
       }
       function irOv(o) { st.ov = o; st.enter = true; pintarDock(); pintarOv(); }
       function cerrarOv() { clearT(); st.ov = null; st.dstage = 'shuffle'; st.dsel = null; $('ov').innerHTML = ''; pintar(); }
