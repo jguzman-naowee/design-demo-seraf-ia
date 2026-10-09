@@ -507,6 +507,7 @@ window.PANTALLAS['inicio'] = (function () {
       function abrirSheet(arranque, full, previo) {
         clearT(); st.sheet = true; st.full = !!full; st.baseline = false; st.orbe0 = null; st.pint = 0; st.tyOn = false; st.pie = null; st.cuerpoHtml = null; st.valora = false; st.msgs = []; st.opts = []; st.typing = false; st.tmp = ''; pintarPanel();
         var host = $('sheet'); host.innerHTML = sheetShell(full);
+        if (st.ayudaFade) { var cf = host.querySelector('.nwt-bottom-sheet__container'); if (cf) { cf.classList.add('nws-sheet--fade'); } st.ayudaFade = false; }
         requestAnimationFrame(function () {
           var c = host.querySelector('.nwt-bottom-sheet__container'), k = host.querySelector('.nwt-bottom-sheet__backdrop');
           if (c) { c.classList.add('nwt-bottom-sheet__container--open'); } if (k) { k.classList.add('nwt-bottom-sheet__backdrop--open'); }
@@ -578,6 +579,7 @@ window.PANTALLAS['inicio'] = (function () {
           return;
         }
         /* chat cerrado: se abre ya con la conversación en curso, así no aparece la bienvenida ni el viaje del orbe */
+        st.ayudaFade = true;
         abrirSheet(function () {}, true, function () { st.msgs.push({ f: 's', html: tarjetaCuidado(true) }); });
       }
 
