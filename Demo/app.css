@@ -2730,3 +2730,5 @@ section.nws-ib__r { display: flex; flex-direction: column; min-width: 0; min-hei
 @media (prefers-reduced-motion: reduce) { .nws-dsw-ld, .nws-phone { transition: none; } .nws-dsw-ld .nws-orbe { animation: none; } }
 
 .nws-dsw-ld--g { position: fixed; z-index: 9999; background: rgb(from var(--naotech-color-white-alpha-100) r g b / .96); }
+/* cambio de dispositivo directo: el marco no anima su tamaño */
+.nws-phone { transition: transform var(--naotech-duration-fast) var(--naotech-animation-standard); }

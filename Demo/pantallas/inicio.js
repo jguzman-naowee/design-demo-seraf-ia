@@ -924,20 +924,11 @@ window.PANTALLAS['inicio'] = (function () {
       function onDisp(ev) {
         var b = ev.target.closest && ev.target.closest('.nws-dispsw [data-seg]'); if (!b) { return; }
         var k = b.getAttribute('data-seg'); if (!DISPS[k] || k === DISP) { return; }
-        /* transición suave: un velo con la marca de SerafIA cubre el cambio de tamaño y se retira al terminar */
-        var stage = root.querySelector('#stage'), ld = stage.querySelector('.nws-dsw-ld');
-        if (!ld) { ld = document.createElement('div'); ld.className = 'nws-dsw-ld'; ld.setAttribute('role', 'status'); ld.setAttribute('aria-label', 'Cambiando de dispositivo'); ld.innerHTML = '<span class="nws-orbe nws-orbe--xl"></span><span class="nws-dsw-ld__t">SerafIA</span>'; stage.appendChild(ld); }
-        clearTimeout(ld._t1); clearTimeout(ld._t2);
-        var sinMov = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        ld.classList.add('nws-dsw-ld--on');
+        DISP = k;
+        var ph = root.querySelector('#phone'); ph.setAttribute('data-disp', k); ph.style.width = DISPS[k].w + 'px'; ph.style.height = DISPS[k].h + 'px';
+        mob.className = mob.className.replace(/\bnws-demo--(movil|tablet|tablet-xl)\b/g, '').trim() + ' nws-demo--' + k;
         [].forEach.call(root.querySelectorAll('.nws-dispsw .nws-dsp'), function (x) { var on = x.getAttribute('data-seg') === k; x.classList.toggle('on', on); x.setAttribute('aria-checked', String(on)); });
-        ld._t1 = setTimeout(function () {
-          DISP = k;
-          var ph = root.querySelector('#phone'); ph.setAttribute('data-disp', k); ph.style.width = DISPS[k].w + 'px'; ph.style.height = DISPS[k].h + 'px';
-          mob.className = mob.className.replace(/\bnws-demo--(movil|tablet|tablet-xl)\b/g, '').trim() + ' nws-demo--' + k;
-          zoom.mult = 1; aplicarZoom(); st._reset = false; pintar(); if (st.sheet) { st.cuerpoHtml = null; pintarChat(); } ctx.posicionarIndicadores(root);
-          ld._t2 = setTimeout(function () { ld.classList.remove('nws-dsw-ld--on'); }, sinMov ? 0 : 650);
-        }, sinMov ? 0 : 380);
+        zoom.mult = 1; aplicarZoom(); st._reset = false; pintar(); if (st.sheet) { st.cuerpoHtml = null; pintarChat(); } ctx.posicionarIndicadores(root);
       }
       root.addEventListener('click', onDisp);
       function onZoom(ev) {
