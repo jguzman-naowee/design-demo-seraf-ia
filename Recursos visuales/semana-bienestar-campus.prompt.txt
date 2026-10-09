@@ -1,0 +1,10 @@
+Herramienta: image_gen integrada.
+
+Use case: stylized-concept
+Asset type: imagen de banner para un evento universitario Semana de bienestar de SerafIA.
+Primary request: Una ilustración editorial 3D suave y acogedora de un campus universitario contemporáneo con estudiantes adultos jóvenes diversos compartiendo una semana de bienestar. Escena al aire libre con edificios universitarios simples, una pequeña plaza y jardines; estudiantes conversando sentados en el césped, un pequeño grupo haciendo estiramientos suaves y otros paseando juntos. Gestos naturales, ambiente de comunidad y calma, sin lenguaje ni símbolos clínicos.
+Style/medium: render 3D estilizado de alta calidad, formas redondeadas, materiales mate suaves, personajes bien proporcionados de diseño sencillo y expresivo, estética de app universitaria moderna.
+Composition/framing: panorámica horizontal 16:9, vista ligeramente elevada del campus. Edificios al fondo, pequeños grupos de estudiantes distribuidos en primer y segundo plano, composición clara con espacio visual respirable; sin marcos ni interfaz.
+Color palette: identidad SerafIA, blancos #ffffff y #fafbff, periwinkle #c6d8ff y #e9f1ff para arquitectura y ambiente, índigos #7a95ff y #5c70fa y azul #006aff en detalles y ropa. Jardines en verde pastel #defade, pequeños acentos crema #fffbd9 y melocotón #ffedc7. Tonos de piel naturales diversos. Predominio claro azul y periwinkle, sin saturación excesiva.
+Lighting/mood: luz cálida suave de mañana, sombras delicadas, ambiente tranquilo, alegre e inclusivo.
+Constraints: imagen sin texto, sin letras en edificios, sin logos, sin marcas de agua; no añadir el orbe, no paneles UI. Anatomía coherente, rostros sencillos, manos naturales, sin personas duplicadas.

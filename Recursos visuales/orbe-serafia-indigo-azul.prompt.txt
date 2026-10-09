@@ -1,0 +1,9 @@
+Generado con la herramienta integrada image_gen.
+
+Use case: stylized-concept
+Asset type: recurso visual de marca para SerafIA.
+Input image: la imagen adjunta es referencia de composición, material y difusión; crear una nueva imagen similar con la paleta indicada.
+Primary request: Un único orbe esférico translúcido centrado, grande, visto de frente, con volumen de vidrio esmerilado lechoso y colores internos orgánicos intensamente difuminados, como la referencia. Composición cuadrada, esfera ocupa aproximadamente 86% del ancho, márgenes claros uniformes. Borde circular suave pero reconocible, halo blanquecino perlado, superficie lisa sin detalles ni reflejos duros. Fondo blanco ligeramente frío #fafbff.
+Color palette: reemplazar por completo verdes y turquesas de la referencia con la paleta SerafIA: núcleo azul #006aff y profundo índigo #434ce4, zonas suaves periwinkle #7a95ff y #5c70fa, halo lavanda azulado muy pálido #c6d8ff y #e9f1ff. Mantener nubes de color asimétricas fluidas dentro del orbe y transición difusa entre ellas. Usar únicamente esta familia azul/índigo y blanco.
+Lighting/mood: etéreo, sereno, minimalista, suave luz de estudio, calidad de render 3D editorial.
+Constraints: sin texto, sin logotipo, sin objetos adicionales, sin anillos ni estrellas, sin verde, sin turquesa, sin naranja, sin sombra marcada. Mantener el lenguaje visual y encuadre de la referencia.

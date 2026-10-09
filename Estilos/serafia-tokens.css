@@ -1,0 +1,41 @@
+/* Foto de la capa de tokens de SerafIA. Generado por sincronizar.py (2026-10-08).
+   Fuente de verdad: ../Demo/app.css. No editar acá. Todo apunta a tokens --naotech-* del SDK. */
+:root {
+  /* texto */
+  --nws-ink: var(--naotech-color-gray-900);
+  --nws-ink-2: var(--naotech-color-gray-700);
+  /* superficies: lienzo blanco; las tarjetas son blancas con borde gris-200 y sombra suave */
+  --nws-surface: var(--naotech-color-white-alpha-100);
+  --nws-glass: var(--naotech-color-white-alpha-100);
+  --nws-glass-edge: var(--naotech-color-gray-200);
+  --nws-canvas: var(--naotech-color-white-alpha-100);
+  /* chat / IA de SerafIA: único degradé saturado de la app */
+  --nws-ai: linear-gradient(135deg, var(--naotech-color-indigo-500), var(--naotech-color-blue-700));
+  /* logo/orbe de SerafIA: la esfera de vidrio oficial (Recursos visuales/orbe-serafia-sin-fondo.png, recortada y a 320 px) */
+  --nws-orbe-fondo: url(assets/orbe.png) center / 100% 100% no-repeat;
+  --nws-ai-glow: rgb(from var(--naotech-color-indigo-600) r g b / .45);
+  /* botón principal negro, como la referencia */
+  --nws-cta: var(--naotech-color-indigo-700);
+  --nws-cta-hover: var(--naotech-color-indigo-800);
+  /* forma */
+  --nws-r-card: var(--naotech-radius-xxl);
+  --nws-r-tile: var(--naotech-radius-xl);
+  --nws-shadow-card: var(--naotech-shadow-4);
+  --nws-shadow-float: var(--naotech-shadow-16);
+  --nws-gap: var(--naotech-sizing-24);
+  --nws-gutter: var(--naotech-sizing-20);
+  /* cartas del día: un color por carta, a propósito NO semántico (nunca verde→rojo) */
+  --nws-carta-purple: var(--naotech-color-purple-100);
+  --nws-carta-cyan: var(--naotech-color-cyan-100);
+  --nws-carta-green: var(--naotech-color-green-100);
+  --nws-carta-yellow: var(--naotech-color-yellow-100);
+  --nws-carta-orange: var(--naotech-color-orange-100);
+  /* hoja del home: mismo lila suave del chat con SerafIA (indigo-050 → blanco); antes: degradé periwinkle arriba y hoja blanca de esquinas grandes */
+  --nws-lav: linear-gradient(180deg, var(--naotech-color-indigo-050), rgb(from var(--naotech-color-white-alpha-100) r g b / 0) 55%);
+  --nws-r-hoja: calc(var(--naotech-radius-xxl) * 2);
+  --nws-shadow-hoja: var(--naotech-shadow-16-up);
+  /* eventos destacados */
+  --nws-ev-indigo: linear-gradient(135deg, var(--naotech-color-indigo-200), var(--naotech-color-indigo-400));
+  --nws-ev-blue: linear-gradient(135deg, var(--naotech-color-blue-100), var(--naotech-color-blue-300));
+  --nws-ev-green: linear-gradient(135deg, var(--naotech-color-green-100), var(--naotech-color-green-300));
+}

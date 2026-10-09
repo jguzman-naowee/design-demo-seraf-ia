@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SerafIA · Estilos</title>
+<!--
+  Representación visual del sistema de estilos de SerafIA.
+  NO tiene estilos propios de color ni de tipografía: carga los mismos CSS que el demo
+  (../Demo/vendor = sdk-frontend-foundations + ../Demo/app.css = capa --nws-*) y lee los
+  valores reales de los tokens en el navegador. Si cambia un token en el demo, esta página
+  cambia sola. Lo que se documenta a mano está en ESTILOS.md.
+-->
+<link rel="stylesheet" href="../Demo/vendor/fonts.css">
+<link rel="stylesheet" href="../Demo/vendor/foundations.css">
+<link rel="stylesheet" href="../Demo/vendor/components.css">
+<link rel="stylesheet" href="../Demo/vendor/icons.css">
+<link rel="stylesheet" href="../Demo/app.css">
+<style>
+  /* solo maquetación de esta página de documentación */
+  html { background: var(--naotech-color-white-alpha-100); }
+  body { margin: 0; font-family: var(--naotech-sdk-font-family); color: var(--nws-ink); }
+  .doc { max-width: 1120px; margin: 0 auto; padding: 48px 32px 96px; display: flex; flex-direction: column; gap: 56px; }
+  .doc h1, .doc h2, .doc h3, .doc p { margin: 0; }
+  .doc__top { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; flex-wrap: wrap; }
+  .doc__top h1 { font-size: var(--naotech-heading3-font-size); line-height: var(--naotech-heading3-line-height); font-weight: var(--naotech-heading3-font-weight); }
+  .doc__sec { display: flex; flex-direction: column; gap: 20px; }
+  .doc__sec > h2 { font-size: var(--naotech-heading5-font-size); line-height: var(--naotech-heading5-line-height); font-weight: var(--naotech-heading5-font-weight); padding-bottom: 12px; border-bottom: 1px solid var(--naotech-color-gray-200); }
+  .doc__sec > p.lead { max-width: 70ch; color: var(--nws-ink-2); line-height: 1.55; }
+  .grid { display: grid; gap: 12px; }
+  .g-sw { grid-template-columns: repeat(auto-fill, minmax(104px, 1fr)); }
+  .sw { display: flex; flex-direction: column; gap: 8px; }
+  .sw__c { height: 64px; border-radius: var(--naotech-radius-xl); border: 1px solid rgb(from var(--naotech-color-gray-900) r g b / .08); }
+  .sw__n { font-size: var(--naotech-caption-font-size); line-height: 1.3; font-weight: var(--naotech-font-weight-semibold); }
+  .sw__v { font-family: ui-monospace, Menlo, monospace; font-size: 11px; color: var(--nws-ink-2); word-break: break-all; }
+  .box { background: var(--naotech-color-white-alpha-100); border: 1px solid var(--naotech-color-gray-200); border-radius: var(--naotech-radius-xxl); padding: 20px; display: flex; flex-direction: column; gap: 14px; }
+  .box--canvas { background: var(--nws-canvas); }
+  .row { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+  .cap { font-size: var(--naotech-caption-font-size); color: var(--nws-ink-2); line-height: 1.4; }
+  .tag-m { font-family: ui-monospace, Menlo, monospace; font-size: 11px; color: var(--naotech-color-indigo-700); background: var(--naotech-color-indigo-100); padding: 2px 8px; border-radius: var(--naotech-radius-pill); }
+  table { border-collapse: collapse; width: 100%; font-size: 14px; }
+  th { text-align: left; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--nws-ink-2); padding: 8px 12px; border-bottom: 1px solid var(--naotech-color-gray-300); }
+  td { padding: 12px; border-bottom: 1px solid var(--naotech-color-gray-200); vertical-align: middle; }
+  .t-wrap { overflow-x: auto; }
+  .demo-w { width: 388px; max-width: 100%; }
+  .shadow-b { width: 120px; height: 72px; border-radius: var(--naotech-radius-xl); background: var(--naotech-color-white-alpha-100); display: grid; place-items: center; font-size: 12px; color: var(--nws-ink-2); }
+  .rad-b { width: 96px; height: 64px; background: var(--naotech-color-indigo-200); display: grid; place-items: center; font-size: 12px; font-weight: 600; }
+  .sp-b { background: var(--naotech-color-indigo-500); height: 16px; border-radius: 2px; }
+</style>
+</head>
+<body>
+<script src="../Demo/arte.js"></script>
+<script>document.body.insertAdjacentHTML('afterbegin', window.SERAFIA_ARTE.defs);</script>
+
+<main class="doc">
+  <header class="doc__top">
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <span class="nws-mono-over">Sistema de estilos · versión 1</span>
+      <h1>SerafIA · Estilos</h1>
+      <p class="nws-txt" style="max-width:62ch">Fuente única: <b>sdk-frontend-foundations</b>. SerafIA no define colores ni fuentes nuevas: nombra decisiones como tokens <span class="tag-m">--nws-*</span> que apuntan siempre a un token <span class="tag-m">--naotech-*</span>. Referencia principal: Rootly. Esta página lee los tokens en vivo desde el demo.</p>
+    </div>
+    <p class="cap" id="stamp"></p>
+  </header>
+
+  <!-- 1 · COLOR -->
+  <section class="doc__sec">
+    <h2>Color</h2>
+    <p class="lead">Las pestañas principales llevan un degradé periwinkle arriba y una hoja blanca debajo; las vistas completas son blancas. Un solo color saturado: el degradé del chat. El botón principal es negro. La marca naranja del SDK queda para acentos pequeños (racha, notificaciones). Las cartas del día no usan semáforo: nunca verde a rojo.</p>
+
+    <h3 class="nws-h3">Texto y neutros</h3>
+    <div class="grid g-sw" id="sw-neutros"></div>
+
+    <h3 class="nws-h3">Marca de SerafIA y chat (indigo y azul)</h3>
+    <div class="grid g-sw" id="sw-indigo"></div>
+
+    <h3 class="nws-h3">Cartas del día (fondos, uno por carta)</h3>
+    <div class="grid g-sw" id="sw-cartas"></div>
+
+    <h3 class="nws-h3">Estados (SDK)</h3>
+    <div class="grid g-sw" id="sw-estados"></div>
+
+    <h3 class="nws-h3">Lienzo y degradés</h3>
+    <div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(260px,1fr))">
+      <div class="sw"><div class="sw__c" style="height:110px;background:var(--nws-canvas)"></div><span class="sw__n">--nws-canvas</span><span class="sw__v">white-alpha-100 · fondo de toda pantalla</span></div>
+      <div class="sw"><div class="sw__c" style="height:110px;background:var(--nws-lav),var(--naotech-color-white-alpha-100)"></div><span class="sw__n">--nws-lav</span><span class="sw__v">indigo-600 46 % → indigo-300 22 % → transparente · pestañas principales</span></div>
+      <div class="sw"><div class="sw__c" style="height:110px;background:var(--nws-ai)"></div><span class="sw__n">--nws-ai</span><span class="sw__v">indigo-500 → blue-700 · botón de chat</span></div>
+      <div class="sw"><div class="sw__c" style="height:110px;background:linear-gradient(135deg,var(--naotech-color-indigo-100),var(--naotech-color-blue-200) 58%,var(--naotech-color-indigo-300))"></div><span class="sw__n">Banner de la carta del día</span><span class="sw__v">indigo-100 → blue-200 → indigo-300</span></div>
+      <div class="sw"><div class="sw__c" style="height:110px;background:radial-gradient(circle at 50% 42%,var(--naotech-color-indigo-800),var(--naotech-color-gray-900) 70%)"></div><span class="sw__n">Fondo del barajeo</span><span class="sw__v">indigo-800 → gray-900</span></div>
+      <div class="sw"><div class="sw__c" style="height:110px;background:var(--nws-ev-indigo)"></div><span class="sw__n">--nws-ev-indigo</span><span class="sw__v">evento destacado · Bienestar</span></div>
+      <div class="sw"><div class="sw__c" style="height:110px;background:var(--nws-ev-blue)"></div><span class="sw__n">--nws-ev-blue</span><span class="sw__v">evento destacado · Universidad</span></div>
+      <div class="sw"><div class="sw__c" style="height:110px;background:var(--nws-ev-green)"></div><span class="sw__n">--nws-ev-green</span><span class="sw__v">evento destacado · Deporte</span></div>
+    </div>
+  </section>
+
+  <!-- 2 · TIPOGRAFÍA -->
+  <section class="doc__sec">
+    <h2>Tipografía</h2>
+    <p class="lead">Una sola familia, <b>Inter</b> (la del SDK, token <span class="tag-m">--naotech-sdk-font-family</span>). Los tamaños, interlineados y tracking son los del SDK. SerafIA solo elige qué escalón usa en cada lugar.</p>
+    <div class="box t-wrap"><table id="tabla-tipo"><thead><tr><th>Escalón del SDK</th><th>Muestra</th><th>Tamaño / interlineado</th><th>Peso</th><th>Uso en SerafIA</th></tr></thead><tbody></tbody></table></div>
+  </section>
+
+  <!-- 3 · FORMA -->
+  <section class="doc__sec">
+    <h2>Forma, sombras y espacio</h2>
+    <div class="box"><h3 class="nws-h3">Radios</h3><div class="row" id="rad"></div><p class="cap">Tarjetas y vistas: xxl. Fichas de carta, tiles y campos: xl. Botones, píldora de navegación y chips: pill. Botones de ícono: círculo.</p></div>
+    <div class="box" style="background:var(--naotech-color-gray-100)"><h3 class="nws-h3">Sombras</h3><div class="row" id="sombras"></div><p class="cap">Tarjetas: shadow-4. Dock y píldora: shadow-8. Carta elegida y carnet: shadow-16.</p></div>
+    <div class="box"><h3 class="nws-h3">Espaciado (escala sizing del SDK)</h3><div id="espacio" style="display:flex;flex-direction:column;gap:6px"></div><p class="cap">Margen lateral de pantalla: sizing-20. Separación entre bloques: sizing-24. Dentro de una tarjeta: sizing-12 a 16. Mínimo táctil: 44 px (sizing-40 + sizing-4).</p></div>
+  </section>
+
+  <!-- 4 · COMPONENTES -->
+  <section class="doc__sec">
+    <h2>Componentes</h2>
+    <p class="lead">Primero los del SDK (<span class="tag-m">nwt-*</span>). Lo que el SDK no tiene se compone con tokens y lleva prefijo <span class="tag-m">nws-</span>.</p>
+
+    <h3 class="nws-h3">Del SDK</h3>
+    <div class="box nws-demo" style="background:var(--naotech-color-white-alpha-100);overflow:visible"><div class="row" id="c-botones"></div><p class="cap">Botón principal: NwtButton neutral loud con fondo gray-900. Secundario: quiet (vidrio con borde gray-200). Alertas de crisis: theme negative quiet.</p></div>
+    <div class="box nws-demo" style="background:var(--naotech-color-white-alpha-100);overflow:visible"><div class="row" id="c-chips"></div><p class="cap">NwtBadge, NwtTag, NwtAvatar, NwtAvatarIcon, NwtSwitch, NwtProgressBar, NwtViewIndicator, NwtIconButton (mute), NwtSearchbox, NwtDivider, NwtBottomSheet (chat a media pantalla).</p></div>
+
+    <h3 class="nws-h3">Compuestos con tokens (no existen en el SDK)</h3>
+    <div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(300px,1fr))">
+      <div class="box box--canvas"><span class="nws-mono-over">Tarjeta de vidrio · nws-glass</span>
+        <div class="nws-glass nws-block"><p class="nws-h3">Título de tarjeta</p><p class="nws-txt">Fondo blanco al 78 % con desenfoque, borde blanco y shadow-4.</p></div></div>
+      <div class="box box--canvas"><span class="nws-mono-over">Banner · nws-hero</span>
+        <div class="nws-hero" style="min-height:150px"><div class="nws-hero__txt"><h3 class="nws-h1" style="font-size:var(--naotech-heading5-font-size);line-height:var(--naotech-heading5-line-height)">¿Qué carta eres hoy?</h3><p class="nws-txt" style="color:var(--nws-ink)">Baraja y elige la de tu día.</p></div></div></div>
+      <div class="box box--canvas"><span class="nws-mono-over">Dock · nws-pill + nws-fab</span>
+        <div style="display:flex;gap:12px;align-items:center"><nav class="nws-pill" style="position:static"><button class="nws-pill__item nws-pill__item--on"><div class="nwt-icon"><i class="naotech-icon-home"></i></div><span class="nws-pill__l">Hoy</span></button><button class="nws-pill__item"><div class="nwt-icon"><i class="naotech-icon-view-grid"></i></div></button><button class="nws-pill__item"><div class="nwt-icon"><i class="naotech-icon-gps-pin"></i></div></button></nav><button class="nws-fab"><div class="nwt-icon"><i class="naotech-icon-answer"></i></div></button></div></div>
+      <div class="box box--canvas"><span class="nws-mono-over">Chat · nws-msg</span>
+        <div class="nws-stack"><p class="nws-msg">Hola, Camila. ¿En qué te ayudo hoy?</p><p class="nws-msg nws-msg--yo">Hablar con alguien</p><div class="nws-typing"><i></i><i></i><i></i></div></div></div>
+    </div>
+
+    <h3 class="nws-h3">Las cinco cartas del día</h3>
+    <div class="box box--canvas"><div class="row" id="cartas" style="gap:16px;align-items:stretch"></div>
+      <p class="cap">Un color por carta, a propósito no semántico. La ilustración usa solo tokens de color del SDK (arte.js). El número interno (nivel) nunca se muestra al estudiante.</p></div>
+  </section>
+
+  <!-- 5 · MOVIMIENTO -->
+  <section class="doc__sec">
+    <h2>Movimiento</h2>
+    <div class="box t-wrap"><table><thead><tr><th>Token / animación</th><th>Valor</th><th>Dónde</th></tr></thead><tbody id="mov"></tbody></table></div>
+    <p class="cap">Todo movimiento se apaga con prefers-reduced-motion.</p>
+  </section>
+</main>
+
+<script>
+(function () {
+  var root = getComputedStyle(document.documentElement);
+  var val = function (n) { return root.getPropertyValue(n).trim(); };
+  function sw(host, list) {
+    document.getElementById(host).innerHTML = list.map(function (n) {
+      var v = val('--naotech-' + n) || '';
+      return '<div class="sw"><div class="sw__c" style="background:var(--naotech-' + n + ')"></div><span class="sw__n">' + n.replace('color-', '') + '</span><span class="sw__v">' + v + '</span></div>';
+    }).join('');
+  }
+  sw('sw-neutros', ['color-gray-050', 'color-gray-100', 'color-gray-200', 'color-gray-300', 'color-gray-700', 'color-gray-800', 'color-gray-900', 'color-white-alpha-100']);
+  sw('sw-indigo', ['color-indigo-100', 'color-indigo-200', 'color-indigo-300', 'color-indigo-500', 'color-indigo-600', 'color-indigo-700', 'color-indigo-800', 'color-indigo-900', 'color-blue-200', 'color-blue-700']);
+  sw('sw-cartas', ['color-purple-100', 'color-cyan-100', 'color-green-100', 'color-yellow-100', 'color-orange-100']);
+  sw('sw-estados', ['color-green-100', 'color-green-700', 'color-blue-100', 'color-blue-700', 'color-yellow-100', 'color-yellow-900', 'color-red-050', 'color-red-700', 'color-orange-500']);
+  /* etiquetas de las cartas */
+  var cartas = [[1, 'Sin batería', 'Hoy toca enchufarse', 'purple'], [2, 'Nublado', 'Con ganas de manta', 'cyan'], [3, 'A mi ritmo', 'Ni rápido ni lento', 'green'], [4, 'Cielo despejado', 'Se siente liviano', 'yellow'], [5, 'Al 100', 'Hoy sí, con actitud', 'orange']];
+  document.getElementById('cartas').innerHTML = cartas.map(function (c) {
+    return '<div class="nws-opcion" data-c="' + c[3] + '" style="width:164px;cursor:default"><svg width="104" height="104" viewBox="0 0 100 100"><use href="#art-' + c[0] + '"/></svg><div><p class="nws-h3">' + c[1] + '</p><p class="nws-txt">' + c[2] + '</p></div><span class="tag-m">--nws-carta-' + c[3] + '</span></div>';
+  }).join('');
+
+  /* tipografía en vivo */
+  var tipos = [
+    ['heading4', 'Hola, Camila', 'Título de pestaña (Servicios, Campus, Yo)'],
+    ['heading5', '¿Qué carta eres hoy?', 'Título de banner y de tarjeta destacada; hora de clase'],
+    ['heading6', 'Accesos rápidos', 'Título de sección (nws-h2); nombre en el encabezado'],
+    ['subtitle', 'Cálculo II', 'Título de fila y de tarjeta (nws-h3)'],
+    ['body', 'Aula C-302 · Bloque C', 'Texto de botón y mensajes del chat'],
+    ['smalltext', 'Abierto ahora · Lun-Vie 8-18 h', 'Texto de apoyo (nws-txt), etiquetas de la píldora'],
+    ['caption', 'Buenos días,', 'Saludo, notas al pie'],
+    ['overline', 'CARTA DEL DÍA', 'Etiqueta en mayúsculas (nws-mono-over)']
+  ];
+  var tb = document.querySelector('#tabla-tipo tbody');
+  tb.innerHTML = tipos.map(function (t) {
+    var fs = val('--naotech-' + t[0] + '-font-size'), lh = val('--naotech-' + t[0] + '-line-height'), w = val('--naotech-' + t[0] + '-font-weight'), ls = val('--naotech-' + t[0] + '-letter-spacing');
+    var px = function (rem) { var m = /([\d.]+)rem/.exec(rem); return m ? Math.round(parseFloat(m[1]) * 16) + ' px' : rem; };
+    return '<tr><td><b>' + t[0] + '</b></td><td><span style="font-size:' + fs + ';line-height:' + lh + ';font-weight:' + w + ';letter-spacing:' + ls + '">' + t[1] + '</span></td><td>' + px(fs) + ' / ' + px(lh) + '<br><span class="cap">tracking ' + ls + '</span></td><td>' + w + '</td><td class="cap">' + t[2] + '</td></tr>';
+  }).join('');
+
+  /* forma */
+  document.getElementById('rad').innerHTML = ['xl', 'xxl', 'pill'].map(function (r) { return '<div><div class="rad-b" style="border-radius:var(--naotech-radius-' + r + ')">' + r + '</div><p class="cap" style="margin-top:6px">' + val('--naotech-radius-' + r) + '</p></div>'; }).join('') +
+    '<div><div class="rad-b" style="border-radius:var(--naotech-radius-circle);width:64px">círculo</div><p class="cap" style="margin-top:6px">50%</p></div>';
+  document.getElementById('sombras').innerHTML = ['2', '4', '8', '16'].map(function (s) { return '<div><div class="shadow-b" style="box-shadow:var(--naotech-shadow-' + s + ')">shadow-' + s + '</div></div>'; }).join('');
+  document.getElementById('espacio').innerHTML = ['4', '6', '8', '12', '16', '20', '24', '32', '40', '48'].map(function (n) {
+    return '<div style="display:flex;align-items:center;gap:12px"><span class="cap" style="width:88px">sizing-' + n + '</span><span class="sp-b" style="width:var(--naotech-sizing-' + n + ')"></span><span class="cap">' + Math.round(parseFloat(val('--naotech-sizing-' + n)) * 16) + ' px</span></div>';
+  }).join('');
+
+  /* componentes SDK */
+  var ico = function (n) { return '<div class="nwt-icon nwt-button__icon"><i class="naotech-icon-' + n + '"></i></div>'; };
+  var b = function (label, th, va, sz, ic) { return '<button class="nwt-button" type="button" nwt-theme="' + th + '" nwt-variant="' + va + '" nwt-size="' + sz + '"><span class="nwt-button__content">' + (ic ? ico(ic) : '') + label + '</span></button>'; };
+  document.getElementById('c-botones').innerHTML = b('Barajar', 'neutral', 'loud', 'large', 'refresh') + b('Inscribirme', 'neutral', 'loud', 'medium') + b('Ver horario completo', 'neutral', 'quiet', 'medium') + b('Generar', 'neutral', 'loud', 'small') + '<span class="nws-ayuda">' + b('Ayuda ahora', 'negative', 'quiet', 'medium', 'favorite') + '</span>' +
+    '<span class="nwt-icon-button" nwt-theme="neutral" nwt-variant="mute" nwt-size="large"><button class="nwt-icon-button__content" type="button" aria-label="Volver"><div class="nwt-icon"><i class="naotech-icon-arrow-left"></i></div></button></span>';
+  var badge = function (l, th) { return '<span class="nwt-badge" role="status" nwt-theme="' + th + '" nwt-size="medium" nwt-variant="quiet"><div class="nwt-badge__content"><div class="nwt-badge__label">' + l + '</div></div></span>'; };
+  document.getElementById('c-chips').innerHTML = badge('En 40 min', 'informative') + badge('Racha de 2 días', 'primary') + badge('Resuelta', 'positive') + badge('En revisión', 'warning') + badge('Más repetida', 'secondary') +
+    '<span class="nwt-tag nwt-tag--active" nwt-theme="neutral" nwt-size="large">Todos</span><span class="nwt-tag" nwt-theme="neutral" nwt-size="large">Para ti</span>' +
+    '<div class="nwt-avatar" nwt-theme="secondary" nwt-size="large" nwt-variant="loud"><div class="nwt-avatar__content"><span><b>CR</b></span></div></div>' +
+    '<div class="nwt-avatar-icon" nwt-theme="secondary"><div class="nwt-icon"><i class="naotech-icon-qr-code"></i></div></div>' +
+    '<div class="nwt-switch nwt-switch--checked" role="switch" nwt-theme="secondary"><div class="nwt-switch__component"><div class="nwt-switch__component__element"></div></div></div>' +
+    '<div class="nwt-progress-bar" nwt-theme="secondary" nwt-size="small" style="width:160px"><div class="nwt-progress-bar__track"><div class="nwt-progress-bar__fill" style="width:80%"></div></div></div>';
+
+  /* movimiento */
+  var mov = [
+    ['--naotech-duration-fast', val('--naotech-duration-fast'), 'Hover y foco de botones'],
+    ['--naotech-duration-base', val('--naotech-duration-base'), 'Cambio de pestaña activa, interruptores'],
+    ['--naotech-duration-slow', val('--naotech-duration-slow'), 'Entrada de vistas completas y de la hoja del chat'],
+    ['--naotech-duration-pulse', val('--naotech-duration-pulse'), 'Anillo de aviso del botón de chat'],
+    ['nws-shL / nws-shR / nws-fan', '2 s + 0,9 s', 'Barajeo: partir el mazo, entrelazar y abrir en abanico'],
+    ['nws-flipin', '0,55 s · escalonado 0,09 s', 'Las cartas giran al aparecer en la elección'],
+    ['nws-floaty / nws-twinkle', '3,6 s / 2,6 s en bucle', 'Cartas del banner y destellos']
+  ];
+  document.getElementById('mov').innerHTML = mov.map(function (m) { return '<tr><td><span class="tag-m">' + m[0] + '</span></td><td>' + m[1] + '</td><td class="cap">' + m[2] + '</td></tr>'; }).join('');
+  document.getElementById('stamp').textContent = 'Datos leídos en vivo de ../Demo · ' + new Date().toLocaleDateString('es-CO');
+})();
+</script>
+</body>
+</html>

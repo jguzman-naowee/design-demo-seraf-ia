@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SerafIA · Demo</title>
+<meta name="description" content="Demo de SerafIA, app de bienestar y vida universitaria para estudiantes. Alta fidelidad sobre el SDK de Naowee.">
+
+<!--
+  Plantilla de demo en blanco · alta fidelidad sobre el SDK de Naowee.
+  Parte de la plantilla de la app JIN (landing-app-intercolegiados).
+
+  vendor/  = copia LITERAL de sdk-frontend-foundations. NO SE EDITA.
+  sdk.js   = la anatomía que emiten los Nwt* de sdk-react-components.
+  app.css  = lo que el SDK no tiene (prefijo nws-), todo en tokens.
+  datos.js = los datos del demo, en JSON (como script, para que abra con doble clic).
+
+  Sin npm, sin build. Se abre y funciona.
+-->
+
+<link rel="stylesheet" href="vendor/fonts.css">
+<link rel="stylesheet" href="vendor/foundations.css">
+<link rel="stylesheet" href="vendor/components.css">
+<link rel="stylesheet" href="vendor/icons.css">
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+<div id="app" style="height:100%"></div>
+
+<script src="sdk.js"></script>
+<script src="marca.js"></script>
+<script src="datos.js"></script>
+<script src="arte.js"></script>
+<script src="guiones.js"></script>
+<script src="caso.js"></script>
+<!-- pantallas: una línea por archivo, antes de app.js -->
+<script src="pantallas/inicio.js"></script>
+<script src="pantallas/bienestar.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SerafIA · Mapa de flujo</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@300..700&family=Geist+Mono:wght@400..600&family=Newsreader:ital,opsz,wght@0,6..72,400..600;1,6..72,400&display=swap">
+<style>
+:root{
+  --canvas:#F6F3EE; --surface:#fff; --sunk:#EFEAE2; --ink:#10201C; --muted:#5E6F6A; --line:#CFC8BB;
+  --pine:#1B7465; --pine-dark:#0A2A24; --pine-soft:#DDEDE8;
+  --care:#B5523A; --care-soft:#F6E4DD;
+  --amber:#D49B2F; --blue:#6F8DB3;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--canvas);color:var(--ink);font-family:Geist,system-ui,sans-serif}
+header{padding:28px 32px 8px;max-width:1280px;margin:0 auto}
+h1{font-family:Newsreader,serif;font-weight:500;font-size:34px;margin:0 0 6px}
+.sub{color:var(--muted);margin:0;max-width:760px;line-height:1.5}
+.legend{display:flex;gap:22px;flex-wrap:wrap;margin-top:16px;font-size:13px;color:var(--muted)}
+.legend span{display:flex;align-items:center;gap:8px}
+.legend i{display:inline-block;width:34px;height:0;border-top:3px solid var(--pine)}
+.legend i.d{border-top:2px dashed var(--blue)}
+.legend i.r{border-top:3px solid var(--care)}
+.scroll{overflow-x:auto;padding:12px 32px 8px}
+#map{position:relative;width:1240px;height:940px;margin:0 auto}
+#map svg{position:absolute;inset:0;width:100%;height:100%}
+.node{position:absolute;width:210px;transform:translate(-50%,-50%);background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:10px 12px;box-shadow:0 1px 0 rgba(16,32,28,.04)}
+.node b{display:block;font-size:14px;font-weight:600;margin-bottom:3px}
+.node small{display:block;color:var(--muted);font-size:12px;line-height:1.35}
+.node .say{font-family:Newsreader,serif;font-style:italic;color:var(--pine);font-size:13px;margin-top:5px;line-height:1.3}
+.node .tag{font-family:"Geist Mono",monospace;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:4px;display:block}
+.chat{width:250px;background:var(--pine-dark);color:#fff;border:0;border-radius:22px;text-align:center;padding:18px 16px}
+.chat b{font-family:Newsreader,serif;font-weight:500;font-size:24px}
+.chat small{color:#BFD8D1}
+.orb{width:34px;height:34px;border-radius:50%;margin:0 auto 8px;background:radial-gradient(circle at 30% 30%,#8FD3C2,#1B7465 60%,#0A2A24)}
+.crisis{background:var(--care-soft);border-color:var(--care)}
+.crisis .say{color:var(--care)}
+.team{background:var(--sunk)}
+.entry{background:var(--pine-soft);border-color:var(--pine)}
+.care{position:absolute;bottom:-12px;right:10px;background:var(--care-soft);border:1px solid var(--care);color:var(--care);font-size:10.5px;font-weight:500;padding:2px 8px;border-radius:999px;white-space:nowrap}
+.chat .care{background:var(--care-soft);right:50%;transform:translateX(50%)}
+.legend i.p{width:auto;border:0;background:var(--care-soft);color:var(--care);border:1px solid var(--care);border-radius:999px;font-style:normal;font-size:10.5px;padding:1px 8px}
+.group{position:absolute;transform:translate(-50%,-50%);font-family:"Geist Mono",monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--pine);font-weight:600}
+.lbl{position:absolute;transform:translate(-50%,-50%);background:var(--canvas);padding:1px 6px;font-size:11px;color:var(--blue);border-radius:6px;white-space:nowrap}
+.lbl.r{color:var(--care)}
+.how{max-width:1240px;margin:0 auto;padding:8px 32px 48px;display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+.how h2{grid-column:1/-1;font-family:Newsreader,serif;font-weight:500;font-size:24px;margin:20px 0 0}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px}
+.card h3{margin:0 0 4px;font-size:15px}
+.card .k{font-family:"Geist Mono",monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--pine)}
+.card p{margin:6px 0 0;font-size:13px;color:var(--muted);line-height:1.45}
+.card .ex{font-family:Newsreader,serif;font-style:italic;color:var(--ink);font-size:14px;margin-top:8px}
+.rule{grid-column:1/-1;background:var(--care-soft);border:1px solid var(--care);border-radius:14px;padding:14px 16px;font-size:13.5px;line-height:1.5}
+</style>
+</head>
+<body>
+<header>
+  <h1>SerafIA · mapa de flujo</h1>
+  <p class="sub">El chat es el centro. Cada módulo se puede abrir tocándolo <em>o</em> pidiéndoselo a SerafIA, y los módulos le dan contexto al chat para acompañar mejor.</p>
+  <div class="legend">
+    <span><i></i> Chat ↔ módulo (consulta o acción)</span>
+    <span><i class="d"></i> Módulo ↔ módulo</span>
+    <span><i class="r"></i> Crisis / equipo humano</span>
+    <span><i class="p">♡ puerta</i> Entrada a bienestar desde lo cotidiano (opcional, con tope de frecuencia)</span>
+  </div>
+</header>
+
+<div class="scroll"><div id="map"></div></div>
+
+<section class="how">
+  <h2>Cómo el chat se potencia con los módulos</h2>
+  <div class="card"><span class="k">1 · Consulta</span><h3>El chat lee un módulo</h3><p>Responde con una tarjeta y un botón para abrir el módulo completo.</p><div class="ex">“¿Qué clase tengo ahora?” → tarjeta de clase + Cómo llegar</div></div>
+  <div class="card"><span class="k">2 · Acción</span><h3>El chat hace un trámite</h3><p>Propone, el estudiante confirma y el resultado vuelve como tarjeta.</p><div class="ex">“Necesito un certificado de estudio” → pregunta destino → Descargar</div></div>
+  <div class="card"><span class="k">3 · Acompañamiento</span><h3>El módulo le da contexto al chat</h3><p>Con permiso del estudiante, SerafIA sabe que es semana de parciales y ofrece ayuda para organizarse. Nunca genera alerta por eso.</p><div class="ex">“Tengo 4 parciales y no doy más” → bienestar + “¿organizamos tu semana?”</div></div>
+  <div class="card"><span class="k">4 · Derivación</span><h3>De hablar a una acción real</h3><p>Si el estudiante quiere apoyo humano, el chat lo lleva a Contactos y a Agendar cita, con crisis siempre a un toque.</p><div class="ex">“Quiero hablar con alguien” → contacto + Agendar cita</div></div>
+  <h2>Puertas a bienestar: que lo cotidiano no desplace la ayuda</h2>
+  <div class="card"><span class="k">♡ Check-in</span><h3>“¿Cómo vas hoy?” en Hoy</h3><p>Un toque, sin escribir y opcional. Si la respuesta es baja, SerafIA abre la conversación de cuidado.</p></div>
+  <div class="card"><span class="k">♡ Momentos</span><h3>Una oferta, no una alerta</h3><p>Semana con 3 o más parciales, nota baja, días sin abrir la app. Una frase y salida fácil: “¿organizamos tu semana?”.</p></div>
+  <div class="card"><span class="k">♡ Presencia</span><h3>Bienestar dentro de los módulos</h3><p>Actividades de Bienestar en el calendario, “abierto ahora” en contactos, pausas de respiración en Hoy y “Ayuda ahora” siempre fijo.</p></div>
+  <div class="card"><span class="k">♡ Seguimiento</span><h3>“¿Cómo seguiste?”</h3><p>Mensaje a las 24–72 h tras una conversación difícil. Respeta la preferencia de contacto.</p></div>
+  <div class="rule"><b>Límites para no sentirse vigilado:</b> máximo una oferta cada 3 días; si la rechaza, se espera más. Todo es opcional y revocable. Nada de esto crea un caso en la consola: solo lo que el estudiante dice o acepta. Éxito = estudiantes que usaron una herramienta de cuidado al mes y conversaciones de bienestar que nacieron desde un módulo, no el porcentaje de chats de bienestar.</div>
+  <div class="rule"><b>Regla que no cambia:</b> “Ayuda ahora” está visible en todas las pantallas, incluso dentro del carnet, el mapa o la calculadora. Notas y horario nunca disparan alertas por sí solos; solo lo que el estudiante dice y el protocolo de crisis.</div>
+</section>
+
+<script>
+const W=1240;
+// nodes: id,x,y,title,desc,say,cls
+const N=[
+ {id:'entry',x:620,y:60,cls:'entry',tag:'Entrada',t:'Ingreso con la cuenta de la U',d:'Consentimiento → pantalla Hoy'},
+ {id:'chat',care:'Seguimiento a las 24–72 h',x:620,y:440,cls:'chat',t:'SerafIA · Chat',d:'Siempre visible en todas las vistas. Entiende, consulta, actúa y acompaña.',orb:1},
+ // Mi día (izquierda)
+ {id:'hoy',care:'¿Cómo vas hoy? · 1 toque',x:170,y:130,tag:'Mi día',t:'Hoy',d:'Clases, entregas, evento y chequeo de ánimo en 1 toque',say:'“¿Qué tengo hoy?”'},
+ {id:'horario',care:'Semana pesada → oferta',x:170,y:260,tag:'Mi día',t:'Horario y exámenes',d:'Clases del día, recordatorios, fechas de parciales',say:'“Avísame 30 min antes”'},
+ {id:'notas',care:'Nota baja → oferta suave',x:170,y:390,tag:'Mi día',t:'Notas y calculadora',d:'Definitivas, promedio y “¿cuánto necesito?”',say:'“¿Cuánto necesito para pasar?”'},
+ // Campus (izquierda abajo)
+ {id:'cal',care:'Actividades de Bienestar',x:170,y:590,tag:'Campus',t:'Calendario de eventos',d:'Universidad y Bienestar, con inscripción',say:'“¿Qué hay para desestresarme?”'},
+ {id:'mapa',x:170,y:730,tag:'Campus',t:'Mapa del campus',d:'Edificios, aulas, enfermería, Bienestar',say:'“¿Cómo llego al C-302?”'},
+ // Servicios (derecha arriba)
+ {id:'carnet',x:1070,y:130,tag:'Servicios',t:'Carnet digital',d:'QR rotativo, funciona sin conexión',say:'“Muéstrame mi carnet”'},
+ {id:'cert',x:1070,y:260,tag:'Servicios',t:'Certificados y documentos',d:'Generación inmediata o con estado de solicitud',say:'“Necesito un certificado”'},
+ {id:'tram',x:1070,y:390,tag:'Servicios',t:'Trámites',d:'Estado de cada solicitud',say:'“¿En qué quedó mi solicitud?”'},
+ // Cuidado (derecha abajo)
+ {id:'cont',care:'Abierto ahora',x:1070,y:560,tag:'Cuidado',t:'Contactos y canales de ayuda',d:'Bienestar, orientación, líneas, rutas por situación',say:'“¿A quién le escribo?”'},
+ {id:'cita',x:1070,y:690,tag:'Cuidado',t:'Agendar cita',d:'Psicología, trabajo social, enfermería',say:'“Quiero hablar con alguien”'},
+ {id:'herr',x:1070,y:820,tag:'Cuidado',t:'Herramientas de bienestar',d:'Respirar, grounding, audios, pausas',say:'“Ayúdame a calmarme”'},
+ // Crisis y equipo
+ {id:'crisis',x:620,y:700,cls:'crisis',tag:'Siempre a un toque',t:'Ayuda ahora',d:'Líneas 123 · 192 · 106 y respirar conmigo',say:'Frase de crisis → entra sola'},
+ {id:'team',x:620,y:860,cls:'team',tag:'Equipo humano',t:'Consola de Bienestar',d:'Alerta con su porqué · una persona decide · agenda de citas'},
+];
+const map=document.getElementById('map');
+const byId={};
+N.forEach(n=>{
+  const el=document.createElement('div');
+  el.className='node '+(n.cls||'');
+  el.style.left=n.x+'px';el.style.top=n.y+'px';
+  const care=n.care?`<span class="care">♡ ${n.care}</span>`:'';
+  el.innerHTML=care+(n.orb?'<div class="orb"></div>':'')+(n.tag?`<span class="tag">${n.tag}</span>`:'')+`<b>${n.t}</b><small>${n.d}</small>`+(n.say?`<div class="say">${n.say}</div>`:'');
+  n.el=el;byId[n.id]=n;
+});
+// edges drawn first (behind cards)
+const NS='http://www.w3.org/2000/svg';
+const svg=document.createElementNS(NS,'svg');
+svg.setAttribute('viewBox','0 0 1240 940');
+svg.innerHTML=`<defs>
+ <marker id="a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#1B7465"/></marker>
+ <marker id="b" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#6F8DB3"/></marker>
+ <marker id="c" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#B5523A"/></marker></defs>`;
+map.appendChild(svg);
+function line(a,b,kind,pathD){
+  const p=document.createElementNS(NS,'path');
+  const A=byId[a],B=byId[b];
+  p.setAttribute('d',pathD||`M${A.x} ${A.y} L${B.x} ${B.y}`);
+  p.setAttribute('fill','none');
+  const col={s:'#1B7465',d:'#6F8DB3',r:'#B5523A'}[kind];
+  p.setAttribute('stroke',col);
+  p.setAttribute('stroke-width',kind==='d'?2:2.5);
+  if(kind==='d')p.setAttribute('stroke-dasharray','6 5');
+  const m={s:'a',d:'b',r:'c'}[kind];
+  p.setAttribute('marker-end',`url(#${m})`);p.setAttribute('marker-start',`url(#${m})`);
+  svg.appendChild(p);
+}
+// chat ↔ módulos
+['hoy','horario','notas','cal','mapa','carnet','cert','tram','cont','cita','herr'].forEach(id=>line('chat',id,'s'));
+line('entry','chat','s');
+line('chat','crisis','r'); line('crisis','team','r');
+// módulo ↔ módulo
+line('horario','mapa','d',`M170 260 C 20 330, 20 660, 170 730`);
+line('cont','cita','d');
+line('cita','team','d',`M1070 690 C 1200 760, 1200 860, 725 860`);
+line('cal','hoy','d',`M170 590 C 60 520, 60 200, 170 130`);
+// cards on top
+N.forEach(n=>map.appendChild(n.el));
+// labels
+function lbl(x,y,t,c){const e=document.createElement('div');e.className='lbl '+(c||'');e.style.left=x+'px';e.style.top=y+'px';e.textContent=t;map.appendChild(e)}
+lbl(58,495,'cómo llegar','');
+lbl(1070,625,'agendar','');
+lbl(1175,790,'la cita llega al equipo','');
+lbl(40,370,'eventos en Hoy','');
+lbl(620,570,'siempre disponible','r');
+lbl(620,780,'aviso al equipo','r');
+lbl(620,250,'consulta · acción · acompañamiento','');
+</script>
+</body>
+</html>
