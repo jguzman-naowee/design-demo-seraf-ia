@@ -522,7 +522,7 @@ window.PANTALLAS['bienestar'] = (function () {
             '<label class="nws-dp__sw"><span>Ver cómo razona el sistema<small>Solo para explicar la demo</small></span><div class="nwt-switch' + (s.detalle ? ' nwt-switch--checked' : '') + '" role="switch" aria-checked="' + s.detalle + '" tabindex="0" data-p="detalle" nwt-theme="secondary"><div class="nwt-switch__component"><div class="nwt-switch__component__element"></div></div></div></label></div>' +
           '<div class="nws-dp__ft">' + ctl + '<div class="nws-dp__turno"><span class="nws-mono">Turno ' + s.hechos + '/' + t + '</span><span class="nws-dp__dots" aria-hidden="true">' + dots + '</span></div></div></div>';
       }
-      var jugando = false, llavePrev = '';
+      var jugando = false, llavePrev = '', chatAbierto = false;
 
       function pintar() {
         var s = C.estado(), v = C.vista();
@@ -548,7 +548,13 @@ window.PANTALLAS['bienestar'] = (function () {
           if (modo === 'resumen') { cuerpo = idle + '<div class="nws-ib-th">' + hilo(v, c, s, live) + '</div>'; }
           else { cuerpo = crisis + idle + (hay ? '<div class="nws-sala__cols"><div class="nws-sala__c2">' + (s.detalle ? pasos(vv, ss) : '') + caso(vv, ss) + '</div><div class="nws-sala__c3">' + senales(vv, ss) + garantias(vv, ss) + (s.detalle ? modelo() : '') + '</div></div>' : vacioEs('answer', 'Esperando el primer mensaje del estudiante')); }
           var secChat = '';
-          var derecha = '<section class="nws-mcr">' + cabCaso(c, started) + '<div class="nws-mcr__main' + (modo === 'resumen' ? ' nws-mcr__main--chat' : ' nws-scroll') + '" id="ibmain">' + resumenFilas(v, c, live) + selectorVista() + (modo === 'resumen' ? fijo + secChat + '<div class="nws-mcr__chat nws-scroll" id="ibchat">' + cuerpo + '</div>' : cuerpo) + '</div></section>';
+          var barraDet = '<div class="nws-dtb">' + S.button({ label: 'Resumen', icon: 'arrow-left', variant: 'quiet', theme: 'neutral', size: 'medium', attrs: { 'data-modo': 'resumen' } }) + '<span class="nws-grow"></span>' +
+            S.button({ label: 'Ver conversación', icon: 'answer', variant: 'quiet', theme: 'neutral', size: 'medium', attrs: { 'data-d': 'chat-abrir', 'aria-expanded': String(chatAbierto), 'aria-controls': 'chd' } }) + '</div>';
+          var drawer = '<aside class="nws-chd" id="chd" role="dialog" aria-label="Conversación con SerafIA"><header class="nws-chd__h"><b>Conversación</b><span class="nws-txt">' + c.nombre + ' · ' + c.id + '</span><span class="nws-grow"></span>' +
+            S.iconButton({ icon: 'close', variant: 'mute', theme: 'neutral', size: 'medium', label: 'Cerrar la conversación', attrs: { 'data-d': 'chat-cerrar' } }) + '</header><div class="nws-chd__b nws-scroll"><div class="nws-ib-th">' + hilo(v, c, s, live) + '</div></div></aside>';
+          var derecha = '<section class="nws-mcr' + (modo === 'detalle' && chatAbierto ? ' nws-mcr--chd' : '') + '">' + cabCaso(c, started) + '<div class="nws-mcr__main' + (modo === 'resumen' ? ' nws-mcr__main--chat' : ' nws-scroll') + '" id="ibmain">' + resumenFilas(v, c, live) +
+            (modo === 'resumen' ? '<div class="nws-fijo' + (vv.crisis ? ' nws-fijo--2' : '') + '">' + fijo + '</div>' + secChat + '<div class="nws-mcr__chat nws-scroll" id="ibchat">' + cuerpo + '</div>' : barraDet + cuerpo) + '</div>' +
+            (modo === 'detalle' && chatAbierto ? drawer : '') + '</section>';
           /* mismo caso y misma vista: conservar el scroll al repintar (marcar, elegir, cambiar acción) */
           var llave = sel + '|' + modo, mismo = llave === llavePrev;
           var m0 = sala.querySelector('.nws-mcr__main'), c0 = $('ibchat');
@@ -580,8 +586,8 @@ window.PANTALLAS['bienestar'] = (function () {
         [].slice.call(root.querySelectorAll('.nws-side__it[data-nav]')).forEach(function (bt) { var on = bt.getAttribute('data-nav') === (vista === 'caso' ? 'casos' : 'resumen'); bt.classList.toggle('nws-side__it--on', on); if (on) { bt.setAttribute('aria-current', 'page'); } else { bt.removeAttribute('aria-current'); } });
         ctx.posicionarIndicadores(root);
       }
-      function abrir(id) { var c = casoPorId(id); if (!c) { return; } sel = id; vista = 'caso'; tab = 'evidencia'; modo = 'resumen'; colapsada = false; C.seleccionar(c.gid); C.estado().abierto = true; jugando = false; $('sala').scrollTop = 0; pintar(); }
-      function volver() { vista = 'resumen'; sel = null; $('sala').innerHTML = ''; C.salirDelModo(); pintar(); }
+      function abrir(id) { var c = casoPorId(id); if (!c) { return; } sel = id; vista = 'caso'; tab = 'evidencia'; modo = 'resumen'; chatAbierto = false; colapsada = false; C.seleccionar(c.gid); C.estado().abierto = true; jugando = false; $('sala').scrollTop = 0; pintar(); }
+      function volver() { vista = 'resumen'; sel = null; chatAbierto = false; $('sala').innerHTML = ''; C.salirDelModo(); pintar(); }
 
       function onClick(ev) {
         var cs = ev.target.closest('[data-caso]');
@@ -597,7 +603,7 @@ window.PANTALLAS['bienestar'] = (function () {
         var gu = ev.target.closest('[data-guion]');
         if (gu) { var bid = gu.getAttribute('data-guion'), actual = casoPorId(sel); if (actual && actual.base === bid) { return; } var cand = CASOS.filter(function (c) { return c.base === bid; }).sort(function (x, y) { return C.NIVELES.indexOf(y.nivel) - C.NIVELES.indexOf(x.nivel); })[0]; if (cand) { abrir(cand.id); } return; }
         var md = ev.target.closest('[data-modo]');
-        if (md) { modo = md.getAttribute('data-modo'); colapsada = modo === 'detalle'; animarDerecha = true; pintar(); return; }
+        if (md) { modo = md.getAttribute('data-modo'); chatAbierto = false; colapsada = modo === 'detalle'; animarDerecha = true; pintar(); return; }
         var tb = ev.target.closest('[data-tab]');
         if (tb) { tab = tb.getAttribute('data-tab'); pintar(); return; }
         var d = ev.target.closest('[data-d]');
@@ -614,6 +620,8 @@ window.PANTALLAS['bienestar'] = (function () {
           else if (k === 'protocolo') { var cp = casoPorId(sel); registrar('Protocolo de crisis activado', 'proto'); ctx.toast({ title: 'Protocolo activado', message: 'Se avisó a la ruta institucional por el caso de ' + cp.nombre }); pintar(); }
           else if (k === 'informe') { if (sel) { informe(casoPorId(sel)); } else { ctx.toast({ title: 'Informe listo', message: 'Informe general de casos descargado' }); } }
           else if (k === 'reproducir') { C.reproducir(); }
+          else if (k === 'chat-abrir') { chatAbierto = !chatAbierto; pintar(); }
+          else if (k === 'chat-cerrar') { chatAbierto = false; pintar(); }
           else if (k === 'confirmar') { aplicarDecision('Confirmada', (C.estado().hechos > 0 ? C.vista() : C.vista(C.total())).accion); }
           else if (k === 'ajustar') { ajusteSel = null; motivoSel = null; C.ajustando(true); pintar(); }
           else if (k === 'cancelar') { ajusteSel = null; motivoSel = null; C.ajustando(false); }
@@ -654,7 +662,7 @@ window.PANTALLAS['bienestar'] = (function () {
       }
       root.addEventListener('pointerdown', onDown);
       root.addEventListener('click', onClick);
-      function onKey(ev) { var t = ev.target.closest && ev.target.closest('[data-fniv][role=button]'); if (t && (ev.key === 'Enter' || ev.key === ' ')) { ev.preventDefault(); var k0 = t.getAttribute('data-fniv'); fNiv[k0] = !fNiv[k0]; pintar(); } }
+      function onKey(ev) { if (ev.key === 'Escape' && chatAbierto) { chatAbierto = false; pintar(); return; } var t = ev.target.closest && ev.target.closest('[data-fniv][role=button]'); if (t && (ev.key === 'Enter' || ev.key === ' ')) { ev.preventDefault(); var k0 = t.getAttribute('data-fniv'); fNiv[k0] = !fNiv[k0]; pintar(); } }
       root.addEventListener('keydown', onKey);
       pintar();
       return function () { off(); quitarRol(); quitarPanel(); root.removeEventListener('click', onClick); root.removeEventListener('pointerdown', onDown); onUp(); root.removeEventListener('keydown', onKey); };

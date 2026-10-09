@@ -1966,8 +1966,8 @@ section.nws-ib__r { display: flex; flex-direction: column; min-width: 0; min-hei
 .nws-next__l li { display: flex; gap: var(--naotech-sizing-10); font-size: var(--naotech-smalltext-font-size); line-height: var(--naotech-sizing-20); }
 .nws-next__l b { flex: none; font-feature-settings: 'tnum'; color: var(--nws-ink-2); font-weight: var(--naotech-font-weight-semibold); }
 @media (max-width: 1180px) { .nws-next { grid-template-columns: 1fr; } }
-.nws-mcr__main--chat { overflow-y: auto; scrollbar-width: thin; }
-.nws-mcr__chat { flex: 1 0 240px; }
+.nws-mcr__main--chat { overflow: hidden; }
+.nws-mcr__chat { flex: 1 1 0; min-height: 0; }
 
 /* Gestión de alertas del caso e historial del estudiante */
 .nws-aw { flex: none; border: 1px solid var(--naotech-color-gray-200); border-radius: var(--nws-r-card); background: var(--naotech-color-white-alpha-100); }
@@ -2176,3 +2176,22 @@ section.nws-ib__r { display: flex; flex-direction: column; min-width: 0; min-hei
 .nws-gpanel .nws-dp__hd { cursor: grab; touch-action: none; user-select: none; }
 .nws-gpanel--mov .nws-dp__hd { cursor: grabbing; }
 .nws-gpanel--mov { transition: none; }
+
+/* Resumen: la parte superior queda fija y solo se desplaza la conversación */
+.nws-mcr__main--chat { overflow: hidden; }
+.nws-mcr__main--chat > * { flex-shrink: 0; }
+.nws-mcr__main--chat > .nws-mcr__chat { flex: 1 1 0; min-height: 0; overflow-y: auto; }
+.nws-fijo { display: flex; flex-direction: column; gap: var(--naotech-sizing-12); }
+@media (min-width: 1280px) { .nws-fijo--2 { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: stretch; } .nws-fijo--2 > * { margin: 0; } }
+/* Detalle: barra superior y conversación en un panel lateral */
+.nws-dtb { display: flex; align-items: center; gap: var(--naotech-sizing-8); }
+.nws-mcr { position: relative; }
+.nws-chd { position: absolute; top: 0; right: 0; bottom: 0; width: min(440px, 100%); z-index: 6; display: flex; flex-direction: column; background: var(--naotech-color-white-alpha-100); border-left: 1px solid var(--naotech-color-gray-200); box-shadow: -12px 0 32px rgb(20 20 40 / .08); animation: nws-chd-in .3s var(--naotech-animation-deceleration) both; }
+@keyframes nws-chd-in { from { opacity: 0; transform: translateX(24px); } to { opacity: 1; transform: none; } }
+.nws-chd__h { flex: none; display: flex; align-items: center; gap: var(--naotech-sizing-8); padding: var(--naotech-sizing-12) var(--naotech-sizing-16); border-bottom: 1px solid var(--naotech-color-gray-200); }
+.nws-chd__h b { font-size: var(--naotech-subtitle-font-size); }
+.nws-chd__b { flex: 1; min-height: 0; overflow-y: auto; padding: var(--naotech-sizing-12) var(--naotech-sizing-16) var(--naotech-sizing-24); }
+.nws-chd .nws-ib-th { max-width: none; }
+@media (prefers-reduced-motion: reduce) { .nws-chd { animation: none; } }
+@media (min-width: 1280px) { .nws-fijo--2 .nws-crisis { padding: var(--naotech-sizing-12) var(--naotech-sizing-16); } .nws-fijo--2 .nws-crisis .nwt-badge { display: none; } .nws-fijo--2 .nws-crisis p { font-size: var(--naotech-smalltext-font-size); } }
+.nws-chd { width: min(400px, 100%); top: 0; }
