@@ -76,7 +76,11 @@ window.DATOS = {
         { "ini": "10:00", "fin": "12:00", "nombre": "Cálculo II", "lugar": "Aula C-302 · Bloque C" },
         { "ini": "12:00", "fin": "13:00", "nombre": "Taller de respiración", "lugar": "Bienestar Universitario", "etiqueta": "Evento Seraf" } ] },
       { "k": "vie", "dow": "VIE", "num": "9", "items": [
-        { "ini": "14:00", "fin": "16:00", "nombre": "Parcial de Física II", "lugar": "Aula A-110 · Bloque A", "etiqueta": "Examen" } ] }
+        { "ini": "14:00", "fin": "16:00", "nombre": "Parcial de Física II", "lugar": "Aula A-110 · Bloque A", "etiqueta": "Examen" } ] }],
+    "horarioExtra": [
+      { "k": "sab", "dow": "SÁB", "num": "10", "items": [
+        { "ini": "08:00", "fin": "10:00", "nombre": "Jornada de deporte y pausa activa", "lugar": "Coliseo", "etiqueta": "Evento Seraf" } ] },
+      { "k": "dom", "dow": "DOM", "num": "11", "items": [] }
     ],
     "destacados": [
       { "id": "f1", "tag": "Bienestar", "titulo": "Semana del Bienestar", "meta": "12 al 16 de octubre · Plazoleta central", "color": "indigo" },

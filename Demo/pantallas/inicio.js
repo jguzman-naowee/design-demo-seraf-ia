@@ -287,18 +287,21 @@ window.PANTALLAS['inicio'] = (function () {
           '<p class="nws-txt" style="text-align:center">Sube el brillo de tu pantalla. Funciona sin conexión con tu último estado válido.</p></div>' + fabMini() + '</div>';
       }
       function ovHorario() {
-        var dias = D.horario.map(function (d) {
+        var grande = DISP !== 'movil', sem = grande ? D.horario.concat(D.horarioExtra || []) : D.horario;
+        if (!grande && (st.dia === 'sab' || st.dia === 'dom')) { st.dia = 'mar'; }
+        var dias = sem.map(function (d) {
           return '<button class="nws-dia' + (st.dia === d.k ? ' nws-dia--on' : '') + '" data-a="dia:' + d.k + '"><span>' + d.dow + '</span><b>' + d.num + '</b>' + (d.k === 'mar' ? '<i style="width:6px;height:6px;border-radius:50%;background:' + (st.dia === d.k ? 'var(--naotech-color-white-alpha-100)' : 'var(--naotech-color-indigo-600)') + '"></i>' : '<i style="width:6px;height:6px"></i>') + '</button>';
         }).join('');
-        var cur = D.horario.filter(function (d) { return d.k === st.dia; })[0];
+        var cur = sem.filter(function (d) { return d.k === st.dia; })[0] || sem[1];
         var slots = cur.items.map(function (c) {
           var ex = c.etiqueta === 'Examen', ev = c.etiqueta === 'Evento Seraf', sg = c.etiqueta === 'Siguiente';
           return '<div class="nws-glass nws-slot' + (ex ? ' nws-slot--examen' : '') + (sg ? ' nws-slot--sig' : '') + '"><div class="nws-slot__h"><div class="nws-hora" style="min-width:0">' + c.ini + '</div><p class="nws-txt">' + c.fin + '</p></div>' +
             '<div class="nws-grow"><p class="nws-h3">' + c.nombre + '</p><p class="nws-txt">' + c.lugar + '</p>' +
             (c.etiqueta ? '<div style="margin-top:var(--naotech-sizing-8)">' + S.badge({ label: c.etiqueta, theme: ex ? 'warning' : (ev ? 'positive' : 'secondary'), variant: ex ? 'loud' : 'quiet', size: 'small' }) + '</div>' : '') + '</div></div>';
         }).join('');
+        if (!cur.items.length) { slots = '<div class="nws-glass nws-block"><p class="nws-txt">Sin clases ni eventos este día.</p></div>'; }
         return '<div class="nws-ov">' + atras('Mi horario') + '<div class="nws-ov__body">' +
-          '<p class="nws-mono-over">Periodo 2026-2 · Semana del 5 al 9 de octubre</p><div class="nws-dias">' + dias + '</div>' +
+          '<p class="nws-mono-over">Periodo 2026-2 · Semana del 5 al ' + (grande ? '11' : '9') + ' de octubre</p><div class="nws-dias' + (grande ? ' nws-dias--7' : '') + '">' + dias + '</div>' +
           '<div class="nws-stack">' + slots + '</div>' +
           '<div class="nws-glass nws-block"><p class="nws-txt">Recordatorios de clase 30 min antes. Puedes cambiarlo en <b style="color:var(--nws-ink)">Yo</b>.</p></div></div>' + fabMini() + '</div>';
       }
@@ -674,7 +677,7 @@ window.PANTALLAS['inicio'] = (function () {
         var ph = root.querySelector('#phone'); ph.setAttribute('data-disp', k); ph.style.width = DISPS[k].w + 'px'; ph.style.height = DISPS[k].h + 'px';
         mob.className = mob.className.replace(/\bnws-demo--(movil|tablet|tablet-xl)\b/g, '').trim() + ' nws-demo--' + k;
         [].forEach.call(root.querySelectorAll('.nws-dispsw .nws-dsp'), function (x) { var on = x.getAttribute('data-seg') === k; x.classList.toggle('on', on); x.setAttribute('aria-checked', String(on)); });
-        zoom.mult = 1; aplicarZoom(); ctx.posicionarIndicadores(root);
+        zoom.mult = 1; aplicarZoom(); ctx.posicionarIndicadores(root); if (st.ov === 'horario') { pintarOv(); }
       }
       root.addEventListener('click', onDisp);
       function onZoom(ev) {

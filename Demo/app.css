@@ -2304,3 +2304,6 @@ section.nws-ib__r { display: flex; flex-direction: column; min-width: 0; min-hei
 /* vistas completas (carnet, horario, eventos): mismo margen que el resto en tablet y título alineado con los botones */
 .nws-demo--tablet .nws-ov__body, .nws-demo--tablet-xl .nws-ov__body, .nws-demo--tablet .nws-ov__hd, .nws-demo--tablet-xl .nws-ov__hd { padding-inline: var(--nws-gutter); }
 .nws-ov__hd > h1 { display: flex; align-items: center; justify-content: center; align-self: center; min-height: 44px; line-height: 1.2; }
+
+/* horario en tablets: la semana completa, de lunes a domingo */
+.nws-dias--7 { grid-template-columns: repeat(7, minmax(0, 1fr)); }
