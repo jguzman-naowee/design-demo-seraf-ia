@@ -522,7 +522,7 @@ window.PANTALLAS['bienestar'] = (function () {
             '<label class="nws-dp__sw"><span>Ver cómo razona el sistema<small>Solo para explicar la demo</small></span><div class="nwt-switch' + (s.detalle ? ' nwt-switch--checked' : '') + '" role="switch" aria-checked="' + s.detalle + '" tabindex="0" data-p="detalle" nwt-theme="secondary"><div class="nwt-switch__component"><div class="nwt-switch__component__element"></div></div></div></label></div>' +
           '<div class="nws-dp__ft">' + ctl + '<div class="nws-dp__turno"><span class="nws-mono">Turno ' + s.hechos + '/' + t + '</span><span class="nws-dp__dots" aria-hidden="true">' + dots + '</span></div></div></div>';
       }
-      var jugando = false, llavePrev = '', chatAbierto = false, skPrev = '';
+      var jugando = false, llavePrev = '', chatAbierto = false, skPrev = '', hiloSel = null, hiloN = 0, hiloNuevo = 0;
 
       function pintar() {
         var s = C.estado(), v = C.vista();
@@ -564,13 +564,38 @@ window.PANTALLAS['bienestar'] = (function () {
             cajaPrev.classList.toggle('nws-mcw--col', colapsada);
             sala.querySelector('.nws-mcl').innerHTML = listaCasos();
             var lp2 = sala.querySelector('.nws-mcl__l'); if (lp2) { lp2.scrollTop = lt; }
-            sala.querySelector('.nws-mcr').outerHTML = derecha;
+            /* mismo caso y misma vista: se actualiza solo lo que cambió (sin repintar todo el panel → sin parpadeo) */
+            var actual = sala.querySelector('.nws-mcr');
+            if (mismo && actual) {
+              var tmp = document.createElement('div'); tmp.innerHTML = derecha; var nuevo = tmp.firstElementChild;
+              actual.className = nuevo.className;
+              var pa = [].slice.call(actual.children), pn = [].slice.call(nuevo.children);
+              if (pa.length === pn.length) {
+                pn.forEach(function (n, i) {
+                  var o = pa[i]; if (o.outerHTML === n.outerHTML) { return; }
+                  if (o.classList.contains('nws-mcr__main') && n.classList.contains('nws-mcr__main')) {
+                    o.className = n.className.replace(' nws-mcr__main--in', '') + (o.classList.contains('nws-mcr__main--in') ? ' nws-mcr__main--in' : '');
+                    var ca = [].slice.call(o.children), cn = [].slice.call(n.children);
+                    if (ca.length === cn.length) { cn.forEach(function (c2, j) { if (ca[j].outerHTML !== c2.outerHTML) { ca[j].replaceWith(c2); } }); } else { o.innerHTML = n.innerHTML; }
+                  } else { o.replaceWith(n); }
+                });
+              } else { actual.outerHTML = derecha; }
+            } else { sala.querySelector('.nws-mcr').outerHTML = derecha; }
           } else {
             sala.innerHTML = '<div class="nws-mcw' + (colapsada ? ' nws-mcw--col' : '') + '"><aside class="nws-mcl" aria-label="Mis casos">' + listaCasos() + '</aside>' + derecha + '</div>';
           }
           if (animarDerecha) { var mr = sala.querySelector('.nws-mcr__main'); if (mr) { mr.classList.add('nws-mcr__main--in'); } animarDerecha = false; }
 
           var mr2 = sala.querySelector('.nws-mcr__main'); if (mr2 && mTop) { mr2.scrollTop = mTop; }
+          /* el hilo se vuelve a pintar en cada turno: lo que ya estaba no se anima de nuevo, solo entra lo nuevo (sin parpadeo) */
+          if (hiloSel !== sel) { hiloSel = sel; hiloN = 0; }
+          [].forEach.call(sala.querySelectorAll('.nws-th'), function (th) {
+            var kids = [].slice.call(th.children); if (kids.length < hiloN) { hiloN = 0; }
+            kids.forEach(function (k, i) { if (i < hiloN) { k.classList.add('nws-old'); } });
+            var ult = kids[kids.length - 1], cuenta = ult && ult.querySelector && ult.querySelector('.nws-typing') ? kids.length - 1 : kids.length;
+            hiloNuevo = cuenta;
+          });
+          hiloN = hiloNuevo;
           var mm = $('ibchat'); if (mm) { if (started && (cAb || s.hechos !== prevH)) { mm.scrollTop = mm.scrollHeight; } else if (cTop) { mm.scrollTop = cTop; } }
           gb.innerHTML = '';
           if (s.playing && !jugando) { s.abierto = false; }

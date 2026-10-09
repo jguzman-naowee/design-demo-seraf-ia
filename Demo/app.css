@@ -2751,3 +2751,6 @@ section.nws-ib__r { display: flex; flex-direction: column; min-width: 0; min-hei
 .nws-sk .sk-main { display: flex; flex-direction: column; gap: var(--naotech-sizing-16); padding: var(--naotech-sizing-24); }
 .nws-sk .sk-t { font-size: var(--naotech-subtitle-font-size); font-weight: var(--naotech-font-weight-semibold); color: var(--nws-ink); margin-right: var(--naotech-sizing-8); }
 .nws-composer--off, .nws-composer--off * { cursor: not-allowed; } .nws-composer--off input { pointer-events: none; user-select: none; }
+
+/* hilo del caso: lo ya pintado no se anima otra vez */
+.nws-th > .nws-old, .nws-th > .nws-old * { animation: none !important; }
