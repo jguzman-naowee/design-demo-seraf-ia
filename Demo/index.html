@@ -13595,6 +13595,15 @@ section.nws-ib__r { display: flex; flex-direction: column; min-width: 0; min-hei
 .nws-demo .nws-sk { padding: 8px var(--nws-gutter) 0; }
 @media (prefers-reduced-motion: reduce) { .nws-sk .sk { animation: none; } .nws-sk { transition: none; } }
 
+/* esqueleto de la sala de bienestar: encabezado con la marca, menú lateral y contenido */
+.nws-sk:has(.sk-hd) { padding: 0; gap: 0; background: var(--naotech-color-white-alpha-100); }
+.nws-sk .sk-hd { display: flex; align-items: center; gap: var(--naotech-sizing-12); padding: var(--naotech-sizing-16) var(--naotech-sizing-24); border-bottom: 1px solid var(--naotech-color-gray-200); }
+.nws-sk .sk-sp { flex: 1; }
+.nws-sk .sk-body { flex: 1; display: grid; grid-template-columns: 220px minmax(0, 1fr); min-height: 0; }
+.nws-sk .sk-side { display: flex; flex-direction: column; gap: var(--naotech-sizing-8); padding: var(--naotech-sizing-24) var(--naotech-sizing-16); border-right: 1px solid var(--naotech-color-gray-200); }
+.nws-sk .sk-main { display: flex; flex-direction: column; gap: var(--naotech-sizing-16); padding: var(--naotech-sizing-24); }
+.nws-sk .sk-t { font-size: var(--naotech-subtitle-font-size); font-weight: var(--naotech-font-weight-semibold); color: var(--nws-ink); margin-right: var(--naotech-sizing-8); }
+
 </style>
 <div id="app" style="height:100%"></div>
 <!-- pantallas: una línea por archivo, antes de app.js -->
@@ -16731,6 +16740,7 @@ window.PANTALLAS['bienestar'] = (function () {
   var SK = {
     app: '<i class="sk b" style="height:130px"></i><i class="sk b" style="width:42%;height:18px"></i><div class="sk-g sk-g4"><i class="sk b" style="height:88px"></i><i class="sk b" style="height:88px"></i><i class="sk b" style="height:88px"></i><i class="sk b" style="height:88px"></i></div><i class="sk b" style="height:150px"></i><i class="sk b" style="height:110px"></i>',
     lista: '<i class="sk b" style="width:46%;height:22px"></i><i class="sk b" style="height:72px"></i><i class="sk b" style="height:72px"></i><i class="sk b" style="height:72px"></i><i class="sk b" style="height:72px"></i>',
+    'sala-full': '<div class="sk-hd"><span class="nws-orbe nws-orbe--sm"></span><b class="sk-t">SerafIA</b><i class="sk b" style="width:130px;height:16px"></i><span class="sk-sp"></span><i class="sk b" style="width:190px;height:34px"></i><i class="sk" style="width:36px;height:36px;border-radius:50%"></i></div><div class="sk-body"><div class="sk-side"><i class="sk b" style="height:44px"></i><i class="sk b" style="height:44px"></i><i class="sk b" style="height:44px"></i><i class="sk b" style="height:44px"></i><i class="sk b" style="height:44px"></i></div><div class="sk-main"><i class="sk b" style="width:36%;height:30px"></i><div class="sk-g sk-g4"><i class="sk b" style="height:100px"></i><i class="sk b" style="height:100px"></i><i class="sk b" style="height:100px"></i><i class="sk b" style="height:100px"></i></div><div class="sk-g sk-g4"><i class="sk b" style="height:260px"></i><i class="sk b" style="height:260px"></i><i class="sk b" style="height:260px"></i><i class="sk b" style="height:260px"></i></div></div></div>',
     sala: '<div class="sk-g sk-g4"><i class="sk b" style="height:96px"></i><i class="sk b" style="height:96px"></i><i class="sk b" style="height:96px"></i><i class="sk b" style="height:96px"></i></div><div class="sk-g sk-g2"><i class="sk b" style="height:300px"></i><i class="sk b" style="height:300px"></i></div>',
     caso: '<i class="sk b" style="width:38%;height:26px"></i><div class="sk-g sk-g4"><i class="sk b" style="height:80px"></i><i class="sk b" style="height:80px"></i><i class="sk b" style="height:80px"></i><i class="sk b" style="height:80px"></i></div><i class="sk b" style="height:150px"></i><i class="sk b" style="height:220px"></i>'
   };
@@ -16995,7 +17005,7 @@ window.PANTALLAS['bienestar'] = (function () {
         /* esqueleto solo al cargar la vista (recarga o cambio Estudiante ↔ Bienestar), no en las vistas internas */
         if (window.NWS_SK) {
           var mob = root.querySelector('#mob'), sala = root.querySelector('#sala');
-          if (mob) { window.NWS_SK(mob, 'app', 44); } else if (sala && sala.parentNode) { window.NWS_SK(sala.parentNode, 'sala', sala.offsetTop); }
+          if (mob) { window.NWS_SK(mob, 'app', 44); } else if (root.querySelector('.nws-sala')) { window.NWS_SK(root.querySelector('.nws-sala'), 'sala-full', 0); }
         }
         ajustar(pantalla, root, ctx);
         posicionarIndicadores(document);

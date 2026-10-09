@@ -18,6 +18,7 @@
   var SK = {
     app: '<i class="sk b" style="height:130px"></i><i class="sk b" style="width:42%;height:18px"></i><div class="sk-g sk-g4"><i class="sk b" style="height:88px"></i><i class="sk b" style="height:88px"></i><i class="sk b" style="height:88px"></i><i class="sk b" style="height:88px"></i></div><i class="sk b" style="height:150px"></i><i class="sk b" style="height:110px"></i>',
     lista: '<i class="sk b" style="width:46%;height:22px"></i><i class="sk b" style="height:72px"></i><i class="sk b" style="height:72px"></i><i class="sk b" style="height:72px"></i><i class="sk b" style="height:72px"></i>',
+    'sala-full': '<div class="sk-hd"><span class="nws-orbe nws-orbe--sm"></span><b class="sk-t">SerafIA</b><i class="sk b" style="width:130px;height:16px"></i><span class="sk-sp"></span><i class="sk b" style="width:190px;height:34px"></i><i class="sk" style="width:36px;height:36px;border-radius:50%"></i></div><div class="sk-body"><div class="sk-side"><i class="sk b" style="height:44px"></i><i class="sk b" style="height:44px"></i><i class="sk b" style="height:44px"></i><i class="sk b" style="height:44px"></i><i class="sk b" style="height:44px"></i></div><div class="sk-main"><i class="sk b" style="width:36%;height:30px"></i><div class="sk-g sk-g4"><i class="sk b" style="height:100px"></i><i class="sk b" style="height:100px"></i><i class="sk b" style="height:100px"></i><i class="sk b" style="height:100px"></i></div><div class="sk-g sk-g4"><i class="sk b" style="height:260px"></i><i class="sk b" style="height:260px"></i><i class="sk b" style="height:260px"></i><i class="sk b" style="height:260px"></i></div></div></div>',
     sala: '<div class="sk-g sk-g4"><i class="sk b" style="height:96px"></i><i class="sk b" style="height:96px"></i><i class="sk b" style="height:96px"></i><i class="sk b" style="height:96px"></i></div><div class="sk-g sk-g2"><i class="sk b" style="height:300px"></i><i class="sk b" style="height:300px"></i></div>',
     caso: '<i class="sk b" style="width:38%;height:26px"></i><div class="sk-g sk-g4"><i class="sk b" style="height:80px"></i><i class="sk b" style="height:80px"></i><i class="sk b" style="height:80px"></i><i class="sk b" style="height:80px"></i></div><i class="sk b" style="height:150px"></i><i class="sk b" style="height:220px"></i>'
   };
@@ -282,7 +283,7 @@
         /* esqueleto solo al cargar la vista (recarga o cambio Estudiante ↔ Bienestar), no en las vistas internas */
         if (window.NWS_SK) {
           var mob = root.querySelector('#mob'), sala = root.querySelector('#sala');
-          if (mob) { window.NWS_SK(mob, 'app', 44); } else if (sala && sala.parentNode) { window.NWS_SK(sala.parentNode, 'sala', sala.offsetTop); }
+          if (mob) { window.NWS_SK(mob, 'app', 44); } else if (root.querySelector('.nws-sala')) { window.NWS_SK(root.querySelector('.nws-sala'), 'sala-full', 0); }
         }
         ajustar(pantalla, root, ctx);
         posicionarIndicadores(document);

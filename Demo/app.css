@@ -2741,3 +2741,12 @@ section.nws-ib__r { display: flex; flex-direction: column; min-width: 0; min-hei
 @keyframes nws-sk-brillo { 0% { background-position: 120% 0; } 100% { background-position: -120% 0; } }
 .nws-demo .nws-sk { padding: 8px var(--nws-gutter) 0; }
 @media (prefers-reduced-motion: reduce) { .nws-sk .sk { animation: none; } .nws-sk { transition: none; } }
+
+/* esqueleto de la sala de bienestar: encabezado con la marca, menú lateral y contenido */
+.nws-sk:has(.sk-hd) { padding: 0; gap: 0; background: var(--naotech-color-white-alpha-100); }
+.nws-sk .sk-hd { display: flex; align-items: center; gap: var(--naotech-sizing-12); padding: var(--naotech-sizing-16) var(--naotech-sizing-24); border-bottom: 1px solid var(--naotech-color-gray-200); }
+.nws-sk .sk-sp { flex: 1; }
+.nws-sk .sk-body { flex: 1; display: grid; grid-template-columns: 220px minmax(0, 1fr); min-height: 0; }
+.nws-sk .sk-side { display: flex; flex-direction: column; gap: var(--naotech-sizing-8); padding: var(--naotech-sizing-24) var(--naotech-sizing-16); border-right: 1px solid var(--naotech-color-gray-200); }
+.nws-sk .sk-main { display: flex; flex-direction: column; gap: var(--naotech-sizing-16); padding: var(--naotech-sizing-24); }
+.nws-sk .sk-t { font-size: var(--naotech-subtitle-font-size); font-weight: var(--naotech-font-weight-semibold); color: var(--nws-ink); margin-right: var(--naotech-sizing-8); }
