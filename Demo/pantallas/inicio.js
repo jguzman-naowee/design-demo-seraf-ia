@@ -189,7 +189,47 @@ window.PANTALLAS['inicio'] = (function () {
           '<div class="nws-stack" style="gap:0;align-items:stretch">' + destacado() + '</div>' +
           '<div class="nws-block-btn" style="margin-top:var(--naotech-sizing-12)">' + btn('Ver más eventos', 'ov:eventos', { variant: 'quiet', iconEnd: 'arrow-right' }) + '</div></div>';
       }
+      /* ---------- composición para pantallas grandes (tablet y tablet grande) ----------
+         No se estira el móvil: cada pestaña reparte sus bloques en áreas y usa componentes pensados para más ancho. */
+      function grande() { return DISP !== 'movil'; }
+      function vistaG(clase, partes) {
+        return '<div class="nws-scroll nws-scroll--g"><div class="nws-gv ' + clase + '">' + partes.map(function (p) { return '<div class="nws-ga-' + p[0] + '">' + p[1] + '</div>'; }).join('') + '</div></div>';
+      }
+      /* NUEVO · Agenda del día: la jornada como línea de tiempo (en vez de una sola tarjeta de «próxima clase») */
+      function agendaDia() {
+        var hoy = D.horario.filter(function (d) { return d.k === 'mar'; })[0];
+        var items = hoy.items.map(function (c) {
+          var sg = c.etiqueta === 'Siguiente';
+          return '<div class="nws-ag__it' + (sg ? ' nws-ag__it--sig' : '') + '"><div class="nws-ag__t"><b>' + c.ini + '</b><span>' + c.fin + '</span></div><span class="nws-ag__dot" aria-hidden="true"></span>' +
+            '<div class="nws-ag__b"><p class="nws-h3">' + c.nombre + '</p><p class="nws-txt">' + c.lugar + '</p>' +
+            (sg ? '<div class="nws-ag__ac">' + S.badge({ label: 'Empieza en 40 min', theme: 'informative', variant: 'quiet', size: 'small' }) + btn('Cómo llegar', null, { variant: 'quiet', theme: 'secondary', size: 'small', toast: 'Cómo llegar' }) + '</div>' : '') + '</div></div>';
+        }).join('');
+        return '<section class="nws-glass nws-block nws-ag" aria-label="Tu día"><div class="nws-sec"><h2 class="nws-h2">Tu día</h2><span class="nws-txt">Martes 6</span></div><div class="nws-ag__l">' + items + '</div>' +
+          '<div class="nws-block-btn">' + btn('Ver mi horario', 'ov:horario', { variant: 'quiet', iconEnd: 'arrow-right' }) + '</div></section>';
+      }
+      /* NUEVO · Rejilla de eventos: los destacados se ven todos a la vez, sin carrusel */
+      function eventoCard(d) {
+        return '<article class="nws-ev nws-ev--g" data-c="' + d.color + '"><span class="nws-ev__orb" style="width:130px;height:130px;right:-40px;top:-50px"></span><div class="nws-ev__body">' +
+          S.badge({ label: d.tag, theme: 'neutral', variant: 'quiet', size: 'small' }) +
+          '<h3 class="nws-h1" style="font-size:var(--naotech-heading6-font-size);line-height:var(--naotech-heading6-line-height)">' + d.titulo + '</h3>' +
+          '<p class="nws-txt" style="color:var(--nws-ink)">' + d.meta + '</p><div class="nws-ev__act">' + btn('Ver detalle', null, { variant: 'quiet', size: 'small', toast: 'Detalle del evento' }) + '</div></div></article>';
+      }
+      function eventosRejilla() { return '<div class="nws-evgrid">' + D.destacados.map(eventoCard).join('') + '</div>'; }
+      /* NUEVO · Tarjeta de documento: nombre, estado y acción en una sola tarjeta */
+      function docCard(d) {
+        var q = d.accion === 'Solicitar' || d.accion === 'Descargar';
+        return '<article class="nws-glass nws-doc">' + S.avatarIcon({ icon: 'file', theme: q ? 'neutral' : 'secondary' }) + '<div class="nws-grow"><p class="nws-h3" style="font-size:var(--naotech-body-font-size)">' + d.nombre + '</p><p class="nws-txt">' + d.nota + '</p></div>' +
+          btn(d.accion, null, { variant: q ? 'quiet' : 'loud', size: 'small', toast: d.accion + ' · ' + d.nombre }) + '</article>';
+      }
       function vistaHoy() {
+        if (grande()) {
+          return vistaG('nws-gv--hoy', [['hero', st.mood ? cartaHecha() : heroCarta()], ['acc', accesos()], ['agenda', agendaDia()],
+            ['ev', '<div class="nws-sec" style="margin-bottom:var(--naotech-sizing-12)"><h2 class="nws-h2">Eventos Seraf</h2><span class="nws-txt">Esta semana</span></div>' + eventosRejilla() +
+              '<div class="nws-block-btn" style="margin-top:var(--naotech-sizing-12)">' + btn('Ver más eventos', 'ov:eventos', { variant: 'quiet', iconEnd: 'arrow-right' }) + '</div>']]);
+        }
+        return vistaHoyMovil();
+      }
+      function vistaHoyMovil() {
         return '<div class="nws-scroll" id="scroll">' + (st.mood ? cartaHecha() : heroCarta()) + claseCard() + accesos() + eventosHoy() + '</div>';
       }
 
@@ -203,6 +243,12 @@ window.PANTALLAS['inicio'] = (function () {
           return '<div class="nws-line"><div class="nws-grow"><p class="nws-h3" style="font-size:var(--naotech-body-font-size)">' + t.nombre + '</p><p class="nws-txt">' + t.nota + '</p></div>' +
             S.badge({ label: t.estado, theme: t.tema, variant: 'quiet', size: 'small' }) + '</div>';
         }).join('');
+        if (grande()) {
+          return vistaG('nws-gv--serv', [
+            ['docs', '<div class="nws-sec" style="margin-bottom:var(--naotech-sizing-12)"><h2 class="nws-h2">Certificados y documentos</h2></div><div class="nws-docgrid">' + D.documentos.map(docCard).join('') + '</div>'],
+            ['sol', '<div class="nws-glass nws-block"><h2 class="nws-h2">Mis solicitudes</h2><div class="nws-stack" style="gap:0">' + tr + '</div></div>'],
+            ['tiles', '<div class="nws-tiles">' + tile('bill', 'informative', 'Notas del periodo', 'Abrir calculadora', 'data-toast="Notas"') + tile('file', 'positive', 'Mis solicitudes', '1 en revisión', 'data-toast="Mis solicitudes"') + '</div>']]);
+        }
         return '<div class="nws-scroll">' +
           '<div class="nws-glass nws-block"><h2 class="nws-h2">Certificados y documentos</h2><div class="nws-stack" style="gap:0">' + docs + '</div></div>' +
           '<div class="nws-tiles">' + tile('bill', 'informative', 'Notas del periodo', 'Abrir calculadora', 'data-toast="Notas"') + tile('file', 'positive', 'Mis solicitudes', '1 en revisión', 'data-toast="Mis solicitudes"') + '</div>' +
@@ -227,6 +273,13 @@ window.PANTALLAS['inicio'] = (function () {
           return '<div class="nws-line"><div class="nws-grow"><p class="nws-h3" style="font-size:var(--naotech-body-font-size)">' + c.nombre + '</p><p class="nws-txt">' + c.meta + '</p></div>' +
             btn(c.accion, null, { theme: c.crisis ? 'negative' : 'neutral', variant: c.crisis ? 'quiet' : 'loud', size: 'small', toast: c.accion + ' · ' + c.nombre }) + '</div>';
         }).join('');
+        if (grande()) {
+          return vistaG('nws-gv--campus', [
+            ['map', '<div class="nws-glass nws-block nws-mapblock">' + S.searchbox({ placeholder: '¿A dónde vas? Aula, edificio o servicio' }) + mapaSvg() +
+              '<div class="nws-rowx"><div class="nws-grow"><p class="nws-h3">Aula C-302</p><p class="nws-txt">8 min a pie · piso 3</p></div>' + btn('Iniciar ruta', null, { toast: 'Iniciar ruta' }) + '</div></div>'],
+            ['cont', '<div class="nws-glass nws-block"><h2 class="nws-h2">Contactos y ayuda</h2><div class="nws-stack" style="gap:0">' + cts + '</div></div>'],
+            ['ev', '<button class="nws-glass nws-tile" data-a="ov:eventos" style="flex-direction:row;align-items:center;width:100%">' + S.avatarIcon({ icon: 'calendar', theme: 'secondary' }) + '<div class="nws-grow"><p class="nws-tile__t">Eventos Seraf</p><p class="nws-txt">Universidad y Bienestar, con inscripción</p></div>' + S.icon('chevron-right') + '</button>']]);
+        }
         return '<div class="nws-scroll">' +
           '<div class="nws-glass nws-block">' + S.searchbox({ placeholder: '¿A dónde vas? Aula, edificio o servicio' }) + mapaSvg() +
           '<div class="nws-rowx"><div class="nws-grow"><p class="nws-h3">Aula C-302</p><p class="nws-txt">8 min a pie · piso 3</p></div>' + btn('Iniciar ruta', null, { toast: 'Iniciar ruta' }) + '</div></div>' +
@@ -242,6 +295,18 @@ window.PANTALLAS['inicio'] = (function () {
         var n = D.notificaciones.map(function (x) {
           return '<div class="nws-line"><div class="nws-grow"><p class="nws-h3" style="font-size:var(--naotech-body-font-size)">' + x.nombre + '</p><p class="nws-txt">' + x.nota + '</p></div>' + conmutador(st.notif[x.id], 'notif:' + x.id, x.nombre) + '</div>';
         }).join('');
+        if (grande()) {
+          var priv = '<div class="nws-glass nws-block"><h2 class="nws-h2">Privacidad</h2>' +
+            '<div class="nws-line"><div class="nws-grow"><p class="nws-h3" style="font-size:var(--naotech-body-font-size)">Usar mi horario para acompañarme</p><p class="nws-txt">SerafIA podrá ofrecerte ayuda en semanas pesadas. Nunca crea una alerta por esto.</p></div>' + conmutador(st.ctx, 'ctx', 'Usar mi horario para acompañarme') + '</div>' +
+            '<div class="nws-line"><div class="nws-grow"><p class="nws-h3" style="font-size:var(--naotech-body-font-size)">Qué ve SerafIA y qué no</p></div>' + S.icon('chevron-right') + '</div>' +
+            '<div class="nws-line"><div class="nws-grow"><p class="nws-h3" style="font-size:var(--naotech-body-font-size)">Mi consentimiento y mis datos</p></div>' + S.icon('chevron-right') + '</div></div>';
+          return vistaG('nws-gv--yo', [
+            ['perfil', '<div class="nws-glass nws-block nws-perfil">' + S.avatar({ text: E.iniciales, size: 'large', theme: 'secondary', variant: 'loud' }) + '<div><p class="nws-h2">' + E.nombre + '</p><p class="nws-txt">' + E.programa + '</p><p class="nws-txt" style="font-feature-settings:\'tnum\'">Código ' + E.codigo + '</p></div>' +
+              '<div class="nws-block-btn">' + btn('Cerrar sesión', null, { variant: 'quiet', icon: 'logout', toast: 'Cerrar sesión' }) + '</div></div>'],
+            ['herr', '<div class="nws-glass nws-block"><h2 class="nws-h2">Herramientas de bienestar</h2><div class="nws-herr">' + h + '</div></div>'],
+            ['not', '<div class="nws-glass nws-block"><h2 class="nws-h2">Notificaciones</h2><div class="nws-stack" style="gap:0">' + n + '</div></div>'],
+            ['priv', priv]]);
+        }
         return '<div class="nws-scroll">' +
           '<div class="nws-glass nws-block"><div class="nws-rowx">' + S.avatar({ text: E.iniciales, size: 'large', theme: 'secondary', variant: 'loud' }) +
           '<div class="nws-grow"><p class="nws-h3">' + E.nombre + '</p><p class="nws-txt">' + E.programa + ' · ' + E.codigo + '</p></div></div></div>' +
@@ -300,9 +365,24 @@ window.PANTALLAS['inicio'] = (function () {
             (c.etiqueta ? '<div style="margin-top:var(--naotech-sizing-8)">' + S.badge({ label: c.etiqueta, theme: ex ? 'warning' : (ev ? 'positive' : 'secondary'), variant: ex ? 'loud' : 'quiet', size: 'small' }) + '</div>' : '') + '</div></div>';
         }).join('');
         if (!cur.items.length) { slots = '<div class="nws-glass nws-block"><p class="nws-txt">Sin clases ni eventos este día.</p></div>'; }
+        function slot(c) {
+          var ex = c.etiqueta === 'Examen', ev = c.etiqueta === 'Evento Seraf', sg = c.etiqueta === 'Siguiente';
+          return '<div class="nws-glass nws-slot nws-slot--c' + (ex ? ' nws-slot--examen' : '') + (sg ? ' nws-slot--sig' : '') + '"><div class="nws-slot__h"><div class="nws-hora" style="min-width:0">' + c.ini + '</div><p class="nws-txt">' + c.fin + '</p></div>' +
+            '<div class="nws-grow"><p class="nws-h3">' + c.nombre + '</p><p class="nws-txt">' + c.lugar + '</p>' + (c.etiqueta ? '<div style="margin-top:var(--naotech-sizing-8)">' + S.badge({ label: c.etiqueta, theme: ex ? 'warning' : (ev ? 'positive' : 'secondary'), variant: ex ? 'loud' : 'quiet', size: 'small' }) + '</div>' : '') + '</div></div>';
+        }
+        /* NUEVO · Tablero semanal: toda la semana a la vez, una columna por día (tablet grande) */
+        if (DISP === 'tablet-xl') {
+          var cols = sem.map(function (d) {
+            var hoy = d.k === 'mar';
+            return '<section class="nws-wk__d' + (hoy ? ' nws-wk__d--hoy' : '') + '" aria-label="' + d.dow + ' ' + d.num + '"><header><span>' + d.dow + '</span><b>' + d.num + '</b>' + (hoy ? '<i>Hoy</i>' : '') + '</header>' +
+              (d.items.length ? d.items.map(slot).join('') : '<p class="nws-txt nws-wk__vacio">Sin clases ni eventos</p>') + '</section>';
+          }).join('');
+          return '<div class="nws-ov">' + atras('Mi horario') + '<div class="nws-ov__body"><p class="nws-mono-over">Periodo 2026-2 · Semana del 5 al 11 de octubre</p><div class="nws-wk">' + cols + '</div>' +
+            '<div class="nws-glass nws-block"><p class="nws-txt">Recordatorios de clase 30 min antes. Puedes cambiarlo en <b style="color:var(--nws-ink)">Yo</b>.</p></div></div>' + fabMini() + '</div>';
+        }
         return '<div class="nws-ov">' + atras('Mi horario') + '<div class="nws-ov__body">' +
           '<p class="nws-mono-over">Periodo 2026-2 · Semana del 5 al ' + (grande ? '11' : '9') + ' de octubre</p><div class="nws-dias' + (grande ? ' nws-dias--7' : '') + '">' + dias + '</div>' +
-          '<div class="nws-stack">' + slots + '</div>' +
+          '<div class="nws-stack nws-slots">' + slots + '</div>' +
           '<div class="nws-glass nws-block"><p class="nws-txt">Recordatorios de clase 30 min antes. Puedes cambiarlo en <b style="color:var(--nws-ink)">Yo</b>.</p></div></div>' + fabMini() + '</div>';
       }
       function filas(arr) {
@@ -320,19 +400,20 @@ window.PANTALLAS['inicio'] = (function () {
         var keep = D.eventos.filter(function (e) { return st.evFil === 'todos' || (st.evFil === 'para' ? e.para : e.cat === st.evFil); });
         var sem = keep.filter(function (e) { return e.semana; }), mas = keep.filter(function (e) { return !e.semana; });
         return '<div class="nws-ov">' + atras('Eventos Seraf') + '<div class="nws-ov__body">' +
-          '<div class="nws-stack" style="gap:0">' + destacado() + '</div>' +
+          (grande() ? eventosRejilla() : '<div class="nws-stack" style="gap:0">' + destacado() + '</div>') +
           '<div class="nws-fltabs" role="tablist" aria-label="Filtrar eventos">' + fl + '</div>' +
           (st.evFil === 'para' ? '<p class="nws-txt">Elegidos según actividades que te ayudan, con tu permiso. Puedes cambiarlo en Yo.</p>' : '') +
+          '<div class="nws-evcols">' +
           (sem.length ? '<div class="nws-glass nws-block"><h2 class="nws-h2">Esta semana</h2><div class="nws-stack" style="gap:0">' + filas(sem) + '</div></div>' : '') +
           (mas.length ? '<div class="nws-glass nws-block"><h2 class="nws-h2">Más adelante</h2><div class="nws-stack" style="gap:0">' + filas(mas) + '</div></div>' : '') +
-          '</div>' + fabMini() + '</div>';
+          '</div></div>' + fabMini() + '</div>';
       }
       function ovSemana() {
         var m = D.semanaPasada;
         var tiles = m.map(function (n, i) { return '<div><div class="nws-carta" data-c="' + carta(n).color + '">' + arte(n, 34) + '</div><span class="nws-mono-over" style="font-size:9px">' + D.dias[i] + '</span></div>'; }).join('');
         var pts = m.map(function (n, i) { return [(23 + i * 46.7).toFixed(1), (14 + (5 - n) * 20.5).toFixed(1)]; });
         var dots = pts.map(function (p) { return '<circle cx="' + p[0] + '" cy="' + p[1] + '" r="5" style="fill:var(--naotech-color-white-alpha-100);stroke:var(--naotech-color-indigo-600);stroke-width:3"/>'; }).join('');
-        return '<div class="nws-ov">' + atras('Tu semana') + '<div class="nws-ov__body"><p class="nws-mono-over">28 sep al 4 oct · ejemplo</p>' +
+        return '<div class="nws-ov">' + atras('Tu semana') + '<div class="nws-ov__body nws-ov__body--semana"><p class="nws-mono-over">28 sep al 4 oct · ejemplo</p>' +
           '<div class="nws-glass nws-block"><div class="nws-semana">' + tiles + '</div><div style="position:relative"><span class="nws-txt" style="position:absolute;left:0;top:-6px;font-size:var(--naotech-caption-font-size)">Más ligero</span><span class="nws-txt" style="position:absolute;left:0;bottom:-6px;font-size:var(--naotech-caption-font-size)">Más pesado</span>' +
           '<svg viewBox="0 0 326 110" width="100%" role="img" aria-label="Línea de cómo se sintió cada día de la semana"><path d="M0 14h326 M0 55h326 M0 96h326" style="stroke:var(--naotech-color-gray-200);stroke-width:1;fill:none"/>' +
           '<polyline points="' + pts.map(function (p) { return p.join(','); }).join(' ') + '" style="fill:none;stroke:var(--naotech-color-indigo-600);stroke-width:3;stroke-linejoin:round;stroke-linecap:round"/>' + dots + '</svg></div></div>' +
@@ -411,14 +492,30 @@ window.PANTALLAS['inicio'] = (function () {
 
       /* ---------- chat: NwtBottomSheet (half) dentro del teléfono ---------- */
       function sheetShell(full) {
-        return '<div class="nwt-bottom-sheet" nwt-theme="neutral"><div class="nwt-bottom-sheet__backdrop" data-a="sheet-close"></div>' +
-          '<div class="nwt-bottom-sheet__container nwt-bottom-sheet__container--' + (full ? 'full nws-sheet--full' : 'half') + '" role="dialog" aria-modal="true" aria-label="Conversación con SerafIA"><div class="nwt-bottom-sheet__content">' +
-          '<div class="nwt-bottom-sheet__handle"><span class="nwt-bottom-sheet__handle-bar"></span></div>' +
+        var dosPaneles = full && DISP === 'tablet-xl';
+        var cab = '<div class="nwt-bottom-sheet__handle"><span class="nwt-bottom-sheet__handle-bar"></span></div>' +
           '<div class="nwt-bottom-sheet__header"><div class="nws-chat-hd">' + (full ? '<div class="nws-logo"><span class="nws-orbe nws-orbe--sm"></span><span class="nws-logo__t">SerafIA</span></div>' : '<span class="nws-orbe nws-orbe--sm"></span><div class="nws-grow"><p class="nws-h3">SerafIA</p><p class="nws-txt" style="line-height:var(--naotech-sizing-16)">Siempre contigo</p></div>') + '<span class="nws-grow"></span>' +
           (full ? ayuda(true) : '') + S.iconButton({ icon: 'close', variant: 'mute', theme: 'neutral', size: 'medium', label: 'Cerrar el chat', attrs: { 'data-a': 'sheet-close' } }) + '</div></div>' +
           (full ? '<div class="nws-welcome" id="chat-welcome"><span class="nws-orbe nws-orbe--pastel"></span><h2 class="nws-welcome__t"><span>Hola,</span><span>soy SerafIA.</span><span class="nws-welcome__q">¿Cómo estás hoy?</span></h2><p class="nws-welcome__p">Soy una IA y estoy aquí para escucharte. Cuéntame con tus palabras.</p></div>' : '') +
           '<div class="nwt-bottom-sheet__body" id="chat-body" style="display:flex;flex-direction:column;gap:var(--naotech-sizing-12)"></div>' +
-          '<div class="nwt-bottom-sheet__footer" id="chat-foot" style="display:flex;flex-direction:column;gap:var(--naotech-sizing-12)"></div></div></div></div>';
+          '<div class="nwt-bottom-sheet__footer" id="chat-foot" style="display:flex;flex-direction:column;gap:var(--naotech-sizing-12)"></div>';
+        /* NUEVO · tablet grande: la conversación a un lado y, al otro, un panel con las opciones y la ayuda inmediata */
+        return '<div class="nwt-bottom-sheet" nwt-theme="neutral"><div class="nwt-bottom-sheet__backdrop" data-a="sheet-close"></div>' +
+          '<div class="nwt-bottom-sheet__container nwt-bottom-sheet__container--' + (full ? 'full nws-sheet--full' : 'half') + (dosPaneles ? ' nws-sheet--2p' : '') + '" role="dialog" aria-modal="true" aria-label="Conversación con SerafIA"><div class="nwt-bottom-sheet__content">' +
+          (dosPaneles ? '<div class="nws-chat-main">' + cab + '</div><aside class="nws-chat-side" id="chat-side" aria-label="Opciones y ayuda"></aside>' : cab) + '</div></div></div>';
+      }
+      /* panel lateral del chat (tablet grande): opciones sugeridas como tarjetas + ayuda inmediata + privacidad */
+      function chatSide() {
+        var side = mob.querySelector('#chat-side'); if (!side) { return; }
+        var ops = st.opts.length && !st.typing ? '<div class="nws-cs__sec"><h3 class="nws-h3">Puedo ayudarte con</h3><div class="nws-cs__ops">' + st.opts.map(function (o, i) {
+          return '<button type="button" class="nws-cs__op' + (o.primary ? ' nws-cs__op--p' : '') + (o.crisis ? ' nws-cs__op--c' : '') + '" data-a="opt:' + i + '"><span>' + o.label + '</span>' + S.icon('arrow-right') + '</button>';
+        }).join('') + '</div></div>' : '<div class="nws-cs__sec"><h3 class="nws-h3">Puedo ayudarte con</h3><p class="nws-txt">Escribe con tus palabras. Cuando haya opciones, las verás aquí.</p></div>';
+        var ayudaYa = '<div class="nws-cs__sec nws-cs__sec--ayuda"><h3 class="nws-h3">Si lo necesitas ahora</h3><p class="nws-txt">Hay personas listas para escucharte, a cualquier hora.</p>' +
+          btn('Llamar a una línea de ayuda', null, { icon: 'phone', theme: 'negative', variant: 'loud', size: 'medium', cls: 'nws-block-btn' }).replace('<button', '<button data-llamar="Línea 106 · Escucha y orientación"') +
+          btn('Emergencias · 123', null, { theme: 'negative', variant: 'quiet', size: 'medium', cls: 'nws-block-btn' }).replace('<button', '<button data-llamar="Emergencias · 123"') + '</div>';
+        var priv = '<p class="nws-txt nws-cs__priv">' + S.icon('privacy') + 'Esta conversación es privada. Una persona del equipo de Bienestar solo interviene si detecta riesgo.</p>';
+        var h = ops + ayudaYa + priv;
+        if (side._h !== h) { side._h = h; side.innerHTML = h; }
       }
       /* ---------- chat con guion de demo (CASO): la conversación grabada ---------- */
       var C = window.CASO;
@@ -522,11 +619,13 @@ window.PANTALLAS['inicio'] = (function () {
       function pintarChat() {
         var b = mob.querySelector('#chat-body'), f = mob.querySelector('#chat-foot');
         if (!b || !f) { return; }
+        if (st.full && DISP === 'tablet-xl') { chatSide(); }
         if (C.estado().modo) { pintarGuion(b, f); return; }
         pintarCuerpo(b, st.msgs.map(function (m) { if (m.html) { return m.html; } return '<p class="nws-msg' + (m.f === 'u' ? ' nws-msg--yo' : '') + '">' + S.esc(m.t) + '</p>'; }).join('') +
           (st.typing ? '<div class="nws-typing" aria-label="SerafIA está escribiendo"><i></i><i></i><i></i></div>' : ''));
         sincronizarBienvenida();
-        var pie = (st.opts.length && !st.typing ? '<div class="nws-opts">' + st.opts.map(function (o, i) {
+        var lado = st.full && DISP === 'tablet-xl'; if (lado) { chatSide(); }
+        var pie = (!lado && st.opts.length && !st.typing ? '<div class="nws-opts">' + st.opts.map(function (o, i) {
           return S.button({ label: o.label, theme: o.crisis ? 'negative' : 'neutral', variant: o.primary ? 'loud' : 'quiet', size: 'medium', attrs: { 'data-a': 'opt:' + i } });
         }).join('') + '</div>' : '') +
           '<div class="nws-composer"><input type="text" id="chat-in" aria-label="Escribe a SerafIA" placeholder="Pregúntale a SerafIA…" autocomplete="off">' +
@@ -723,7 +822,7 @@ window.PANTALLAS['inicio'] = (function () {
         var ph = root.querySelector('#phone'); ph.setAttribute('data-disp', k); ph.style.width = DISPS[k].w + 'px'; ph.style.height = DISPS[k].h + 'px';
         mob.className = mob.className.replace(/\bnws-demo--(movil|tablet|tablet-xl)\b/g, '').trim() + ' nws-demo--' + k;
         [].forEach.call(root.querySelectorAll('.nws-dispsw .nws-dsp'), function (x) { var on = x.getAttribute('data-seg') === k; x.classList.toggle('on', on); x.setAttribute('aria-checked', String(on)); });
-        zoom.mult = 1; aplicarZoom(); ctx.posicionarIndicadores(root); if (st.ov === 'horario') { pintarOv(); }
+        zoom.mult = 1; aplicarZoom(); st._reset = false; pintar(); if (st.sheet) { st.cuerpoHtml = null; pintarChat(); } ctx.posicionarIndicadores(root);
       }
       root.addEventListener('click', onDisp);
       function onZoom(ev) {
