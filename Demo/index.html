@@ -13170,6 +13170,37 @@ section.nws-ib__r { display: flex; flex-direction: column; min-width: 0; min-hei
 .nws-fltab--on { border-bottom-color: transparent; }
 .nws-fltab--on::after { content: ''; position: absolute; left: 0; right: 0; bottom: -2px; height: 2px; background: var(--nws-ink); border-radius: 2px; }
 
+/* =====================================================================
+   Tablet grande horizontal (1366 × 1024): composición de escritorio.
+   Navegación fija a la izquierda, contenido en columnas y chat al lado del menú.
+   ===================================================================== */
+.nws-demo--tablet-xl { --nws-gutter: 64px; --nws-gap: 24px; --nws-rail: 96px; }
+.nws-dsp__g--tablet-xl { width: 28px; height: 22px; }
+.nws-demo--tablet-xl .nws-mob__status { padding: 0 var(--naotech-sizing-40); }
+/* riel de navegación fijo */
+.nws-demo--tablet-xl #hd, .nws-demo--tablet-xl #tab { margin-left: var(--nws-rail); }
+.nws-demo--tablet-xl .nws-dock { inset: 0; padding: 0; background: none; pointer-events: none; }
+.nws-demo--tablet-xl .nws-dock > * { pointer-events: auto; }
+.nws-demo--tablet-xl .nws-dock--x .nws-navx, .nws-demo--tablet-xl .nws-dock--x.nws-dock--open .nws-navx { left: var(--naotech-sizing-16); right: auto; top: 72px; bottom: auto; width: 72px; height: auto; flex-direction: column; align-items: center; padding: var(--naotech-sizing-8) 0; border-radius: 28px; }
+.nws-demo--tablet-xl .nws-navx__btn { display: none; }
+.nws-demo--tablet-xl .nws-dock--x .nws-navx__items { flex-direction: column; justify-content: flex-start; align-items: stretch; width: 100%; padding: 0 var(--naotech-sizing-6); gap: var(--naotech-sizing-4); }
+.nws-demo--tablet-xl .nws-dock--x .nws-navx__it { opacity: 1; transform: none; pointer-events: auto; width: 100%; height: 60px; transition-delay: 0s !important; }
+/* barra del chat a la derecha del riel */
+.nws-demo--tablet-xl .nws-dock--x .nws-chatbar, .nws-demo--tablet-xl .nws-dock--x.nws-dock--open .nws-chatbar { left: calc(var(--nws-rail) + var(--nws-gutter)); width: calc(100% - var(--nws-rail) - 2 * var(--nws-gutter)); opacity: 1; transform: none; pointer-events: auto; padding: 0 var(--naotech-sizing-8) 0 var(--naotech-sizing-12); }
+.nws-demo--tablet-xl .nws-dock--x.nws-dock--open .nws-chatbar > :not(.nws-orbe) { opacity: 1; }
+/* contenido en columnas */
+.nws-demo--tablet-xl .nws-scroll { grid-template-columns: repeat(3, minmax(0, 1fr)); padding-bottom: 150px; }
+.nws-demo--tablet-xl #scroll > :nth-child(1) { grid-column: 1 / span 2; grid-row: 1; order: 0; }
+.nws-demo--tablet-xl #scroll > :nth-child(2) { grid-column: 3; grid-row: 1; order: 0; margin-top: 0; align-self: stretch; }
+.nws-demo--tablet-xl #scroll > :nth-child(3) { grid-column: 1 / -1; grid-row: 2; order: 0; }
+.nws-demo--tablet-xl #scroll > :nth-child(4), .nws-demo--tablet-xl #scroll > :last-child { grid-column: 1 / -1; grid-row: 3; order: 0; }
+.nws-demo--tablet-xl .nws-hero { min-height: 190px; }
+/* vistas completas, chat, avisos: a la derecha del riel */
+.nws-demo--tablet-xl .nws-ov:not(.nws-ov--dark) { left: var(--nws-rail); }
+.nws-demo--tablet-xl .nwt-bottom-sheet__container.nws-sheet--full { left: var(--nws-rail); }
+.nws-demo--tablet-xl .nws-mob__toast { left: calc(var(--nws-rail) + var(--nws-gutter)); }
+.nws-demo--tablet-xl #scroll { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+
 </style>
 <div id="app" style="height:100%"></div>
 <!-- pantallas: una línea por archivo, antes de app.js -->
@@ -14660,7 +14691,7 @@ window.PANTALLAS['inicio'] = (function () {
 
   var ANCHO = 428, ALTO = 926, BORDE = 12;
   /* tamaños de dispositivo de la demo: móvil (el de siempre), tablet y tablet grande (vertical) */
-  var DISPS = { movil: { w: 428, h: 926, n: 'Móvil' }, tablet: { w: 820, h: 1180, n: 'Tablet' }, 'tablet-xl': { w: 1024, h: 1366, n: 'Tablet grande' } };
+  var DISPS = { movil: { w: 428, h: 926, n: 'Móvil' }, tablet: { w: 820, h: 1180, n: 'Tablet' }, 'tablet-xl': { w: 1366, h: 1024, n: 'Tablet grande' } };
   var DISP = 'movil';
 
   /* ilustraciones de las cartas y tokens de color: arte.js (compartido con ../Estilos/estilos.html) */
