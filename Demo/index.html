@@ -13331,6 +13331,21 @@ section.nws-ib__r { display: flex; flex-direction: column; min-width: 0; min-hei
 .nws-demo--tablet-xl .nws-sheet--2p .nws-chat-main { padding-top: 44px; } .nws-demo--tablet-xl .nws-sheet--2p .nws-chat-side { padding-top: calc(44px + var(--naotech-sizing-24)); }
 .nws-demo--tablet-xl .nws-sheet--2p .nwt-bottom-sheet__content { background: linear-gradient(var(--naotech-color-indigo-050), var(--naotech-app-background) 55%); }
 
+/* Chat en pantallas grandes: saludo centrado, sugerencias en tarjetas y conversación en una columna centrada */
+.nws-sug { display: none; }
+.nws-demo--tablet .nws-sug:not(:empty), .nws-demo--tablet-xl .nws-sug:not(:empty) { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--naotech-sizing-16); width: 100%; max-width: 780px; margin-top: var(--naotech-sizing-32); text-align: left; }
+.nws-sug__c { all: unset; box-sizing: border-box; cursor: pointer; display: flex; flex-direction: column; align-items: flex-start; gap: var(--naotech-sizing-8); padding: var(--naotech-sizing-16); border-radius: var(--nws-r-card); background: var(--naotech-color-white-alpha-100); border: 1px solid var(--naotech-color-gray-200); box-shadow: var(--nws-shadow-card); transition: transform var(--naotech-duration-fast) var(--naotech-animation-standard), box-shadow var(--naotech-duration-fast) var(--naotech-animation-standard), border-color var(--naotech-duration-fast) var(--naotech-animation-standard); }
+.nws-sug__c:hover { transform: translateY(-2px); border-color: var(--naotech-color-indigo-200); box-shadow: var(--naotech-shadow-8); }
+.nws-sug__c:focus-visible { outline: 2px solid var(--naotech-color-indigo-600); outline-offset: 2px; }
+.nws-sug__c b { font-size: var(--naotech-body-font-size); line-height: var(--naotech-sizing-24); color: var(--nws-ink); }
+.nws-sug__c span { font-size: var(--naotech-smalltext-font-size); line-height: var(--naotech-sizing-20); color: var(--nws-ink-2); }
+.nws-demo--tablet .nws-sheet--full .nws-welcome, .nws-demo--tablet-xl .nws-sheet--full .nws-welcome { align-items: center; text-align: center; }
+.nws-demo--tablet .nws-sheet--full .nws-welcome__t, .nws-demo--tablet-xl .nws-sheet--full .nws-welcome__t { align-items: center; text-align: center; }
+.nws-demo--tablet .nws-sheet--full .nwt-bottom-sheet__body, .nws-demo--tablet .nws-sheet--full .nwt-bottom-sheet__footer,
+.nws-demo--tablet-xl .nws-sheet--full .nwt-bottom-sheet__body, .nws-demo--tablet-xl .nws-sheet--full .nwt-bottom-sheet__footer { padding-inline: max(var(--nws-gutter), calc((100% - 780px) / 2)); }
+.nws-demo--tablet .nws-sheet--full .nws-composer, .nws-demo--tablet-xl .nws-sheet--full .nws-composer { min-height: 64px; border-radius: 32px; padding-inline: var(--naotech-sizing-20) var(--naotech-sizing-12); }
+.nws-demo--tablet-xl .nwt-bottom-sheet__container.nws-sheet--full { padding-top: 44px; }
+
 </style>
 <div id="app" style="height:100%"></div>
 <!-- pantallas: una línea por archivo, antes de app.js -->
@@ -15291,11 +15306,11 @@ window.PANTALLAS['inicio'] = (function () {
 
       /* ---------- chat: NwtBottomSheet (half) dentro del teléfono ---------- */
       function sheetShell(full) {
-        var dosPaneles = full && DISP === 'tablet-xl';
+        var dosPaneles = false;
         var cab = '<div class="nwt-bottom-sheet__handle"><span class="nwt-bottom-sheet__handle-bar"></span></div>' +
           '<div class="nwt-bottom-sheet__header"><div class="nws-chat-hd">' + (full ? '<div class="nws-logo"><span class="nws-orbe nws-orbe--sm"></span><span class="nws-logo__t">SerafIA</span></div>' : '<span class="nws-orbe nws-orbe--sm"></span><div class="nws-grow"><p class="nws-h3">SerafIA</p><p class="nws-txt" style="line-height:var(--naotech-sizing-16)">Siempre contigo</p></div>') + '<span class="nws-grow"></span>' +
           (full ? ayuda(true) : '') + S.iconButton({ icon: 'close', variant: 'mute', theme: 'neutral', size: 'medium', label: 'Cerrar el chat', attrs: { 'data-a': 'sheet-close' } }) + '</div></div>' +
-          (full ? '<div class="nws-welcome" id="chat-welcome"><span class="nws-orbe nws-orbe--pastel"></span><h2 class="nws-welcome__t"><span>Hola,</span><span>soy SerafIA.</span><span class="nws-welcome__q">¿Cómo estás hoy?</span></h2><p class="nws-welcome__p">Soy una IA y estoy aquí para escucharte. Cuéntame con tus palabras.</p></div>' : '') +
+          (full ? '<div class="nws-welcome" id="chat-welcome"><span class="nws-orbe nws-orbe--pastel"></span><h2 class="nws-welcome__t"><span>Hola,</span><span>soy SerafIA.</span><span class="nws-welcome__q">¿Cómo estás hoy?</span></h2><p class="nws-welcome__p">Soy una IA y estoy aquí para escucharte. Cuéntame con tus palabras.</p><div class="nws-sug" id="chat-sug"></div></div>' : '') +
           '<div class="nwt-bottom-sheet__body" id="chat-body" style="display:flex;flex-direction:column;gap:var(--naotech-sizing-12)"></div>' +
           '<div class="nwt-bottom-sheet__footer" id="chat-foot" style="display:flex;flex-direction:column;gap:var(--naotech-sizing-12)"></div>';
         /* NUEVO · tablet grande: la conversación a un lado y, al otro, un panel con las opciones y la ayuda inmediata */
@@ -15303,18 +15318,15 @@ window.PANTALLAS['inicio'] = (function () {
           '<div class="nwt-bottom-sheet__container nwt-bottom-sheet__container--' + (full ? 'full nws-sheet--full' : 'half') + (dosPaneles ? ' nws-sheet--2p' : '') + '" role="dialog" aria-modal="true" aria-label="Conversación con SerafIA"><div class="nwt-bottom-sheet__content">' +
           (dosPaneles ? '<div class="nws-chat-main">' + cab + '</div><aside class="nws-chat-side" id="chat-side" aria-label="Opciones y ayuda"></aside>' : cab) + '</div></div></div>';
       }
-      /* panel lateral del chat (tablet grande): opciones sugeridas como tarjetas + ayuda inmediata + privacidad */
-      function chatSide() {
-        var side = mob.querySelector('#chat-side'); if (!side) { return; }
-        var ops = st.opts.length && !st.typing ? '<div class="nws-cs__sec"><h3 class="nws-h3">Puedo ayudarte con</h3><div class="nws-cs__ops">' + st.opts.map(function (o, i) {
-          return '<button type="button" class="nws-cs__op' + (o.primary ? ' nws-cs__op--p' : '') + (o.crisis ? ' nws-cs__op--c' : '') + '" data-a="opt:' + i + '"><span>' + o.label + '</span>' + S.icon('arrow-right') + '</button>';
-        }).join('') + '</div></div>' : '<div class="nws-cs__sec"><h3 class="nws-h3">Puedo ayudarte con</h3><p class="nws-txt">Escribe con tus palabras. Cuando haya opciones, las verás aquí.</p></div>';
-        var ayudaYa = '<div class="nws-cs__sec nws-cs__sec--ayuda"><h3 class="nws-h3">Si lo necesitas ahora</h3><p class="nws-txt">Hay personas listas para escucharte, a cualquier hora.</p>' +
-          btn('Llamar a una línea de ayuda', null, { icon: 'phone', theme: 'negative', variant: 'loud', size: 'medium', cls: 'nws-block-btn' }).replace('<button', '<button data-llamar="Línea 106 · Escucha y orientación"') +
-          btn('Emergencias · 123', null, { theme: 'negative', variant: 'quiet', size: 'medium', cls: 'nws-block-btn' }).replace('<button', '<button data-llamar="Emergencias · 123"') + '</div>';
-        var priv = '<p class="nws-txt nws-cs__priv">' + S.icon('privacy') + 'Esta conversación es privada. Una persona del equipo de Bienestar solo interviene si detecta riesgo.</p>';
-        var h = ops + ayudaYa + priv;
-        if (side._h !== h) { side._h = h; side.innerHTML = h; }
+      /* NUEVO · Sugerencias como tarjetas (pantallas grandes): icono, título y una línea de apoyo, centradas bajo el saludo */
+      var SUG = { 'Hablar con alguien': ['user', 'secondary', 'Cuéntame cómo te sientes, a tu ritmo'], 'Mi horario de hoy': ['calendar', 'informative', 'Tus clases y pausas de hoy'], 'Mi carnet': ['qr-code', 'positive', 'Ábrelo en un toque'] };
+      function sugerencias(on) {
+        var host = mob.querySelector('#chat-sug'); if (!host) { return; }
+        var h = !on || !st.opts.length || st.typing ? '' : st.opts.map(function (o, i) {
+          var s = SUG[o.label] || ['answer', 'primary', ''];
+          return '<button type="button" class="nws-sug__c" data-a="opt:' + i + '">' + S.avatarIcon({ icon: s[0], theme: s[1] }) + '<b>' + o.label + '</b>' + (s[2] ? '<span>' + s[2] + '</span>' : '') + '</button>';
+        }).join('');
+        if (host._h !== h) { host._h = h; host.innerHTML = h; }
       }
       /* ---------- chat con guion de demo (CASO): la conversación grabada ---------- */
       var C = window.CASO;
@@ -15418,13 +15430,12 @@ window.PANTALLAS['inicio'] = (function () {
       function pintarChat() {
         var b = mob.querySelector('#chat-body'), f = mob.querySelector('#chat-foot');
         if (!b || !f) { return; }
-        if (st.full && DISP === 'tablet-xl') { chatSide(); }
         if (C.estado().modo) { pintarGuion(b, f); return; }
         pintarCuerpo(b, st.msgs.map(function (m) { if (m.html) { return m.html; } return '<p class="nws-msg' + (m.f === 'u' ? ' nws-msg--yo' : '') + '">' + S.esc(m.t) + '</p>'; }).join('') +
           (st.typing ? '<div class="nws-typing" aria-label="SerafIA está escribiendo"><i></i><i></i><i></i></div>' : ''));
         sincronizarBienvenida();
-        var lado = st.full && DISP === 'tablet-xl'; if (lado) { chatSide(); }
-        var pie = (!lado && st.opts.length && !st.typing ? '<div class="nws-opts">' + st.opts.map(function (o, i) {
+        var sug = grande() && st.full && !empezo(); sugerencias(sug);
+        var pie = (!sug && st.opts.length && !st.typing ? '<div class="nws-opts">' + st.opts.map(function (o, i) {
           return S.button({ label: o.label, theme: o.crisis ? 'negative' : 'neutral', variant: o.primary ? 'loud' : 'quiet', size: 'medium', attrs: { 'data-a': 'opt:' + i } });
         }).join('') + '</div>' : '') +
           '<div class="nws-composer"><input type="text" id="chat-in" aria-label="Escribe a SerafIA" placeholder="Pregúntale a SerafIA…" autocomplete="off">' +
