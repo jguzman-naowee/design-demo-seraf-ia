@@ -13519,6 +13519,37 @@ section.nws-ib__r { display: flex; flex-direction: column; min-width: 0; min-hei
 .nws-demo--tablet-xl .nws-gv--campus { grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); grid-template-areas: "map ev" "map cont"; }
 .nws-demo--tablet-xl .nws-gv--campus { grid-template-rows: auto 1fr; }
 
+/* ---------- Carnet para tablet y desktop: credencial + código ---------- */
+.nws-cg { display: grid; gap: var(--nws-gap); align-items: start; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); }
+.nws-cg__l { display: flex; flex-direction: column; gap: var(--nws-gap); min-width: 0; }
+.nws-cred { position: relative; overflow: hidden; aspect-ratio: 1.586; display: flex; flex-direction: column; justify-content: space-between; padding: var(--naotech-sizing-32); border-radius: 28px; color: var(--naotech-color-white-alpha-100); background: linear-gradient(135deg, var(--naotech-color-indigo-700) 0%, var(--naotech-color-indigo-500) 55%, var(--naotech-color-blue-400) 100%); box-shadow: var(--naotech-shadow-16); }
+.nws-cred__orb { position: absolute; right: -50px; top: -50px; width: 200px; height: 200px; opacity: .9; box-shadow: none; }
+.nws-cred > :not(.nws-cred__orb) { position: relative; }
+.nws-cred > header { display: flex; flex-direction: column; gap: 2px; }
+.nws-cred__u { font-size: var(--naotech-subtitle-font-size); font-weight: var(--naotech-font-weight-semibold); }
+.nws-cred__t { font-size: var(--naotech-overline-font-size); letter-spacing: .1em; text-transform: uppercase; opacity: .85; }
+.nws-cred__id { display: flex; align-items: center; gap: var(--naotech-sizing-20); }
+.nws-cred__id .nwt-avatar, .nws-cred__id .nwt-avatar * { border-radius: 50%; }
+.nws-cred__id .nwt-avatar { --pvt-avatar-size: 84px; box-shadow: 0 0 0 4px rgb(255 255 255 / .6); }
+.nws-cred__id p { margin: 0; opacity: .92; } .nws-cred__id .nws-cred__n { font-size: var(--naotech-heading4-font-size); line-height: var(--naotech-heading4-line-height); font-weight: var(--naotech-font-weight-bold); opacity: 1; }
+.nws-cred > footer { display: flex; gap: var(--naotech-sizing-40); }
+.nws-cred > footer div { display: flex; flex-direction: column; gap: 2px; }
+.nws-cred > footer span { font-size: var(--naotech-caption-font-size); opacity: .8; letter-spacing: .06em; text-transform: uppercase; }
+.nws-cred > footer b { font-size: var(--naotech-subtitle-font-size); font-feature-settings: 'tnum'; }
+.nws-cg__usos ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+.nws-cg__usos li { display: flex; align-items: center; gap: var(--naotech-sizing-12); padding: var(--naotech-sizing-12) 0; border-top: 1px solid var(--naotech-color-gray-200); }
+.nws-cg__usos li:first-child { border-top: 0; }
+.nws-cg__usos li div { display: flex; flex-direction: column; min-width: 0; } .nws-cg__usos li b { font-size: var(--naotech-body-font-size); } .nws-cg__usos li span { font-size: var(--naotech-smalltext-font-size); color: var(--nws-ink-2); }
+.nws-cg__qr { align-items: center; text-align: center; gap: var(--naotech-sizing-16); padding: var(--naotech-sizing-24); }
+.nws-cg__qr .nws-txt { text-align: center; }
+.nws-demo--tablet .nws-cg { grid-template-columns: minmax(0, 1fr); }
+.nws-demo--tablet .nws-cred { max-width: 620px; width: 100%; margin: 0 auto; }
+.nws-demo--tablet .nws-cg__l { display: contents; }
+.nws-demo--tablet .nws-cred { order: 1; } .nws-demo--tablet .nws-cg__qr { order: 2; } .nws-demo--tablet .nws-cg__usos { order: 3; }
+.nws-demo--tablet .nws-cg { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.nws-demo--tablet .nws-cred { grid-column: 1 / -1; }
+.nws-demo--tablet .nws-cg__qr { grid-column: 1; align-self: stretch; } .nws-demo--tablet .nws-cg__usos { grid-column: 2; align-self: stretch; }
+
 </style>
 <div id="app" style="height:100%"></div>
 <!-- pantallas: una línea por archivo, antes de app.js -->
@@ -15366,7 +15397,23 @@ window.PANTALLAS['inicio'] = (function () {
       }
 
       /* ---------- vistas completas ---------- */
+      /* NUEVA VERSIÓN (tablet y desktop): credencial con forma de tarjeta física + panel de código y usos */
+      function ovCarnetG() {
+        var usos = [['file', 'Biblioteca', 'Préstamo de libros y salas'], ['bill', 'Cafetería', 'Pagos con saldo estudiantil'], ['leaf', 'Bienestar Universitario', 'Citas y actividades'], ['gps-pin', 'Ingreso al campus', 'Torniquetes y portería']];
+        var lista = usos.map(function (u) { return '<li>' + S.avatarIcon({ icon: u[0], theme: 'secondary' }) + '<div class="nws-grow"><b>' + u[1] + '</b><span>' + u[2] + '</span></div>' + S.badge({ label: 'Activo', theme: 'positive', variant: 'quiet', size: 'small' }) + '</li>'; }).join('');
+        return '<div class="nws-ov">' + atras('Carnet') + '<div class="nws-ov__body"><div class="nws-cg">' +
+          '<div class="nws-cg__l"><article class="nws-cred" aria-label="Carnet estudiantil de ' + E.nombre + '"><span class="nws-orbe nws-cred__orb"></span>' +
+            '<header><span class="nws-cred__u">' + E.universidad + '</span><span class="nws-cred__t">Carnet estudiantil</span></header>' +
+            '<div class="nws-cred__id">' + S.avatar({ text: E.iniciales, size: 'large', theme: 'secondary', variant: 'loud' }) + '<div><p class="nws-cred__n">' + E.nombre + '</p><p>' + E.programa + '</p></div></div>' +
+            '<footer><div><span>Código</span><b>' + E.codigo + '</b></div><div><span>Estado</span><b>' + 'Vigente · 2026-2' + '</b></div></footer></article>' +
+            '<div class="nws-cg__usos nws-glass nws-block"><h2 class="nws-h2">Con tu carnet puedes</h2><ul>' + lista + '</ul></div></div>' +
+          '<aside class="nws-glass nws-block nws-cg__qr" aria-label="Código para validar tu carnet"><h2 class="nws-h2">Muestra este código</h2><div class="nws-qr"><div style="width:220px;height:220px">' + QR + '</div></div>' +
+            '<div class="nws-sec" style="width:100%;justify-content:space-between"><span class="nws-txt">Se renueva en 0:24</span>' + S.badge({ label: 'Vigente', theme: 'positive', variant: 'quiet', size: 'small' }) + '</div>' + S.progress({ value: 80, theme: 'secondary' }) +
+            '<p class="nws-txt">Sube el brillo de tu pantalla. Funciona sin conexión con tu último estado válido.</p></aside>' +
+          '</div></div>' + fabMini() + '</div>';
+      }
       function ovCarnet() {
+        if (grande()) { return ovCarnetG(); }
         return '<div class="nws-ov">' + atras('Carnet') + '<div class="nws-ov__body">' +
           '<div class="nws-carnet"><div class="nws-carnet__top">' +
           '<div style="position:relative"><span class="nws-mono-over">Carnet estudiantil</span><p class="nws-h3" style="font-size:var(--naotech-body-font-size)">' + E.universidad + '</p></div>' +
