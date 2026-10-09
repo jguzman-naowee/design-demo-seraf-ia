@@ -279,6 +279,11 @@
            mount). Repintarla haría parpadear un marco que no cambió. */
         if (!pantalla.estable) { S.repintar(root, pantalla.render(ctx)); }
         limpiar = pantalla.mount(root, ctx);
+        /* esqueleto solo al cargar la vista (recarga o cambio Estudiante ↔ Bienestar), no en las vistas internas */
+        if (window.NWS_SK) {
+          var mob = root.querySelector('#mob'), sala = root.querySelector('#sala');
+          if (mob) { window.NWS_SK(mob, 'app', 44); } else if (sala && sala.parentNode) { window.NWS_SK(sala.parentNode, 'sala', sala.offsetTop); }
+        }
         ajustar(pantalla, root, ctx);
         posicionarIndicadores(document);
       });

@@ -15896,7 +15896,6 @@ window.PANTALLAS['inicio'] = (function () {
         var prevFa = capturarFa($('tab'));
         $('tab').innerHTML = v;
         animarFa($('tab'), prevFa);
-        if (st.tabAnim && window.NWS_SK) { window.NWS_SK($('tab'), st.tab === 'hoy' ? 'app' : 'lista'); }
         if (st.tabAnim) {
           var te = $('tab'), he = $('hd');
           [te, he].forEach(function (e) { e.classList.remove('nws-tab--out'); e.style.setProperty('--dx', (st.tabDir * 28) + 'px'); e.classList.remove('nws-tab--in'); });
@@ -15931,7 +15930,7 @@ window.PANTALLAS['inicio'] = (function () {
           }, ov ? 520 : 380);
         }, 380);
       }
-      function irOv(o) { st.ov = o; st.enter = true; pintarDock(); pintarOv(); if (window.NWS_SK && o !== 'cartas') { window.NWS_SK($('ov'), 'lista', 100); } }
+      function irOv(o) { st.ov = o; st.enter = true; pintarDock(); pintarOv(); }
       function cerrarOv() { clearT(); st.ov = null; st.dstage = 'shuffle'; st.dsel = null; $('ov').innerHTML = ''; pintar(); }
       function abrirMazo() {
         clearT(); st.dstage = 'shuffle'; st.dsel = null; irOv('cartas');
@@ -16622,8 +16621,6 @@ window.PANTALLAS['bienestar'] = (function () {
           $('gpanel').innerHTML = panelGuiones();
         }
         if (vista === 'resumen') { sala.scrollTop = top; }
-        var llaveSk = vista + '|' + (vista === 'caso' ? sel + '|' + modo : '');
-        if (window.NWS_SK && llaveSk !== skPrev) { skPrev = llaveSk; window.NWS_SK(sala.parentNode, vista === 'caso' ? 'caso' : 'sala', sala.offsetTop); }
         sala.classList.toggle('nws-sala__body--ib', vista === 'caso');
         [].slice.call(root.querySelectorAll('.nws-side__it[data-nav]')).forEach(function (bt) { var on = bt.getAttribute('data-nav') === (vista === 'caso' ? 'casos' : 'resumen'); bt.classList.toggle('nws-side__it--on', on); if (on) { bt.setAttribute('aria-current', 'page'); } else { bt.removeAttribute('aria-current'); } });
         ctx.posicionarIndicadores(root);
@@ -16995,6 +16992,11 @@ window.PANTALLAS['bienestar'] = (function () {
            mount). Repintarla haría parpadear un marco que no cambió. */
         if (!pantalla.estable) { S.repintar(root, pantalla.render(ctx)); }
         limpiar = pantalla.mount(root, ctx);
+        /* esqueleto solo al cargar la vista (recarga o cambio Estudiante ↔ Bienestar), no en las vistas internas */
+        if (window.NWS_SK) {
+          var mob = root.querySelector('#mob'), sala = root.querySelector('#sala');
+          if (mob) { window.NWS_SK(mob, 'app', 44); } else if (sala && sala.parentNode) { window.NWS_SK(sala.parentNode, 'sala', sala.offsetTop); }
+        }
         ajustar(pantalla, root, ctx);
         posicionarIndicadores(document);
       });

@@ -580,8 +580,6 @@ window.PANTALLAS['bienestar'] = (function () {
           $('gpanel').innerHTML = panelGuiones();
         }
         if (vista === 'resumen') { sala.scrollTop = top; }
-        var llaveSk = vista + '|' + (vista === 'caso' ? sel + '|' + modo : '');
-        if (window.NWS_SK && llaveSk !== skPrev) { skPrev = llaveSk; window.NWS_SK(sala.parentNode, vista === 'caso' ? 'caso' : 'sala', sala.offsetTop); }
         sala.classList.toggle('nws-sala__body--ib', vista === 'caso');
         [].slice.call(root.querySelectorAll('.nws-side__it[data-nav]')).forEach(function (bt) { var on = bt.getAttribute('data-nav') === (vista === 'caso' ? 'casos' : 'resumen'); bt.classList.toggle('nws-side__it--on', on); if (on) { bt.setAttribute('aria-current', 'page'); } else { bt.removeAttribute('aria-current'); } });
         ctx.posicionarIndicadores(root);

@@ -827,7 +827,6 @@ window.PANTALLAS['inicio'] = (function () {
         var prevFa = capturarFa($('tab'));
         $('tab').innerHTML = v;
         animarFa($('tab'), prevFa);
-        if (st.tabAnim && window.NWS_SK) { window.NWS_SK($('tab'), st.tab === 'hoy' ? 'app' : 'lista'); }
         if (st.tabAnim) {
           var te = $('tab'), he = $('hd');
           [te, he].forEach(function (e) { e.classList.remove('nws-tab--out'); e.style.setProperty('--dx', (st.tabDir * 28) + 'px'); e.classList.remove('nws-tab--in'); });
@@ -862,7 +861,7 @@ window.PANTALLAS['inicio'] = (function () {
           }, ov ? 520 : 380);
         }, 380);
       }
-      function irOv(o) { st.ov = o; st.enter = true; pintarDock(); pintarOv(); if (window.NWS_SK && o !== 'cartas') { window.NWS_SK($('ov'), 'lista', 100); } }
+      function irOv(o) { st.ov = o; st.enter = true; pintarDock(); pintarOv(); }
       function cerrarOv() { clearT(); st.ov = null; st.dstage = 'shuffle'; st.dsel = null; $('ov').innerHTML = ''; pintar(); }
       function abrirMazo() {
         clearT(); st.dstage = 'shuffle'; st.dsel = null; irOv('cartas');
