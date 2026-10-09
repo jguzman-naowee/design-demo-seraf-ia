@@ -13014,6 +13014,10 @@ section.nws-ib__r { display: flex; flex-direction: column; min-width: 0; min-hei
 .nws-pd__b .nws-pd__f { border-top: 0; padding-top: 0; }
 .nws-pd__b .nws-adj__o { background: var(--naotech-color-white-alpha-100); }
 
+/* tarjeta de cuidado y cierre: aparecen solo con fundido, sin deslizarse desde abajo */
+.nws-cierre { animation: nws-fade .35s ease-out both !important; transform: none; }
+#chat-body > .nws-cierre.nws-old { animation: none !important; }
+
 </style>
 <div id="app" style="height:100%"></div>
 <!-- pantallas: una línea por archivo, antes de app.js -->
