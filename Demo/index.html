@@ -13447,6 +13447,14 @@ section.nws-ib__r { display: flex; flex-direction: column; min-width: 0; min-hei
 .nws-evc__f > span { min-width: 0; }
 .nws-evc__ft b { white-space: normal; overflow: visible; }
 
+/* barra del calendario: título → flechas agrupadas → «Hoy» → selector de vista, todo en una línea centrada */
+.nws-cal__nav { display: flex; align-items: center; gap: var(--naotech-sizing-12); min-height: 44px; }
+.nws-cal__mes { margin: 0; min-width: 0; text-align: left; line-height: 44px; font-size: var(--naotech-heading5-font-size); }
+.nws-cal__arr { display: inline-flex; align-items: center; gap: var(--naotech-sizing-4); padding: 3px; border-radius: var(--naotech-radius-pill); background: var(--naotech-color-gray-100); }
+.nws-cal__arr .nwt-icon-button { --pvt-button-background: transparent; }
+.nws-cal__nav .nwt-button { align-self: center; }
+.nws-vsw { align-self: center; }
+
 </style>
 <div id="app" style="height:100%"></div>
 <!-- pantallas: una línea por archivo, antes de app.js -->
@@ -15335,10 +15343,10 @@ window.PANTALLAS['inicio'] = (function () {
         var agenda = '<h2 class="nws-h2">' + NOMD[fs.getDay()].charAt(0).toUpperCase() + NOMD[fs.getDay()].slice(1) + ' ' + fs.getDate() + ' de ' + NOMM[fs.getMonth()] + '</h2>' +
           (sit.length ? '<div class="nws-stack nws-cal__sl">' + sit.map(slot).join('') + '</div>' : '<div class="nws-glass nws-block"><p class="nws-txt">Sin clases ni eventos este día.</p></div>');
         var leyenda = '<div class="nws-cal__ley"><span><i class="nws-cal__pt nws-cal__pt--cl"></i>Clase</span><span><i class="nws-cal__pt nws-cal__pt--ev"></i>Evento Seraf</span><span><i class="nws-cal__pt nws-cal__pt--ex"></i>Examen</span></div>';
-        var nav = '<div class="nws-cal__nav">' + S.iconButton({ icon: 'arrow-left', variant: 'mute', theme: 'neutral', size: 'medium', label: 'Mes anterior', disabled: off <= -1, attrs: { 'data-a': 'hmes:-1' } }) +
-          '<h2 class="nws-h2 nws-cal__mes">' + NOMM[m].charAt(0).toUpperCase() + NOMM[m].slice(1) + ' ' + y + '</h2>' +
-          S.iconButton({ icon: 'arrow-right', variant: 'mute', theme: 'neutral', size: 'medium', label: 'Mes siguiente', disabled: off >= 2, attrs: { 'data-a': 'hmes:1' } }) +
-          (off !== 0 ? btn('Hoy', 'hmes:0', { variant: 'quiet', size: 'small' }) : '') + '<span class="nws-grow"></span>' + ctlVista + '</div>';
+        var nav = '<div class="nws-cal__nav"><h2 class="nws-h2 nws-cal__mes">' + NOMM[m].charAt(0).toUpperCase() + NOMM[m].slice(1) + ' ' + y + '</h2>' +
+          '<div class="nws-cal__arr" role="group" aria-label="Cambiar de mes">' + S.iconButton({ icon: 'arrow-left', variant: 'mute', theme: 'neutral', size: 'medium', label: 'Mes anterior', disabled: off <= -1, attrs: { 'data-a': 'hmes:-1' } }) +
+          S.iconButton({ icon: 'arrow-right', variant: 'mute', theme: 'neutral', size: 'medium', label: 'Mes siguiente', disabled: off >= 2, attrs: { 'data-a': 'hmes:1' } }) + '</div>' +
+          (off !== 0 ? btn('Hoy', 'hmes:0', { variant: 'quiet', theme: 'secondary', size: 'medium' }) : '') + '<span class="nws-grow"></span>' + ctlVista + '</div>';
         return '<div class="nws-ov">' + atras('Mi horario') + '<div class="nws-ov__body">' + nav +
           '<div class="nws-cal__v"><div class="nws-glass nws-cal"><div class="nws-cal__cab">' + cab + '</div><div class="nws-cal__rej">' + celdas + '</div>' + leyenda + '</div><section class="nws-cal__ag" aria-live="polite">' + agenda + '</section></div></div>' + fabMini() + '</div>';
       }

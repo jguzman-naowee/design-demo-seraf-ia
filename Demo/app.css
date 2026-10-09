@@ -2593,3 +2593,11 @@ section.nws-ib__r { display: flex; flex-direction: column; min-width: 0; min-hei
 .nws-evc__f { display: flex; flex-direction: row; align-items: center; gap: var(--naotech-sizing-8); font-size: var(--naotech-smalltext-font-size); line-height: var(--naotech-sizing-20); color: var(--nws-ink-2); }
 .nws-evc__f > span { min-width: 0; }
 .nws-evc__ft b { white-space: normal; overflow: visible; }
+
+/* barra del calendario: título → flechas agrupadas → «Hoy» → selector de vista, todo en una línea centrada */
+.nws-cal__nav { display: flex; align-items: center; gap: var(--naotech-sizing-12); min-height: 44px; }
+.nws-cal__mes { margin: 0; min-width: 0; text-align: left; line-height: 44px; font-size: var(--naotech-heading5-font-size); }
+.nws-cal__arr { display: inline-flex; align-items: center; gap: var(--naotech-sizing-4); padding: 3px; border-radius: var(--naotech-radius-pill); background: var(--naotech-color-gray-100); }
+.nws-cal__arr .nwt-icon-button { --pvt-button-background: transparent; }
+.nws-cal__nav .nwt-button { align-self: center; }
+.nws-vsw { align-self: center; }
