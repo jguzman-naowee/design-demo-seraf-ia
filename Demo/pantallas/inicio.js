@@ -420,12 +420,12 @@ window.PANTALLAS['inicio'] = (function () {
         var agenda = '<h2 class="nws-h2">' + NOMD[fs.getDay()].charAt(0).toUpperCase() + NOMD[fs.getDay()].slice(1) + ' ' + fs.getDate() + ' de ' + NOMM[fs.getMonth()] + '</h2>' +
           (sit.length ? '<div class="nws-stack nws-cal__sl">' + sit.map(slot).join('') + '</div>' : '<div class="nws-glass nws-block"><p class="nws-txt">Sin clases ni eventos este día.</p></div>');
         var leyenda = '<div class="nws-cal__ley"><span><i class="nws-cal__pt nws-cal__pt--cl"></i>Clase</span><span><i class="nws-cal__pt nws-cal__pt--ev"></i>Evento Seraf</span><span><i class="nws-cal__pt nws-cal__pt--ex"></i>Examen</span></div>';
-        var nav = '<div class="nws-cal__nav"><h2 class="nws-h2 nws-cal__mes">' + NOMM[m].charAt(0).toUpperCase() + NOMM[m].slice(1) + ' ' + y + '</h2>' +
+        var nav = '<div class="nws-cal__nav">' + ctlVista + '<h2 class="nws-h2 nws-cal__mes">' + NOMM[m].charAt(0).toUpperCase() + NOMM[m].slice(1) + ' ' + y + '</h2>' +
           '<div class="nws-cal__arr" role="group" aria-label="Cambiar de mes">' + S.iconButton({ icon: 'arrow-left', variant: 'mute', theme: 'neutral', size: 'medium', label: 'Mes anterior', disabled: off <= -1, attrs: { 'data-a': 'hmes:-1' } }) +
           S.iconButton({ icon: 'arrow-right', variant: 'mute', theme: 'neutral', size: 'medium', label: 'Mes siguiente', disabled: off >= 2, attrs: { 'data-a': 'hmes:1' } }) + '</div>' +
-          (off !== 0 ? btn('Hoy', 'hmes:0', { variant: 'quiet', theme: 'secondary', size: 'medium' }) : '') + '<span class="nws-grow"></span>' + ctlVista + '</div>';
+          (off !== 0 ? btn('Hoy', 'hmes:0', { variant: 'quiet', theme: 'secondary', size: 'medium' }) : '') + '</div>';
         return '<div class="nws-ov">' + atras('Mi horario') + '<div class="nws-ov__body">' + nav +
-          '<div class="nws-cal__v"><div class="nws-glass nws-cal"><div class="nws-cal__cab">' + cab + '</div><div class="nws-cal__rej">' + celdas + '</div>' + leyenda + '</div><section class="nws-cal__ag" aria-live="polite">' + agenda + '</section></div></div>' + fabMini() + '</div>';
+          '<div class="nws-cal__v"><div class="nws-glass nws-cal"><div class="nws-cal__cab">' + cab + '</div><div class="nws-cal__rej">' + celdas + '</div>' + leyenda + '</div><section class="nws-cal__ag" aria-live="polite">' + agenda + '</section></div>' + '<div class="nws-aviso">' + S.avatarIcon({ icon: 'notification', theme: 'secondary' }) + '<div><b>Recordatorios activados</b><p class="nws-txt">Te avisamos 30 min antes de cada clase. Puedes cambiarlo en <b style="color:var(--nws-ink)">Yo</b>.</p></div></div>' + '</div>' + fabMini() + '</div>';
       }
       function ovHorario() {
         var grande = DISP !== 'movil', sem = grande ? D.horario.concat(D.horarioExtra || []) : D.horario;
@@ -456,13 +456,13 @@ window.PANTALLAS['inicio'] = (function () {
             return '<section class="nws-wk__d' + (hoy ? ' nws-wk__d--hoy' : '') + '" aria-label="' + d.dow + ' ' + d.num + '"><header><span>' + d.dow + '</span><b>' + d.num + '</b>' + (hoy ? '<i>Hoy</i>' : '') + '</header>' +
               (d.items.length ? d.items.map(slot).join('') : '<p class="nws-txt nws-wk__vacio">Sin clases ni eventos</p>') + '</section>';
           }).join('');
-          return '<div class="nws-ov">' + atras('Mi horario') + '<div class="nws-ov__body"><div class="nws-hv"><p class="nws-mono-over">Periodo 2026-2 · Semana del 5 al 11 de octubre</p>' + ctlV + '</div><div class="nws-wk">' + cols + '</div>' +
-            '<div class="nws-glass nws-block"><p class="nws-txt">Recordatorios de clase 30 min antes. Puedes cambiarlo en <b style="color:var(--nws-ink)">Yo</b>.</p></div></div>' + fabMini() + '</div>';
+          return '<div class="nws-ov">' + atras('Mi horario') + '<div class="nws-ov__body"><div class="nws-hv">' + ctlV + '<p class="nws-mono-over">Periodo 2026-2 · Semana del 5 al 11 de octubre</p></div><div class="nws-wk">' + cols + '</div>' +
+            '<div class="nws-aviso">' + S.avatarIcon({ icon: 'notification', theme: 'secondary' }) + '<div><b>Recordatorios activados</b><p class="nws-txt">Te avisamos 30 min antes de cada clase. Puedes cambiarlo en <b style="color:var(--nws-ink)">Yo</b>.</p></div></div></div>' + fabMini() + '</div>';
         }
         return '<div class="nws-ov">' + atras('Mi horario') + '<div class="nws-ov__body">' +
-          (grande ? '<div class="nws-hv"><p class="nws-mono-over">Periodo 2026-2 · Semana del 5 al 11 de octubre</p>' + ctlV + '</div>' : '<p class="nws-mono-over">Periodo 2026-2 · Semana del 5 al 9 de octubre</p>') + '<div class="nws-dias' + (grande ? ' nws-dias--7' : '') + '">' + dias + '</div>' +
+          (grande ? '<div class="nws-hv">' + ctlV + '<p class="nws-mono-over">Periodo 2026-2 · Semana del 5 al 11 de octubre</p></div>' : '<p class="nws-mono-over">Periodo 2026-2 · Semana del 5 al 9 de octubre</p>') + '<div class="nws-dias' + (grande ? ' nws-dias--7' : '') + '">' + dias + '</div>' +
           '<div class="nws-stack nws-slots">' + slots + '</div>' +
-          '<div class="nws-glass nws-block"><p class="nws-txt">Recordatorios de clase 30 min antes. Puedes cambiarlo en <b style="color:var(--nws-ink)">Yo</b>.</p></div></div>' + fabMini() + '</div>';
+          '<div class="nws-aviso">' + S.avatarIcon({ icon: 'notification', theme: 'secondary' }) + '<div><b>Recordatorios activados</b><p class="nws-txt">Te avisamos 30 min antes de cada clase. Puedes cambiarlo en <b style="color:var(--nws-ink)">Yo</b>.</p></div></div></div>' + fabMini() + '</div>';
       }
       function filas(arr) {
         return arr.map(function (e) {

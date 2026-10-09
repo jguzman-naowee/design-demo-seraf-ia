@@ -2605,3 +2605,14 @@ section.nws-ib__r { display: flex; flex-direction: column; min-width: 0; min-hei
 /* el banner de la tarjeta usa los fondos degradados del móvil */
 .nws-evc__img.nws-ev { min-height: 0; padding: 0; border: 0; box-shadow: none; display: block; background-image: none; }
 .nws-evc__img.nws-ev[data-c='indigo'] { background: var(--nws-ev-indigo); } .nws-evc__img.nws-ev[data-c='blue'] { background: var(--nws-ev-blue); } .nws-evc__img.nws-ev[data-c='green'] { background: var(--nws-ev-green); }
+
+/* DC-078: el selector Semana/Mes va a la izquierda, alineado con el resto del contenido */
+.nws-hv { justify-content: flex-start; gap: var(--naotech-sizing-16); }
+.nws-cal__nav { gap: var(--naotech-sizing-16); }
+/* DC-079: aviso al pie, sin tapar la barra del chat, con icono */
+.nws-ov__body:has(.nws-aviso) > .nws-aviso { margin-top: auto; }
+.nws-aviso { display: flex; align-items: center; gap: var(--naotech-sizing-12); padding: var(--naotech-sizing-12) var(--naotech-sizing-16); border-radius: var(--nws-r-card); background: var(--naotech-color-indigo-050); border: 1px solid var(--naotech-color-indigo-200); flex: none; }
+.nws-aviso > div { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.nws-aviso b { font-size: var(--naotech-body-font-size); } .nws-aviso p { margin: 0; }
+
+.nws-hv { flex-direction: row; max-width: none; align-items: center; justify-content: flex-start; flex-wrap: wrap; }
