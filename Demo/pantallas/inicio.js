@@ -348,7 +348,7 @@ window.PANTALLAS['inicio'] = (function () {
           }).join('');
           return '<div class="nws-ov nws-ov--dark" style="padding-top:44px"><div class="nws-ov__hd">' + S.iconButton({ icon: 'close', variant: 'mute', theme: 'neutral', size: 'large', label: 'Cerrar', attrs: { 'data-a': 'deck-close' } }) + ayuda() + '</div>' +
             '<div style="flex:1;position:relative">' + backs + '</div>' +
-            '<div style="flex:none;text-align:center;padding:0 32px 120px;animation:nws-rise .8s var(--naotech-animation-deceleration) both"><p class="nws-h1" style="color:inherit">Barajando tu mazo…</p><p style="margin:var(--naotech-sizing-8) 0 0;font-size:var(--naotech-body-font-size);color:var(--naotech-color-indigo-200)">Respira un momento. Hay una carta para ti.</p></div></div>';
+            '<div style="flex:none;text-align:center;padding:0 max(32px, var(--nws-gutter)) 120px;animation:nws-rise .8s var(--naotech-animation-deceleration) both"><p class="nws-h1" style="color:inherit">Barajando tu mazo…</p><p style="margin:var(--naotech-sizing-8) 0 0;font-size:var(--naotech-body-font-size);color:var(--naotech-color-indigo-200)">Respira un momento. Hay una carta para ti.</p></div></div>';
         }
         var sel = st.dsel ? carta(st.dsel) : null;
         var ops = D.ordenMazo.map(function (n, k) {

@@ -2298,3 +2298,6 @@ section.nws-ib__r { display: flex; flex-direction: column; min-width: 0; min-hei
 .nws-demo--tablet .nws-sheet--full .nwt-bottom-sheet__header, .nws-demo--tablet .nws-sheet--full .nwt-bottom-sheet__body, .nws-demo--tablet .nws-sheet--full .nwt-bottom-sheet__footer,
 .nws-demo--tablet-xl .nws-sheet--full .nwt-bottom-sheet__header, .nws-demo--tablet-xl .nws-sheet--full .nwt-bottom-sheet__body, .nws-demo--tablet-xl .nws-sheet--full .nwt-bottom-sheet__footer { padding-inline: var(--nws-gutter); }
 .nws-demo--tablet .nws-sheet--full .nws-welcome, .nws-demo--tablet-xl .nws-sheet--full .nws-welcome { padding-inline: var(--nws-gutter); }
+/* avisos (toast) en tablet: dentro de los márgenes y con un ancho razonable */
+.nws-demo--tablet .nws-mob__toast, .nws-demo--tablet-xl .nws-mob__toast { left: var(--nws-gutter); right: var(--nws-gutter); }
+.nws-demo--tablet .nws-mob__toast .nwt-toast__content, .nws-demo--tablet-xl .nws-mob__toast .nwt-toast__content { width: min(100%, 520px); }
