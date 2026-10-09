@@ -13470,6 +13470,31 @@ section.nws-ib__r { display: flex; flex-direction: column; min-width: 0; min-hei
 
 .nws-hv { flex-direction: row; max-width: none; align-items: center; justify-content: flex-start; flex-wrap: wrap; }
 
+/* DC-080: título y subtítulo del carrusel alineados en la misma línea */
+.nws-evcar__h { align-items: center !important; }
+.nws-evcar__h .nws-h2, .nws-evcar__h .nws-txt { line-height: 32px; margin: 0; }
+.nws-evcar__h .nws-txt { font-size: var(--naotech-smalltext-font-size); }
+/* DC-081: cuatro herramientas de bienestar, en dos columnas (móvil) */
+.nws-herr { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.nws-demo--tablet-xl .nws-herr, .nws-demo--tablet .nws-herr { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+/* DC-082: menú lateral más largo y con el hover separado de los bordes */
+.nws-demo--tablet-xl .nws-dock--x .nws-navx, .nws-demo--tablet-xl .nws-dock--x.nws-dock--open .nws-navx { width: 96px; padding: var(--naotech-sizing-28) 0; left: calc((var(--nws-rail) + var(--nws-gutter) - 96px) / 2); }
+.nws-demo--tablet-xl .nws-dock--x .nws-navx__items { padding: 0 var(--naotech-sizing-16); gap: var(--naotech-sizing-28); }
+.nws-demo--tablet-xl .nws-dock--x .nws-navx__it { height: 76px; }
+/* DC-083: Servicios en lista */
+.nws-demo--tablet .nws-gv--serv { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-areas: "docs tiles" "docs sol"; }
+.nws-demo--tablet-xl .nws-gv--serv { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-areas: "docs tiles" "docs sol"; }
+.nws-line--btn { all: unset; box-sizing: border-box; width: 100%; cursor: pointer; display: flex; align-items: center; gap: var(--naotech-sizing-12); min-height: var(--naotech-sizing-56); padding: var(--naotech-sizing-8) 0; border-top: 1px solid var(--naotech-color-gray-200); }
+.nws-line--btn:first-child { border-top: 0; } .nws-line--btn:hover .nwt-icon { color: var(--naotech-color-indigo-700); }
+.nws-line--btn:focus-visible { outline: 2px solid var(--naotech-color-indigo-600); outline-offset: 2px; }
+/* DC-084: el chat en tablet grande cubre toda la pantalla, también el menú */
+.nws-demo--tablet-xl .nwt-bottom-sheet__container.nws-sheet--full { left: 0; }
+.nws-demo--tablet-xl .nws-mob__toast { left: var(--nws-gutter); }
+/* DC-085: sin tarjetas de sugerencia; las sugerencias van como tags sobre el campo de texto */
+.nws-sug { display: none !important; }
+.nws-gv { width: 100%; max-width: none; }
+.nws-line--btn .nwt-avatar-icon { --pvt-avatar-icon-size: 40px; width: 40px; height: 40px; flex: none; }
+
 </style>
 <div id="app" style="height:100%"></div>
 <!-- pantallas: una línea por archivo, antes de app.js -->
@@ -14293,7 +14318,8 @@ window.DATOS = {
     "herramientas": [
       { "nombre": "Respirar conmigo", "tiempo": "1 min", "icono": "leaf" },
       { "nombre": "Grounding 5-4-3-2-1", "tiempo": "3 min", "icono": "sun" },
-      { "nombre": "Audio para dormir", "tiempo": "10 min", "icono": "moon" }
+      { "nombre": "Modo foco · Pomodoro", "tiempo": "25 + 5 min", "icono": "dispatch-time" },
+      { "nombre": "Cronómetro de estudio", "tiempo": "A tu ritmo", "icono": "refresh" }
     ],
     "notificaciones": [
       { "id": "n1", "nombre": "Clases", "nota": "Aviso 30 min antes" },
@@ -15214,10 +15240,14 @@ window.PANTALLAS['inicio'] = (function () {
             S.badge({ label: t.estado, theme: t.tema, variant: 'quiet', size: 'small' }) + '</div>';
         }).join('');
         if (grande()) {
+          var accL = '<div class="nws-glass nws-block"><h2 class="nws-h2">Accesos</h2><div class="nws-stack" style="gap:0">' +
+            [['bill', 'informative', 'Notas del periodo', 'Abrir calculadora', 'Notas'], ['file', 'positive', 'Mis solicitudes', '1 en revisión', 'Mis solicitudes']].map(function (x) {
+              return '<button type="button" class="nws-line nws-line--btn" data-toast="' + x[4] + '">' + S.avatarIcon({ icon: x[0], theme: x[1] }) + '<div class="nws-grow"><p class="nws-h3" style="font-size:var(--naotech-body-font-size)">' + x[2] + '</p><p class="nws-txt">' + x[3] + '</p></div>' + S.icon('chevron-right') + '</button>';
+            }).join('') + '</div></div>';
           return vistaG('nws-gv--serv', [
-            ['docs', '<div class="nws-sec" style="margin-bottom:var(--naotech-sizing-12)"><h2 class="nws-h2">Certificados y documentos</h2></div><div class="nws-docgrid">' + D.documentos.map(docCard).join('') + '</div>'],
-            ['sol', '<div class="nws-glass nws-block"><h2 class="nws-h2">Mis solicitudes</h2><div class="nws-stack" style="gap:0">' + tr + '</div></div>'],
-            ['tiles', '<div class="nws-tiles">' + tile('bill', 'informative', 'Notas del periodo', 'Abrir calculadora', 'data-toast="Notas"') + tile('file', 'positive', 'Mis solicitudes', '1 en revisión', 'data-toast="Mis solicitudes"') + '</div>']]);
+            ['docs', '<div class="nws-glass nws-block"><h2 class="nws-h2">Certificados y documentos</h2><div class="nws-stack" style="gap:0">' + docs + '</div></div>'],
+            ['tiles', accL],
+            ['sol', '<div class="nws-glass nws-block"><h2 class="nws-h2">Mis solicitudes</h2><div class="nws-stack" style="gap:0">' + tr + '</div></div>']]);
         }
         return '<div class="nws-scroll">' +
           '<div class="nws-glass nws-block"><h2 class="nws-h2">Certificados y documentos</h2><div class="nws-stack" style="gap:0">' + docs + '</div></div>' +
@@ -15637,7 +15667,7 @@ window.PANTALLAS['inicio'] = (function () {
         pintarCuerpo(b, st.msgs.map(function (m) { if (m.html) { return m.html; } return '<p class="nws-msg' + (m.f === 'u' ? ' nws-msg--yo' : '') + '">' + S.esc(m.t) + '</p>'; }).join('') +
           (st.typing ? '<div class="nws-typing" aria-label="SerafIA está escribiendo"><i></i><i></i><i></i></div>' : ''));
         sincronizarBienvenida();
-        var sug = grande() && st.full && !empezo(); sugerencias(sug);
+        var sug = false;
         var pie = (!sug && st.opts.length && !st.typing ? '<div class="nws-opts">' + st.opts.map(function (o, i) {
           return S.button({ label: o.label, theme: o.crisis ? 'negative' : 'neutral', variant: o.primary ? 'loud' : 'quiet', size: 'medium', attrs: { 'data-a': 'opt:' + i } });
         }).join('') + '</div>' : '') +
@@ -15682,6 +15712,9 @@ window.PANTALLAS['inicio'] = (function () {
               { label: 'Ahora no', run: ahoraNo }
             ], 1100);
           } },
+          { label: 'Respirar conmigo', grande: true, run: function () { yo('Respirar conmigo'); say('Vamos con calma: inhala 4 segundos, sostén 4 y suelta 6. Repite tres veces. Aquí estoy.', [{ label: 'Gracias', primary: true, run: function () { yo('Gracias'); say('Cuando quieras repetirlo, solo dímelo.', [], 800); } }], 1000); } },
+          { label: 'Modo foco · Pomodoro', grande: true, run: function () { yo('Modo foco · Pomodoro'); say('El método Pomodoro es estudiar 25 minutos y descansar 5, con una pausa de cuidado entre bloques. ¿Lo iniciamos?', [{ label: 'Iniciar 25 min', primary: true, run: function () { yo('Iniciar 25 min'); say('Listo, empezamos. Te aviso cuando toque la pausa.', [], 900); } }, { label: 'Ahora no', run: ahoraNo }], 1100); } },
+          { label: 'Cronómetro de estudio', grande: true, run: function () { yo('Cronómetro de estudio'); say('Cronómetro en marcha. Te recordaré hacer una pausa de respiración cada 45 minutos.', [], 900); } },
           /* el carnet es el único que abre sin preguntar */
           { label: 'Mi carnet', run: function () {
             yo('Mi carnet'); say('Claro, te llevo a tu carnet.', [], 900);
@@ -15689,6 +15722,7 @@ window.PANTALLAS['inicio'] = (function () {
             later(function () { irDesdeChat('hoy', 'carnet'); }, 900 + 2800);
           } }
         ];
+        if (!grande()) { ops = ops.filter(function (o) { return !o.grande; }); }
         abrirSheet(function () { st.opts = ops; pintarChat(); }, true);
       }
       function charlaApoyo() {

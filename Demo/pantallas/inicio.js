@@ -276,10 +276,14 @@ window.PANTALLAS['inicio'] = (function () {
             S.badge({ label: t.estado, theme: t.tema, variant: 'quiet', size: 'small' }) + '</div>';
         }).join('');
         if (grande()) {
+          var accL = '<div class="nws-glass nws-block"><h2 class="nws-h2">Accesos</h2><div class="nws-stack" style="gap:0">' +
+            [['bill', 'informative', 'Notas del periodo', 'Abrir calculadora', 'Notas'], ['file', 'positive', 'Mis solicitudes', '1 en revisión', 'Mis solicitudes']].map(function (x) {
+              return '<button type="button" class="nws-line nws-line--btn" data-toast="' + x[4] + '">' + S.avatarIcon({ icon: x[0], theme: x[1] }) + '<div class="nws-grow"><p class="nws-h3" style="font-size:var(--naotech-body-font-size)">' + x[2] + '</p><p class="nws-txt">' + x[3] + '</p></div>' + S.icon('chevron-right') + '</button>';
+            }).join('') + '</div></div>';
           return vistaG('nws-gv--serv', [
-            ['docs', '<div class="nws-sec" style="margin-bottom:var(--naotech-sizing-12)"><h2 class="nws-h2">Certificados y documentos</h2></div><div class="nws-docgrid">' + D.documentos.map(docCard).join('') + '</div>'],
-            ['sol', '<div class="nws-glass nws-block"><h2 class="nws-h2">Mis solicitudes</h2><div class="nws-stack" style="gap:0">' + tr + '</div></div>'],
-            ['tiles', '<div class="nws-tiles">' + tile('bill', 'informative', 'Notas del periodo', 'Abrir calculadora', 'data-toast="Notas"') + tile('file', 'positive', 'Mis solicitudes', '1 en revisión', 'data-toast="Mis solicitudes"') + '</div>']]);
+            ['docs', '<div class="nws-glass nws-block"><h2 class="nws-h2">Certificados y documentos</h2><div class="nws-stack" style="gap:0">' + docs + '</div></div>'],
+            ['tiles', accL],
+            ['sol', '<div class="nws-glass nws-block"><h2 class="nws-h2">Mis solicitudes</h2><div class="nws-stack" style="gap:0">' + tr + '</div></div>']]);
         }
         return '<div class="nws-scroll">' +
           '<div class="nws-glass nws-block"><h2 class="nws-h2">Certificados y documentos</h2><div class="nws-stack" style="gap:0">' + docs + '</div></div>' +
@@ -699,7 +703,7 @@ window.PANTALLAS['inicio'] = (function () {
         pintarCuerpo(b, st.msgs.map(function (m) { if (m.html) { return m.html; } return '<p class="nws-msg' + (m.f === 'u' ? ' nws-msg--yo' : '') + '">' + S.esc(m.t) + '</p>'; }).join('') +
           (st.typing ? '<div class="nws-typing" aria-label="SerafIA está escribiendo"><i></i><i></i><i></i></div>' : ''));
         sincronizarBienvenida();
-        var sug = grande() && st.full && !empezo(); sugerencias(sug);
+        var sug = false;
         var pie = (!sug && st.opts.length && !st.typing ? '<div class="nws-opts">' + st.opts.map(function (o, i) {
           return S.button({ label: o.label, theme: o.crisis ? 'negative' : 'neutral', variant: o.primary ? 'loud' : 'quiet', size: 'medium', attrs: { 'data-a': 'opt:' + i } });
         }).join('') + '</div>' : '') +
@@ -744,6 +748,9 @@ window.PANTALLAS['inicio'] = (function () {
               { label: 'Ahora no', run: ahoraNo }
             ], 1100);
           } },
+          { label: 'Respirar conmigo', grande: true, run: function () { yo('Respirar conmigo'); say('Vamos con calma: inhala 4 segundos, sostén 4 y suelta 6. Repite tres veces. Aquí estoy.', [{ label: 'Gracias', primary: true, run: function () { yo('Gracias'); say('Cuando quieras repetirlo, solo dímelo.', [], 800); } }], 1000); } },
+          { label: 'Modo foco · Pomodoro', grande: true, run: function () { yo('Modo foco · Pomodoro'); say('El método Pomodoro es estudiar 25 minutos y descansar 5, con una pausa de cuidado entre bloques. ¿Lo iniciamos?', [{ label: 'Iniciar 25 min', primary: true, run: function () { yo('Iniciar 25 min'); say('Listo, empezamos. Te aviso cuando toque la pausa.', [], 900); } }, { label: 'Ahora no', run: ahoraNo }], 1100); } },
+          { label: 'Cronómetro de estudio', grande: true, run: function () { yo('Cronómetro de estudio'); say('Cronómetro en marcha. Te recordaré hacer una pausa de respiración cada 45 minutos.', [], 900); } },
           /* el carnet es el único que abre sin preguntar */
           { label: 'Mi carnet', run: function () {
             yo('Mi carnet'); say('Claro, te llevo a tu carnet.', [], 900);
@@ -751,6 +758,7 @@ window.PANTALLAS['inicio'] = (function () {
             later(function () { irDesdeChat('hoy', 'carnet'); }, 900 + 2800);
           } }
         ];
+        if (!grande()) { ops = ops.filter(function (o) { return !o.grande; }); }
         abrirSheet(function () { st.opts = ops; pintarChat(); }, true);
       }
       function charlaApoyo() {
