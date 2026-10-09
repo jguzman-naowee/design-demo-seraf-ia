@@ -351,6 +351,50 @@ window.PANTALLAS['inicio'] = (function () {
           '<div style="width:100%" class="nws-stack"><div class="nws-sec"><span class="nws-txt">El código se renueva en 0:24</span>' + S.badge({ label: E.matricula, theme: 'positive', variant: 'quiet', size: 'small' }) + '</div>' + S.progress({ value: 80, theme: 'secondary' }) + '</div></div></div>' +
           '<p class="nws-txt" style="text-align:center">Sube el brillo de tu pantalla. Funciona sin conexión con tu último estado válido.</p></div>' + fabMini() + '</div>';
       }
+      /* ---------- calendario mensual del horario (tablet y tablet grande) ---------- */
+      var DOW = ['dom', 'lun', 'mar', 'mie', 'jue', 'vie', 'sab'], NOMD = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'];
+      var NOMM = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
+      function p2(n) { return (n < 10 ? '0' : '') + n; }
+      function clave(f) { return f.getFullYear() + '-' + f.getMonth() + '-' + f.getDate(); }
+      /* clases de la semana tipo + lo específico de cada fecha (la semana del 5 al 11 se toma tal cual y los eventos salen de «Eventos Seraf») */
+      function itemsFecha(f) {
+        var n = f.getDate(), m = f.getMonth(), oct = f.getFullYear() === 2026 && m === 9, k = DOW[f.getDay()];
+        var sem = D.horario.concat(D.horarioExtra || []).filter(function (x) { return x.k === k; })[0];
+        if (oct && n >= 5 && n <= 11) { return sem ? sem.items : []; }
+        var base = sem ? sem.items.filter(function (c) { return !c.etiqueta || c.etiqueta === 'Siguiente'; }).map(function (c) { return { ini: c.ini, fin: c.fin, nombre: c.nombre, lugar: c.lugar }; }) : [];
+        if (oct) {
+          D.eventos.filter(function (e) { return +e.dia === n; }).forEach(function (e) {
+            var pr = e.meta.split(' · '), h = pr[0].split(':'), ini = p2(+h[0]) + ':' + h[1];
+            base.push({ ini: ini, fin: p2(+h[0] + 1) + ':' + h[1], nombre: e.titulo, lugar: pr[1] || '', etiqueta: 'Evento Seraf' });
+          });
+        }
+        return base.sort(function (a, b) { return a.ini < b.ini ? -1 : 1; });
+      }
+      function ovHorarioMes(slot, ctlVista) {
+        var off = st.mesOff || 0, base = new Date(2026, 9 + off, 1), y = base.getFullYear(), m = base.getMonth();
+        var primero = (base.getDay() + 6) % 7, dim = new Date(y, m + 1, 0).getDate(), total = Math.ceil((primero + dim) / 7) * 7;
+        var hoyK = clave(new Date(2026, 9, 6));
+        if (!st.diaSel || st.diaSelMes !== off) { st.diaSel = off === 0 ? hoyK : clave(base); st.diaSelMes = off; }
+        var cab = ['LUN', 'MAR', 'MIÉ', 'JUE', 'VIE', 'SÁB', 'DOM'].map(function (d) { return '<span>' + d + '</span>'; }).join('');
+        var celdas = '';
+        for (var i = 0; i < total; i++) {
+          var f = new Date(y, m, 1 - primero + i), its = itemsFecha(f), kk = clave(f), fuera = f.getMonth() !== m;
+          var pts = its.slice(0, 4).map(function (c) { return '<i class="nws-cal__pt nws-cal__pt--' + (c.etiqueta === 'Examen' ? 'ex' : (c.etiqueta === 'Evento Seraf' ? 'ev' : 'cl')) + '"></i>'; }).join('');
+          var chips = its.slice(0, 2).map(function (c) { return '<span class="nws-cal__ch nws-cal__ch--' + (c.etiqueta === 'Examen' ? 'ex' : (c.etiqueta === 'Evento Seraf' ? 'ev' : 'cl')) + '" title="' + c.ini + ' · ' + c.nombre + '">' + c.nombre + '</span>'; }).join('') + (its.length > 2 ? '<span class="nws-cal__mas">+' + (its.length - 2) + ' más</span>' : '');
+          celdas += '<button type="button" class="nws-cal__d' + (fuera ? ' nws-cal__d--fuera' : '') + (kk === hoyK ? ' nws-cal__d--hoy' : '') + (kk === st.diaSel ? ' nws-cal__d--sel' : '') + '" data-a="hdia:' + kk + '" aria-pressed="' + (kk === st.diaSel) + '" aria-label="' + f.getDate() + ' de ' + NOMM[f.getMonth()] + (its.length ? ', ' + its.length + (its.length === 1 ? ' actividad' : ' actividades') : ', sin actividades') + '">' +
+            '<span class="nws-cal__n">' + f.getDate() + '</span><span class="nws-cal__pts">' + pts + '</span><span class="nws-cal__chs">' + chips + '</span></button>';
+        }
+        var sp = st.diaSel.split('-'), fs = new Date(+sp[0], +sp[1], +sp[2]), sit = itemsFecha(fs);
+        var agenda = '<h2 class="nws-h2">' + NOMD[fs.getDay()].charAt(0).toUpperCase() + NOMD[fs.getDay()].slice(1) + ' ' + fs.getDate() + ' de ' + NOMM[fs.getMonth()] + '</h2>' +
+          (sit.length ? '<div class="nws-stack nws-cal__sl">' + sit.map(slot).join('') + '</div>' : '<div class="nws-glass nws-block"><p class="nws-txt">Sin clases ni eventos este día.</p></div>');
+        var leyenda = '<div class="nws-cal__ley"><span><i class="nws-cal__pt nws-cal__pt--cl"></i>Clase</span><span><i class="nws-cal__pt nws-cal__pt--ev"></i>Evento Seraf</span><span><i class="nws-cal__pt nws-cal__pt--ex"></i>Examen</span></div>';
+        var nav = '<div class="nws-cal__nav">' + S.iconButton({ icon: 'arrow-left', variant: 'mute', theme: 'neutral', size: 'medium', label: 'Mes anterior', disabled: off <= -1, attrs: { 'data-a': 'hmes:-1' } }) +
+          '<h2 class="nws-h2 nws-cal__mes">' + NOMM[m].charAt(0).toUpperCase() + NOMM[m].slice(1) + ' ' + y + '</h2>' +
+          S.iconButton({ icon: 'arrow-right', variant: 'mute', theme: 'neutral', size: 'medium', label: 'Mes siguiente', disabled: off >= 2, attrs: { 'data-a': 'hmes:1' } }) +
+          (off !== 0 ? btn('Hoy', 'hmes:0', { variant: 'quiet', size: 'small' }) : '') + '<span class="nws-grow"></span>' + ctlVista + '</div>';
+        return '<div class="nws-ov">' + atras('Mi horario') + '<div class="nws-ov__body">' + nav +
+          '<div class="nws-cal__v"><div class="nws-glass nws-cal"><div class="nws-cal__cab">' + cab + '</div><div class="nws-cal__rej">' + celdas + '</div>' + leyenda + '</div><section class="nws-cal__ag" aria-live="polite">' + agenda + '</section></div></div>' + fabMini() + '</div>';
+      }
       function ovHorario() {
         var grande = DISP !== 'movil', sem = grande ? D.horario.concat(D.horarioExtra || []) : D.horario;
         if (!grande && (st.dia === 'sab' || st.dia === 'dom')) { st.dia = 'mar'; }
@@ -370,6 +414,9 @@ window.PANTALLAS['inicio'] = (function () {
           return '<div class="nws-glass nws-slot nws-slot--c' + (ex ? ' nws-slot--examen' : '') + (sg ? ' nws-slot--sig' : '') + '"><div class="nws-slot__h"><div class="nws-hora" style="min-width:0">' + c.ini + '</div><p class="nws-txt">' + c.fin + '</p></div>' +
             '<div class="nws-grow"><p class="nws-h3">' + c.nombre + '</p><p class="nws-txt">' + c.lugar + '</p>' + (c.etiqueta ? '<div style="margin-top:var(--naotech-sizing-8)">' + S.badge({ label: c.etiqueta, theme: ex ? 'warning' : (ev ? 'positive' : 'secondary'), variant: ex ? 'loud' : 'quiet', size: 'small' }) + '</div>' : '') + '</div></div>';
         }
+        var vH = st.vistaH || 'semana';
+        var ctlV = '<div class="nws-vsw" role="tablist" aria-label="Vista del horario">' + [['semana', 'Semana'], ['mes', 'Mes']].map(function (x) { return '<button type="button" role="tab" aria-selected="' + (vH === x[0]) + '" class="' + (vH === x[0] ? 'on' : '') + '" data-a="hvista:' + x[0] + '">' + x[1] + '</button>'; }).join('') + '</div>';
+        if (grande && vH === 'mes') { return ovHorarioMes(slot, ctlV); }
         /* NUEVO · Tablero semanal: toda la semana a la vez, una columna por día (tablet grande) */
         if (DISP === 'tablet-xl') {
           var cols = sem.map(function (d) {
@@ -377,11 +424,11 @@ window.PANTALLAS['inicio'] = (function () {
             return '<section class="nws-wk__d' + (hoy ? ' nws-wk__d--hoy' : '') + '" aria-label="' + d.dow + ' ' + d.num + '"><header><span>' + d.dow + '</span><b>' + d.num + '</b>' + (hoy ? '<i>Hoy</i>' : '') + '</header>' +
               (d.items.length ? d.items.map(slot).join('') : '<p class="nws-txt nws-wk__vacio">Sin clases ni eventos</p>') + '</section>';
           }).join('');
-          return '<div class="nws-ov">' + atras('Mi horario') + '<div class="nws-ov__body"><p class="nws-mono-over">Periodo 2026-2 · Semana del 5 al 11 de octubre</p><div class="nws-wk">' + cols + '</div>' +
+          return '<div class="nws-ov">' + atras('Mi horario') + '<div class="nws-ov__body"><div class="nws-hv"><p class="nws-mono-over">Periodo 2026-2 · Semana del 5 al 11 de octubre</p>' + ctlV + '</div><div class="nws-wk">' + cols + '</div>' +
             '<div class="nws-glass nws-block"><p class="nws-txt">Recordatorios de clase 30 min antes. Puedes cambiarlo en <b style="color:var(--nws-ink)">Yo</b>.</p></div></div>' + fabMini() + '</div>';
         }
         return '<div class="nws-ov">' + atras('Mi horario') + '<div class="nws-ov__body">' +
-          '<p class="nws-mono-over">Periodo 2026-2 · Semana del 5 al ' + (grande ? '11' : '9') + ' de octubre</p><div class="nws-dias' + (grande ? ' nws-dias--7' : '') + '">' + dias + '</div>' +
+          (grande ? '<div class="nws-hv"><p class="nws-mono-over">Periodo 2026-2 · Semana del 5 al 11 de octubre</p>' + ctlV + '</div>' : '<p class="nws-mono-over">Periodo 2026-2 · Semana del 5 al 9 de octubre</p>') + '<div class="nws-dias' + (grande ? ' nws-dias--7' : '') + '">' + dias + '</div>' +
           '<div class="nws-stack nws-slots">' + slots + '</div>' +
           '<div class="nws-glass nws-block"><p class="nws-txt">Recordatorios de clase 30 min antes. Puedes cambiarlo en <b style="color:var(--nws-ink)">Yo</b>.</p></div></div>' + fabMini() + '</div>';
       }
@@ -450,8 +497,8 @@ window.PANTALLAS['inicio'] = (function () {
       }
       /* selectores que cambian de contenido (días, filtros, indicador del carrusel): el marcador activo se desliza
          de su sitio anterior al nuevo y el contenido asociado entra con un fundido hacia el mismo lado */
-      var FA = [['.nws-dia--on', 'dias', null], ['.nws-fltab--on', 'fltab', '::after'], ['.nwt-view-indicator__dot--active', 'dots', null]];
-      var FC = { dias: '.nws-ov__body > .nws-stack', fltab: '.nws-ov__body > .nws-glass, .nws-ov__body > p.nws-txt', dots: '.nws-ev' };
+      var FA = [['.nws-dia--on', 'dias', null], ['.nws-fltab--on', 'fltab', '::after'], ['.nwt-view-indicator__dot--active', 'dots', null], ['.nws-cal__d--sel', 'cal', null]];
+      var FC = { dias: '.nws-ov__body > .nws-stack', fltab: '.nws-ov__body > .nws-glass, .nws-ov__body > p.nws-txt', dots: '.nws-ev', cal: '.nws-cal__ag' };
       function marcarFa(host) {
         FA.forEach(function (f) { [].forEach.call(host.querySelectorAll(f[0]), function (e) { e.setAttribute('data-fa', f[1]); if (f[2]) { e.setAttribute('data-fp', f[2]); } }); });
       }
@@ -788,6 +835,9 @@ window.PANTALLAS['inicio'] = (function () {
         else if (k === 'save') { st.saved[v] = !st.saved[v]; pintarOv(); }
         else if (k === 'evfil') { st.evFil = v; pintarOv(); }
         else if (k === 'dia') { st.dia = v; pintarOv(); }
+        else if (k === 'hvista') { st.vistaH = v; pintarOv(); }
+        else if (k === 'hdia') { st.diaSel = v; pintarOv(); }
+        else if (k === 'hmes') { st.mesOff = v === '0' ? 0 : Math.max(-1, Math.min(2, (st.mesOff || 0) + (+v))); pintarOv(); }
         else if (k === 'notif') { st.notif[v] = !st.notif[v]; pintarTab(); }
         else if (k === 'ctx') { st.ctx = !st.ctx; pintarTab(); }
         else if (k === 'semana-hablar') { cerrarOv(); charlaSemana(); }
