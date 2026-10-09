@@ -13573,6 +13573,15 @@ section.nws-ib__r { display: flex; flex-direction: column; min-width: 0; min-hei
 .nws-carnet .nws-carnet__id .nwt-avatar { box-shadow: 0 0 0 4px rgb(255 255 255 / .6); }
 .nws-carnet .nws-carnet__orb { width: 110px; height: 110px; right: -36px; top: -36px; }
 
+/* velo de carga con la marca de SerafIA al cambiar de dispositivo */
+.nws-dsw-ld { position: absolute; inset: 0; z-index: 40; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--naotech-sizing-16); background: rgb(from var(--naotech-color-gray-050) r g b / .92); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); opacity: 0; pointer-events: none; transition: opacity .35s var(--naotech-animation-standard); }
+.nws-dsw-ld--on { opacity: 1; pointer-events: auto; }
+.nws-dsw-ld .nws-orbe { animation: nws-dsw-pulso 1.6s ease-in-out infinite; }
+.nws-dsw-ld__t { font-size: var(--naotech-subtitle-font-size); font-weight: var(--naotech-font-weight-semibold); color: var(--nws-ink-2); letter-spacing: .02em; }
+@keyframes nws-dsw-pulso { 0%, 100% { transform: scale(.94); } 50% { transform: scale(1.06); } }
+.nws-phone { transition: transform .45s var(--naotech-animation-standard), width .45s var(--naotech-animation-standard), height .45s var(--naotech-animation-standard); }
+@media (prefers-reduced-motion: reduce) { .nws-dsw-ld, .nws-phone { transition: none; } .nws-dsw-ld .nws-orbe { animation: none; } }
+
 </style>
 <div id="app" style="height:100%"></div>
 <!-- pantallas: una línea por archivo, antes de app.js -->
@@ -15971,11 +15980,20 @@ window.PANTALLAS['inicio'] = (function () {
       function onDisp(ev) {
         var b = ev.target.closest && ev.target.closest('.nws-dispsw [data-seg]'); if (!b) { return; }
         var k = b.getAttribute('data-seg'); if (!DISPS[k] || k === DISP) { return; }
-        DISP = k;
-        var ph = root.querySelector('#phone'); ph.setAttribute('data-disp', k); ph.style.width = DISPS[k].w + 'px'; ph.style.height = DISPS[k].h + 'px';
-        mob.className = mob.className.replace(/\bnws-demo--(movil|tablet|tablet-xl)\b/g, '').trim() + ' nws-demo--' + k;
+        /* transición suave: un velo con la marca de SerafIA cubre el cambio de tamaño y se retira al terminar */
+        var stage = root.querySelector('#stage'), ld = stage.querySelector('.nws-dsw-ld');
+        if (!ld) { ld = document.createElement('div'); ld.className = 'nws-dsw-ld'; ld.setAttribute('role', 'status'); ld.setAttribute('aria-label', 'Cambiando de dispositivo'); ld.innerHTML = '<span class="nws-orbe nws-orbe--xl"></span><span class="nws-dsw-ld__t">SerafIA</span>'; stage.appendChild(ld); }
+        clearTimeout(ld._t1); clearTimeout(ld._t2);
+        var sinMov = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        ld.classList.add('nws-dsw-ld--on');
         [].forEach.call(root.querySelectorAll('.nws-dispsw .nws-dsp'), function (x) { var on = x.getAttribute('data-seg') === k; x.classList.toggle('on', on); x.setAttribute('aria-checked', String(on)); });
-        zoom.mult = 1; aplicarZoom(); st._reset = false; pintar(); if (st.sheet) { st.cuerpoHtml = null; pintarChat(); } ctx.posicionarIndicadores(root);
+        ld._t1 = setTimeout(function () {
+          DISP = k;
+          var ph = root.querySelector('#phone'); ph.setAttribute('data-disp', k); ph.style.width = DISPS[k].w + 'px'; ph.style.height = DISPS[k].h + 'px';
+          mob.className = mob.className.replace(/\bnws-demo--(movil|tablet|tablet-xl)\b/g, '').trim() + ' nws-demo--' + k;
+          zoom.mult = 1; aplicarZoom(); st._reset = false; pintar(); if (st.sheet) { st.cuerpoHtml = null; pintarChat(); } ctx.posicionarIndicadores(root);
+          ld._t2 = setTimeout(function () { ld.classList.remove('nws-dsw-ld--on'); }, sinMov ? 0 : 650);
+        }, sinMov ? 0 : 380);
       }
       root.addEventListener('click', onDisp);
       function onZoom(ev) {
