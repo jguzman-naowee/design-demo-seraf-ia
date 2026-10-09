@@ -14889,6 +14889,9 @@ window.PANTALLAS['inicio'] = (function () {
         /* antes de que lleguen mensajes la bienvenida ocupa todo el espacio: ahí se mide de dónde parte el orbe */
         var c0 = mob.querySelector('.nwt-bottom-sheet__container'), g0 = mob.querySelector('#chat-welcome .nws-orbe--pastel');
         if (st.full && c0 && g0 && !c0.classList.contains('nws-chat--on') && st.pint === 0) { st.orbe0 = g0.getBoundingClientRect(); }
+        /* mismo contenido: no se vuelve a pintar (si no, lo recién llegado pierde su fundido a medias) */
+        if (st.cuerpoHtml === html && b.children.length) { return; }
+        st.cuerpoHtml = html;
         b.innerHTML = html;
         var kids = [].slice.call(b.children).filter(function (k) { return !k.classList.contains('nws-typing'); });
         kids.forEach(function (k, i) { if (i < st.pint) { k.classList.add('nws-old'); } });
@@ -14896,7 +14899,12 @@ window.PANTALLAS['inicio'] = (function () {
         var ty = b.querySelector('.nws-typing');
         if (ty && st.tyOn) { ty.classList.add('nws-old'); }
         st.tyOn = !!ty;
-        b.scrollTop = b.scrollHeight;
+        /* la tarjeta de cuidado aparece en su sitio con un fundido; el chat baja con calma después, sin saltar */
+        var ultimo = kids[kids.length - 1];
+        if (ultimo && ultimo.classList.contains('nws-care') && !ultimo.classList.contains('nws-old')) {
+          clearTimeout(st.tScroll);
+          st.tScroll = setTimeout(function () { if (b.scrollTo) { b.scrollTo({ top: b.scrollHeight, behavior: 'smooth' }); } else { b.scrollTop = b.scrollHeight; } }, 420);
+        } else { b.scrollTop = b.scrollHeight; }
       }
       function pintarPie(f, html) {
         if (st.pie === html) { return false; }
@@ -14982,7 +14990,7 @@ window.PANTALLAS['inicio'] = (function () {
       }
       function yo(t) { st.msgs.push({ f: 'u', t: t }); st.opts = []; pintarChat(); }
       function abrirSheet(arranque, full, previo) {
-        clearT(); st.sheet = true; st.full = !!full; st.baseline = false; st.orbe0 = null; st.pint = 0; st.tyOn = false; st.pie = null; st.valora = false; st.msgs = []; st.opts = []; st.typing = false; st.tmp = ''; pintarPanel();
+        clearT(); st.sheet = true; st.full = !!full; st.baseline = false; st.orbe0 = null; st.pint = 0; st.tyOn = false; st.pie = null; st.cuerpoHtml = null; st.valora = false; st.msgs = []; st.opts = []; st.typing = false; st.tmp = ''; pintarPanel();
         var host = $('sheet'); host.innerHTML = sheetShell(full);
         requestAnimationFrame(function () {
           var c = host.querySelector('.nwt-bottom-sheet__container'), k = host.querySelector('.nwt-bottom-sheet__backdrop');
